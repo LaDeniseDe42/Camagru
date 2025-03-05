@@ -1,0 +1,99 @@
+/* Styles de base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+}
+
+/* Mise en page générale */
+body {
+  background-color: #f4f4f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #333;
+}
+
+/* Container du formulaire */
+form {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+/* Titre du formulaire */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #4caf50; /* Une couleur agréable */
+}
+
+/* Champs de formulaire */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+/* Change la couleur du border lorsque l'input est focus */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+/* Boutons */
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Effet sur le bouton au survol */
+button:hover {
+  background-color: #45a049;
+}
+
+/* Lien d'inscription / connexion */
+p {
+  text-align: center;
+  font-size: 14px;
+}
+
+a {
+  color: #4caf50;
+  text-decoration: none;
+}
+
+footer {
+  background-color: #333;
+  color: white;
+  width: 100vw;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  position: absolute; /* Positionné en bas de la page */
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+}

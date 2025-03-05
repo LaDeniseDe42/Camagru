@@ -1,0 +1,1 @@
+app/models/ → Contient les modèles pour interagir avec la base de données.

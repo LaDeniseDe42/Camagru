@@ -1,0 +1,1 @@
+app/controllers/ → Contient les contrôleurs qui gèrent les requêtes et appellent les modèles.

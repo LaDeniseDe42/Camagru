@@ -1,0 +1,1 @@
+routes/web.php → Définit les routes de l’application.

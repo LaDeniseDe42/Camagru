@@ -13,10 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $password2 = $_POST['confirm_password'];
     
     // Appelle la méthode register du contrôleur
-    $message = $authController->register($username, $email, $password);
+    $message = $authController->register($username, $email, $password, $password2);
 }
+
 ?>
 
 
@@ -28,6 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <?php include __DIR__ . "/../Views/auth/register.php"; ?>
+    <?php if (!empty($message)) : ?>
+    <p class="error-message"><?= htmlspecialchars($message); ?></p>
+    <?php endif; ?>
 <footer>
 </footer>
 </body>

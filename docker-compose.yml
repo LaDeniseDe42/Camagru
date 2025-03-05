@@ -18,6 +18,8 @@ services:
     container_name: php_server
     volumes:
       - ./app:/var/www/html
+    env_file:
+      - .env
     networks:
       - app_network
 
@@ -32,6 +34,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
     networks:
       - app_network
 

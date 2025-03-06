@@ -4,6 +4,13 @@ session_start();
 
 // Vérifie si un utilisateur est connecté
 $is_logged_in = isset($_SESSION['user']);
+//recuperer l'username de l'utilisateur s'il est connecté
+$user_mail = $_SESSION['user'] ?? null;
+//recuperer l'id de l'utilisateur s'il est connecté
+$user_id = $_SESSION['user_id'] ?? null;
+//recuperer l'email de l'utilisateur s'il est connecté
+$username = $_SESSION['username'] ?? null;
+
 ?>
 
 <!DOCTYPE html>
@@ -13,15 +20,20 @@ $is_logged_in = isset($_SESSION['user']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page d'accueil</title>
     <link rel="stylesheet" href="/../assets/css/styles.css">
+    <link rel="stylesheet" href="/../assets/css/navbar.css">
 </head>
 <body>
+    <?php include(__DIR__ . '/../Views/auth/navbar.php'); ?>
+    <div class="background-slider"></div>
     <header>
         <h1>Bienvenue sur Camagru</h1>
     </header>
 
+    
+
     <main>
         <?php if ($is_logged_in): ?>
-            <p>Bonjour, <?php echo htmlspecialchars($_SESSION['user']); ?> !</p>
+            <p>Bonjour, <?php echo htmlspecialchars($username); ?> !</p>
             <p><a href="logout.php">Se déconnecter</a></p> <!-- Lien pour se déconnecter -->
         <?php else: ?>
             <p>Vous n'êtes pas connecté.</p>
@@ -32,5 +44,6 @@ $is_logged_in = isset($_SESSION['user']);
     <footer>
         <p>&copy; 2025 Camagru. Tous droits réservés.</p>
     </footer>
+    <script src="/../assets/js/slider.js"></script>
 </body>
 </html>

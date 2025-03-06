@@ -22,6 +22,7 @@ body {
 /* Header */
 header {
   background-color: #4caf50;
+  opacity: 80%;
   width: 100vw; /* Prend la largeur totale de la fenêtre */
   padding: 20px;
   color: white;
@@ -85,4 +86,17 @@ footer {
   bottom: 0;
   left: 0;
   box-sizing: border-box;
+}
+
+/* Conteneur du background */
+.background-slider {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 5s ease-in-out;
 }

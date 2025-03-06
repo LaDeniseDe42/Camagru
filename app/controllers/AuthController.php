@@ -10,43 +10,80 @@ class AuthController {
         $this->database = new Database();
     }
     
-    // Fonction d'inscription
     public function register($username, $email, $password, $password2) {
-
-        // Validation basique (tu peux ajouter plus de validation ici)
         if (empty($username) || empty($email) || empty($password) || empty($password2)) {
-            return "Tous les champs sont obligatoires.";
+            return ['status' => 'error', 'message' => "Tous les champs sont obligatoires."];
         }
-
-        if ($password != $password2) {
-            return "Les mots de passe ne correspondent pas.";
+    
+        if ($password !== $password2) {
+            return ['status' => 'error', 'message' => "Les mots de passe ne correspondent pas."];
         }
-
-        // Vérifie si l'email est déjà utilisé
+    
+        if (strlen($password) < 6) {
+            return ['status' => 'error', 'message' => "Le mot de passe doit contenir au moins 6 caractères."];
+        }
+    
+        if (!preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password)) {
+            return ['status' => 'error', 'message' => "Le mot de passe doit contenir au moins une lettre majuscule et un chiffre."];
+        }
+    
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return ['status' => 'error', 'message' => "Email invalide."];
+        }
+    
         $con = $this->database->getConnection();
         $query = "SELECT * FROM users WHERE email = :email";
         $stmt = $con->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
-        // Vérifie si l'email existe déjà
+    
         if ($stmt->rowCount() > 0) {
-            return "Cet email est déjà utilisé.";
+            return ['status' => 'error', 'message' => "Cet email est déjà utilisé."];
         }
-
-        // Hash du mot de passe avant de l'enregistrer
+    
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
         $userModel = new User();
-        // Création de l'utilisateur dans la base de données
-        $isRegistered = $userModel->createUser($username, $email, $hashedPassword, $con);    
+        $isRegistered = $userModel->createUser($username, $email, $hashedPassword, $con);
+    
         if ($isRegistered) {
-            return "Inscription réussie ! Vous pouvez maintenant vous connecter.";
+            return ['status' => 'success', 'message' => "Inscription réussie ! Vous pouvez maintenant vous connecter."];
         } else {
-            return "Une erreur s'est produite. Veuillez réessayer.";
+            return ['status' => 'error', 'message' => "Une erreur s'est produite. Veuillez réessayer."];
         }
     }
     
     // D'autres méthodes comme login, logout, etc. peuvent être ici.
+
+    public function login($email, $password) {
+        // Validation basique
+        if (empty($email) || empty($password)) {
+            return ['status' => 'error', 'message' => "Tous les champs sont obligatoires."];
+        }
+
+        // Vérifie si l'email existe
+        $con = $this->database->getConnection();
+        $query = "SELECT * FROM users WHERE email = :email";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user) {
+            return ['status' => 'error', 'message' => "Cet email n'existe pas."];
+        }
+
+        // Vérifie si le mot de passe est correct
+        if (password_verify($password, $user['password'])) {
+            return [
+                'status' => 'success',
+                'message' => "Connexion réussie !",
+                'username' => $user['username'], // Récupère le nom d'utilisateur
+                'user_id' => $user['id'] // Récupère l'id de l'utilisateur
+            ];
+        } else {
+            return ['status' => 'error', 'message' => "Mot de passe incorrect."];
+        }
+    }
 }
 
 ?>

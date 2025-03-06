@@ -1,6 +1,12 @@
 <?php
+session_start();
 require_once __DIR__ . "/../controllers/AuthController.php";
 
+// Vérifie si l'utilisateur est déjà connecté
+if (isset($_SESSION['user'])) {
+    header("Location: index.php"); // Redirige vers la page d'accueil s'il est déjà connecté
+    exit();
+}
 // Créer une instance de AuthController
 $authController = new AuthController();
 
@@ -16,7 +22,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password2 = $_POST['confirm_password'];
     
     // Appelle la méthode register du contrôleur
-    $message = $authController->register($username, $email, $password, $password2);
+    // $message = $authController->register($username, $email, $password, $password2);
+
+    $result = $authController->register($username, $email, $password, $password2);
+    if ($result['status'] === 'success') {
+        header("Location: login.php");
+        exit();
+    } else {
+        $errorMessage = $result['message'];
+    }
 }
 
 ?>
@@ -27,12 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Inscription</title>
     <link rel="stylesheet" href="/../assets/css/logister.css">
+    <link rel="stylesheet" href="/../assets/css/navbar.css">
 </head>
 <body>
+    <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
     <?php include __DIR__ . "/../Views/auth/register.php"; ?>
-    <?php if (!empty($message)) : ?>
-    <p class="error-message"><?= htmlspecialchars($message); ?></p>
-    <?php endif; ?>
 <footer>
 </footer>
 </body>

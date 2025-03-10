@@ -17,8 +17,8 @@ class AuthController {
         if ($username === $password) {
             return ['status' => 'error', 'message' => "Le nom d'utilisateur et le mot de passe ne peuvent pas être identiques."];
         }
-        if (strlen($username) <= 3 && strlen($password) >= 16) {
-            return ['status' => 'error', 'message' => "Le nom d'utilisateur doit contenir entre 3 et 16 caractères."];
+        if (strlen($username) < 3 || strlen($username) > 16) {
+            return ['status' => 'error', 'message' => "Le nom d'utilisateur doit contenir entre 4 et 16 caractères."];
         }
         if (!preg_match('/^[a-zA-Z0-9]+$/', $username)) {
             return ['status' => 'error', 'message' => "Le nom d'utilisateur ne peut contenir que des lettres et des chiffres."];

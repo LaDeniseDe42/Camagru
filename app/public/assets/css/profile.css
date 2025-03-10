@@ -1,0 +1,128 @@
+/* Styles de base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+}
+
+/* Mise en page générale */
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #333;
+  transition: background-color 0.5s ease;
+}
+
+.container {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+/* Champs de formulaire */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  font-size: 16px;
+}
+
+input:focus,
+select:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+/* Bouton */
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Messages de confirmation */
+.success-message,
+.error-message {
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.success-message {
+  background-color: #e6ffe6;
+  border: 1px solid green;
+  color: green;
+}
+
+.error-message {
+  background-color: #ffe6e6;
+  border: 1px solid red;
+  color: red;
+}
+
+/* Thèmes des maisons de Harry Potter */
+.gryffindor {
+  background-color: #7f0909;
+  color: #d3a625;
+}
+
+.hufflepuff {
+  background-color: #ffdb58;
+  color: #372e29;
+}
+
+.ravenclaw {
+  background-color: #0e1a40;
+  color: #946b2d;
+}
+
+.slytherin {
+  background-color: #1a472a;
+  color: #aaaaaa;
+}
+
+/* Footer */
+footer {
+  background-color: #333;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+}

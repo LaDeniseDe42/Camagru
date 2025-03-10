@@ -7,6 +7,10 @@
         <button type="submit">S'inscrire</button>
     </form>
 
+    <!-- <div class="login-link">
+        <p>L'envoi du mail de confirmation peut prendre quelques instant <a href="login.php">Renvoi du mail</a></p>
+    </div> -->
+
     <div class="login-link">
         <p>Vous avez déjà un compte ? <a href="login.php">Connectez-vous</a></p>
     </div>

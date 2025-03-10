@@ -1,10 +1,13 @@
 <div class="container">
-<form action="forgot_password.php" method="post">
-    <input type="email" name="email" placeholder="Email" required>
-    <button type="submit">Envoyer</button>
-</form>
 
-<?php if (!empty($successMessage)) : ?>
+    <h3>Renvoyer l'email de confirmation</h3>
+    <form action="resend_mail.php" method="post">
+        <input type="email" name="email" placeholder="Email" required>
+        <button type="submit">renvoyer</button>
+    </form>
+
+     <!-- Message de succès -->
+     <?php if (!empty($successMessage)) : ?>
         <div class="error-container">
             <p class="success-message"><?= htmlspecialchars($successMessage); ?></p>
         </div>
@@ -16,5 +19,5 @@
             <p class="error-message"><?= htmlspecialchars($errorMessage); ?></p>
         </div>
     <?php endif; ?>
-
 </div>
+<br>

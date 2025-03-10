@@ -14,7 +14,7 @@ services:
       - app_network
 
   php:
-    build: ./php # On va créer une image PHP personnalisée
+    build: ./php
     container_name: php_server
     volumes:
       - ./app:/var/www/html

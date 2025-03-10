@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start(); // Démarre la session pour pouvoir utiliser $_SESSION
 require_once __DIR__ . "/../controllers/AuthController.php";
 
 // Vérifie si l'utilisateur est déjà connecté
@@ -16,13 +16,9 @@ $message = "";
 // Vérifie si le formulaire a été soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupère les données du formulaire
-    $username = $_POST['username'];
     $email = $_POST['email'];
-    $password = $_POST['password'];
-    $password2 = $_POST['confirm_password'];
-    
-
-    $result = $authController->register($username, $email, $password, $password2);
+  
+    $result = $authController->resend_mail($email);
     if ($result['status'] === 'success') {
         $successMessage = "Un email de confirmation a été envoyé. Veuillez vérifier votre boîte de réception pour confirmer votre compte.";
     // Rediriger vers login.php avec le message passé en paramètre dans l'URL
@@ -32,21 +28,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errorMessage = $result['message'];
     }
 }
-
 ?>
-
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Inscription</title>
+    <title>Renvoi du mail de confirmation </title>
     <link rel="stylesheet" href="/../assets/css/logister.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
 </head>
 <body>
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
-    <?php include __DIR__ . "/../Views/auth/register.php"; ?>
-<footer>
-</footer>
+    <?php include __DIR__ . "/../Views/auth/resend_mail.php"; ?>
+    <footer>
+    </footer>
 </body>
 </html>

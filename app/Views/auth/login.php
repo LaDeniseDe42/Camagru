@@ -11,6 +11,19 @@
     </div>
     <br>
 
+    <?php if (isset($_GET['message'])) : ?>
+    <div class="message-container">
+        <p class="success-message"><?= htmlspecialchars($_GET['message']); ?></p>
+    </div>
+    <?php endif; ?>
+    <br>
+
+
+    <div class="register-link">
+        <p>Besoin de renvoyer l'email de confirmation ? <a href="resend_mail.php">renvoyer</a></p>
+    </div>
+    <br>
+
     <!-- Lien d'inscription sous "Mot de passe oublié" -->
     <div class="register-link">
         <p>Vous n'avez pas de compte ? <a href="register.php">Inscrivez-vous</a></p>
@@ -29,4 +42,3 @@
             <p class="error-message"><?= htmlspecialchars($errorMessage); ?></p>
         </div>
     <?php endif; ?>
-</br>

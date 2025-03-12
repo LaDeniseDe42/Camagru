@@ -7,5 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     confirmation_token VARCHAR(255) NOT NULL,
-    is_confirmed TINYINT(1) DEFAULT 0
+    is_confirmed TINYINT(1) DEFAULT 0,
+    house ENUM('Gryffondor', 'Poufsouffle', 'Serdaigle', 'Serpentard', 'Moldu', 'Crakmol') DEFAULT 'Moldu',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user'] = $email; // Stocke l'email en session
         $_SESSION['username'] = $result['username']; // Stocke le nom d'utilisateur en session
         $_SESSION['user_id'] = $result['user_id']; // Stocke l'id de l'utilisateur en session
+        $_SESSION['house'] = $result['house']; // Stocke la maison de l'utilisateur en session
         header("Location: index.php"); // Redirige vers l'accueil
         exit();
     } else {

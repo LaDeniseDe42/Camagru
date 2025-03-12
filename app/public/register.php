@@ -20,9 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
     $password2 = $_POST['confirm_password'];
+    $house = $_POST['house'];
     
 
-    $result = $authController->register($username, $email, $password, $password2);
+    $result = $authController->register($username, $email, $password, $password2, $house);
     if ($result['status'] === 'success') {
         $successMessage = "Un email de confirmation a été envoyé. Veuillez vérifier votre boîte de réception pour confirmer votre compte.";
     // Rediriger vers login.php avec le message passé en paramètre dans l'URL

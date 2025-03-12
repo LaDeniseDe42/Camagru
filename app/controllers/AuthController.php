@@ -10,7 +10,7 @@ class AuthController {
         $this->database = new Database();
     }
     
-    public function register($username, $email, $password, $password2) {
+    public function register($username, $email, $password, $password2, $house) {
         if (empty($username) || empty($email) || empty($password) || empty($password2)) {
             return ['status' => 'error', 'message' => "Tous les champs sont obligatoires."];
         }
@@ -35,6 +35,9 @@ class AuthController {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return ['status' => 'error', 'message' => "Email invalide."];
         }
+        if (!in_array($house, ['gryffondor', 'poufsouffle', 'serdaigle', 'serpentard', 'Moldu', 'Crakmol'])) {
+            return ['status' => 'error', 'message' => "Maison invalide."];
+        }
         $con = $this->database->getConnection();
         $query = "SELECT * FROM users WHERE email = :email";
         $stmt = $con->prepare($query);
@@ -49,7 +52,7 @@ class AuthController {
         $token = bin2hex(random_bytes(50));
 
         $userModel = new User();
-        $isRegistered = $userModel->createUser($username, $email, $hashedPassword, $con, $token);
+        $isRegistered = $userModel->createUser($username, $email, $hashedPassword, $house, $con, $token);
     
         if ($isRegistered) {
             // Envoyer l'email de confirmation
@@ -105,7 +108,7 @@ class AuthController {
     $token = bin2hex(random_bytes(50));
     // $expires = date("Y-m-d H:i:s", strtotime("+1 hour")); // Expire après 1 heure
 
-    // Mettre à jour la base de données avec le token et son expiration
+    // Mettre à jour la base de données avec le token
     $query = "UPDATE users SET confirmation_token = :token WHERE email = :email";
     $stmt = $con->prepare($query);
     $stmt->bindParam(':token', $token);
@@ -243,7 +246,8 @@ class AuthController {
                 'status' => 'success',
                 'message' => "Connexion réussie !",
                 'username' => $user['username'], // Récupère le nom d'utilisateur
-                'user_id' => $user['id'] // Récupère l'id de l'utilisateur
+                'user_id' => $user['id'], // Récupère l'id de l'utilisateur
+                'house' => $user['house'] // Récupère la maison de l'utilisateur
             ];
         } else {
             return ['status' => 'error', 'message' => "Mot de passe incorrect."];

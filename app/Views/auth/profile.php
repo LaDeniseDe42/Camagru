@@ -1,32 +1,75 @@
-<h2>Mon Profil</h2>
-    <?php if (isset($_GET['message']) && $_GET['message'] == 'success') echo "<p style='color: green;'>Profil mis à jour !</p>"; ?>
-    <?php if (isset($_GET['message']) && $_GET['message'] == 'password_updated') echo "<p style='color: green;'>Mot de passe mis à jour !</p>"; ?>
-    
-    <form method="POST">
-        <label>Nom d'utilisateur:</label>
-        <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
-        
-        <label>Email:</label>
-        <input type="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
-        
-        <label>Maison Harry Potter:</label>
-        <select name="house" onchange="changeTheme(this.value)">
-            <option value="gryffindor" <?php if ($user['house'] == 'gryffindor') echo 'selected'; ?>>Gryffondor</option>
-            <option value="hufflepuff" <?php if ($user['house'] == 'hufflepuff') echo 'selected'; ?>>Poufsouffle</option>
-            <option value="ravenclaw" <?php if ($user['house'] == 'ravenclaw') echo 'selected'; ?>>Serdaigle</option>
-            <option value="slytherin" <?php if ($user['house'] == 'slytherin') echo 'selected'; ?>>Serpentard</option>
-        </select>
-        
-        <button type="submit">Mettre à jour</button>
-    </form>
 
-    <h3>Changer le mot de passe</h3>
-    <form method="POST">
-        <label>Nouveau mot de passe:</label>
-        <input type="password" name="password" required>
-        
-        <label>Confirmer le mot de passe:</label>
-        <input type="password" name="confirm_password" required>
-        
-        <button type="submit">Changer</button>
-    </form>
+<div class=<?php echo $sub_house ?>>
+    <h2>Mon Profil</h2>
+    <br>
+    <h3>Informations personnelles</h3>
+    <br><br>
+    <p>Nom d'utilisateur: <strong><?= htmlspecialchars($username); ?></strong>
+    <button onclick="openModal('userModal')">Modifier</button>
+</p>
+<br>
+<p>Email: <strong><?= htmlspecialchars($user_mail); ?></strong>
+<button onclick="openModal('emailModal')">Modifier</button>
+</p>
+<br>
+<p>Maison: <strong><?= htmlspecialchars($house); ?></strong>
+<button onclick="openModal('houseModal')">Modifier</button>
+</p>
+<?php if (!empty($successMessage)) : ?>
+    <div class="error-container">
+        <p class="success-message"><?= htmlspecialchars($successMessage); ?></p>
+    </div>
+<?php endif; ?>
+
+<?php if (!empty($errorMessage)) : ?>
+    <div class="error-container">
+        <p class="error-message"><?= htmlspecialchars($errorMessage); ?></p>
+    </div>
+<?php endif; ?>
+<?php if ($message) : ?>
+    <div class="error-container">
+        <p class="success-message"><?= htmlspecialchars($message); ?></p>
+    </div>
+<?php endif; ?>
+</div>
+
+<div id="houseModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2 id="modalTitle">Modifier la maison</h2>
+        <form action="profile.php" method="post">
+            <select name="house" id="modalInput">
+                <option value="Gryffondor">Gryffondor</option>
+                <option value="Poufsouffle">Poufsouffle</option>
+                <option value="Serdaigle">Serdaigle</option>
+                <option value="Serpentard">Serpentard</option>
+                <option value="Crakmol">Crakmol</option>
+                <option value="Moldu">Moldu</option>
+            </select>
+        <button type="submit" name="update_house">Modifier</button>
+        </form>
+        <button onclick="closeModal()">Fermer</button>
+    </div>
+</div>
+
+<div id="userModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2 id="modalTitle">Modifier l'username</h2>
+        <form action="profile.php" method="post">
+            <input type="text" name="username" id="modalInput" placeholder="Nouveau nom d'utilisateur">
+            <button type="submit" name="update_username">Modifier</button>
+        </form>
+        <button onclick="closeModal()">Fermer</button>
+    </div>
+</div>
+
+
+<div id="emailModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2 id="modalTitle">Modifier l'email</h2>
+        <form action="profile.php" method="post">
+            <input type="text" name="email" id="modalInput" placeholder="Nouvel email">
+        <button type="submit" name="update_email">Modifier</button>
+        </form>
+        <button onclick="closeModal()">Fermer</button>
+    </div>
+</div>

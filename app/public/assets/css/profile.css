@@ -1,4 +1,4 @@
-/* Styles de base */
+/* === Général === */
 * {
   margin: 0;
   padding: 0;
@@ -6,123 +6,261 @@
   font-family: "Arial", sans-serif;
 }
 
-/* Mise en page générale */
-body {
+/* === Thèmes des maisons === */
+.Gryffondor {
+  background-image: url("../img/GRI.jpeg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: #d3a625;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  color: #333;
-  transition: background-color 0.5s ease;
 }
 
+.Poufsouffle {
+  /* background-color: #ffdb58; */
+  background-image: url("../img/POU.jpeg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: #372e29;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.Serdaigle {
+  background-image: url("../img/SERD.jpeg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: #946b2d;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.Serpentard {
+  background-image: url("../img/SER.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: #aaaaaa;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.Moldu {
+  background-image: url("../img/MOL.webp");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: #ff6600;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.Crakmol {
+  background-image: url("../img/CRA.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: #c0c0c0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* === Thèmes des maisons === */
+.gryffondor {
+  background-color: #7f0909;
+  opacity: 90%;
+  color: #d3a625;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.poufsouffle {
+  background-color: #ffdb58;
+  opacity: 90%;
+  color: #372e29;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.serdaigle {
+  background-color: #0e1a40;
+  color: #946b2d;
+  opacity: 90%;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.serpentard {
+  background-color: #1a472a;
+  opacity: 90%;
+  color: #aaaaaa;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.moldu {
+  background-color: #3d3d3d;
+  opacity: 90%;
+  color: #ff6600;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.crakmol {
+  background-color: #4b0082;
+  color: #c0c0c0;
+  opacity: 90%;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* === Container principal === */
 .container {
   background-color: white;
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 90%;
-  max-width: 400px;
+  max-width: 500px;
   text-align: center;
+  margin-top: 20px;
 }
 
-h2 {
-  margin-bottom: 20px;
-}
-
-/* Champs de formulaire */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-select {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-  font-size: 16px;
-}
-
-input:focus,
-select:focus {
-  border-color: #4caf50;
-  outline: none;
-}
-
-/* Bouton */
+/* === Boutons === */
 button {
-  width: 100%;
-  padding: 12px;
-  background-color: #4caf50;
-  color: white;
+  padding: 10px;
   border: none;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: 0.3s;
 }
 
 button:hover {
-  background-color: #45a049;
+  opacity: 0.8;
 }
 
-/* Messages de confirmation */
-.success-message,
-.error-message {
-  padding: 10px;
-  border-radius: 4px;
-  font-size: 14px;
-  margin-top: 10px;
+.gryffondor button {
+  background-color: #d3a625;
+  color: #7f0909;
+}
+.poufsouffle button {
+  background-color: #372e29;
+  color: #ffdb58;
+}
+.serdaigle button {
+  background-color: #946b2d;
+  color: #0e1a40;
+}
+.serpentard button {
+  background-color: #aaaaaa;
+  color: #1a472a;
+}
+.molu button {
+  background-color: #ff6600;
+  color: #3d3d3d;
+}
+.crakmol button {
+  background-color: #c0c0c0;
+  color: #4b0082;
+}
+/* === Modals === */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
   width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
   max-width: 400px;
   text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-.success-message {
-  background-color: #e6ffe6;
-  border: 1px solid green;
-  color: green;
+.modal-footer {
+  margin-top: 10px;
 }
 
-.error-message {
-  background-color: #ffe6e6;
-  border: 1px solid red;
-  color: red;
-}
-
-/* Thèmes des maisons de Harry Potter */
-.gryffindor {
-  background-color: #7f0909;
-  color: #d3a625;
-}
-
-.hufflepuff {
-  background-color: #ffdb58;
-  color: #372e29;
-}
-
-.ravenclaw {
-  background-color: #0e1a40;
-  color: #946b2d;
-}
-
-.slytherin {
-  background-color: #1a472a;
-  color: #aaaaaa;
-}
-
-/* Footer */
-footer {
-  background-color: #333;
+.modal-close {
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  background-color: red;
   color: white;
-  width: 100%;
-  padding: 10px;
-  text-align: center;
-  font-size: 14px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+/* === Animation === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

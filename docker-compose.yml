@@ -18,10 +18,12 @@ services:
     container_name: php_server
     volumes:
       - ./app:/var/www/html
+      - ./gallery:/var/www/html/gallery
     env_file:
       - .env
     networks:
       - app_network
+    entrypoint: /bin/bash -c "chown -R www-data:www-data /var/www/html/gallery && chmod -R 775 /var/www/html/gallery && php-fpm"
 
   mysql:
     image: mysql:8

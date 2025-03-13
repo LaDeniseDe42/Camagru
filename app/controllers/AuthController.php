@@ -46,6 +46,14 @@ class AuthController {
         if ($stmt->rowCount() > 0) {
             return ['status' => 'error', 'message' => "Cet email est déjà utilisé."];
         }
+        //verifier si l'username est bien unique
+        $query = "SELECT * FROM users WHERE username = :username";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            return ['status' => 'error', 'message' => "Cet username est déjà utilisé."];
+        }
     
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         //avant de creer un nouvel user, demander une confirmation par mail
@@ -106,8 +114,6 @@ class AuthController {
 
     // Générer un token sécurisé
     $token = bin2hex(random_bytes(50));
-    // $expires = date("Y-m-d H:i:s", strtotime("+1 hour")); // Expire après 1 heure
-
     // Mettre à jour la base de données avec le token
     $query = "UPDATE users SET confirmation_token = :token WHERE email = :email";
     $stmt = $con->prepare($query);
@@ -219,27 +225,49 @@ class AuthController {
         }
     }
 
-    public function login($email, $password) {
+    public function login($emailorUsername, $password) {
         // Validation basique
-        if (empty($email) || empty($password)) {
+        if (empty($emailorUsername) || empty($password)) {
             return ['status' => 'error', 'message' => "Tous les champs sont obligatoires."];
         }
-
-        // Vérifie si l'email existe
-        $con = $this->database->getConnection();
-        $query = "SELECT * FROM users WHERE email = :email";
-        $stmt = $con->prepare($query);
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$user) {
-            return ['status' => 'error', 'message' => "Cet email n'existe pas."];
+        $email = null;
+        $username = null;
+        //verifier si emailOrUsername est un email
+        if (filter_var($emailorUsername, FILTER_VALIDATE_EMAIL)) {
+            $email = $emailorUsername;
+        } else {
+            $username = $emailorUsername;
         }
-        if ($user['is_confirmed'] == 0) {
-            return ['status' => 'error', 'message' => "Veuillez confirmer votre email avant de vous connecter."];
+        if ($email !== null) {
+            // Vérifie si l'email existe
+            $con = $this->database->getConnection();
+            $query = "SELECT * FROM users WHERE email = :email";
+            $stmt = $con->prepare($query);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$user) {
+                return ['status' => 'error', 'message' => "Cet email n'existe pas."];
+            }
+            if ($user['is_confirmed'] == 0) {
+                return ['status' => 'error', 'message' => "Veuillez confirmer votre email avant de vous connecter."];
+            }    
         }
-
+        else if ($username !== null) {
+            // Vérifie si l'username existe
+            $con = $this->database->getConnection();
+            $query = "SELECT * FROM users WHERE username = :username";
+            $stmt = $con->prepare($query);
+            $stmt->bindParam(':username', $username);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$user) {
+                return ['status' => 'error', 'message' => "Cet username n'existe pas."];
+            }
+            if ($user['is_confirmed'] == 0) {
+                return ['status' => 'error', 'message' => "Veuillez confirmer votre email avant de vous connecter."];
+            }    
+        }
         // Vérifie si le mot de passe est correct
         if (password_verify($password, $user['password'])) {
             return [
@@ -247,7 +275,8 @@ class AuthController {
                 'message' => "Connexion réussie !",
                 'username' => $user['username'], // Récupère le nom d'utilisateur
                 'user_id' => $user['id'], // Récupère l'id de l'utilisateur
-                'house' => $user['house'] // Récupère la maison de l'utilisateur
+                'house' => $user['house'], // Récupère la maison de l'utilisateur
+                'email' => $user['email'] // Récupère l'email de l'utilisateur
             ];
         } else {
             return ['status' => 'error', 'message' => "Mot de passe incorrect."];

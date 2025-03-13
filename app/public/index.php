@@ -5,7 +5,7 @@ session_start();
 // Vérifie si un utilisateur est connecté
 $is_logged_in = isset($_SESSION['user']);
 //recuperer l'username de l'utilisateur s'il est connecté
-$user_mail = $_SESSION['user'] ?? null;
+$user_mail = $_SESSION['user_mail'] ?? null;
 //recuperer l'id de l'utilisateur s'il est connecté
 $user_id = $_SESSION['user_id'] ?? null;
 //recuperer l'email de l'utilisateur s'il est connecté

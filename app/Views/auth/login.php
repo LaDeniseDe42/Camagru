@@ -1,6 +1,6 @@
 <div class="container">
     <form action="login.php" method="post">
-        <input type="email" name="email" placeholder="Email" required>
+        <input type="text" name="email" placeholder="Email or Username" required>
         <input type="password" name="password" placeholder="Mot de passe" required>
         <button type="submit">Se connecter</button>
     </form>

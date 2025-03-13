@@ -16,12 +16,13 @@ $message = "";
 // Vérifie si le formulaire a été soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupère les données du formulaire
-    $email = $_POST['email'];
+    $emailOrUsername= $_POST['email'];
     $password = $_POST['password'];
     
-    $result = $authController->login($email, $password);
+    $result = $authController->login($emailOrUsername, $password);
     if ($result['status'] === 'success') {
-        $_SESSION['user'] = $email; // Stocke l'email en session
+        $_SESSION['user'] = $emailOrUsername; // Stocke l'email ou l'username en session
+        $_SESSION['email'] = $result['email']; // Stocke l'email en session
         $_SESSION['username'] = $result['username']; // Stocke le nom d'utilisateur en session
         $_SESSION['user_id'] = $result['user_id']; // Stocke l'id de l'utilisateur en session
         $_SESSION['house'] = $result['house']; // Stocke la maison de l'utilisateur en session

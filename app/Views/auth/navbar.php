@@ -8,6 +8,7 @@
                 <li><a href="profile.php">Mon Profil A FAIRE</a></li>
                 <li><a href="gallery.php">Galerie A FAIRE</a></li>
                 <li><a href="logout.php">Se déconnecter</a></li>
+                <li><a href="publicWall.php">Mur public</a></li>
             <?php else: ?>
                 <!-- Liens visibles lorsque l'utilisateur n'est pas connecté -->
                  <li><a href="index.php">Accueil</a></li>

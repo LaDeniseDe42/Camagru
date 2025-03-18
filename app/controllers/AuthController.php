@@ -59,8 +59,9 @@ class AuthController {
         //avant de creer un nouvel user, demander une confirmation par mail
         $token = bin2hex(random_bytes(50));
 
-        $userModel = new User();
-        $isRegistered = $userModel->createUser($username, $email, $hashedPassword, $house, $con, $token);
+        $userModel = new User($con);
+        $isRegistered = $userModel->createUser($username, $email, $hashedPassword, $house, $token);
+        error_log($isRegistered);
     
         if ($isRegistered) {
             // Envoyer l'email de confirmation
@@ -100,7 +101,6 @@ class AuthController {
     }
 
     $con = $this->database->getConnection();
-
     // Vérifier si l'email existe
     $query = "SELECT * FROM users WHERE email = :email";
     $stmt = $con->prepare($query);

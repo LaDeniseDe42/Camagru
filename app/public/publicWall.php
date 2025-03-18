@@ -1,22 +1,25 @@
 <?php
 require_once __DIR__ . "/../config/database.php";
-require_once __DIR__ . "/../models/User.php"; // Inclure la classe User
+require_once __DIR__ . "/../config/session.php";
+require_once __DIR__ . "/../controllers/AuthController.php";
 
-session_start(); // Démarrer la session pour vérifier si l'utilisateur est connecté
+//recupere les infos de session
+$user = $_SESSION['user'];
+$email = $_SESSION['email'];
+$username =$_SESSION['username'];
+$user_id = $_SESSION['user_id'];
+$house = $_SESSION['house'];
+$sub_house = strtolower($house);
 
-// Vérifier si l'utilisateur est connecté (en fonction de ta gestion des sessions)
-if (!isset($_SESSION['user_id'])) {
-    // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+
+
+if (!isLoggedIn())
+{
     header("Location: login.php");
     exit();
 }
 
-// Créer une instance de la classe User pour récupérer la connexion
-$user = new User($_SESSION['user_id']); // Assure-toi que $_SESSION['user_id'] contient l'ID de l'utilisateur connecté
-
-// Obtenir la connexion PDO depuis l'instance de l'utilisateur
-$pdo = $user->getConnection();
-//recupere la dbConnection de l'user
+$message = "";
 
 
 // Gérer l'upload de la photo
@@ -64,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo'])) {
     <title>Mur Public</title>
     <link rel="stylesheet" href="/../assets/css/profile.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
+    <link rel="stylesheet" href="/../assets/css/profile.css">
 </head>
 <body class="<?= htmlspecialchars($house) ?>">
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>

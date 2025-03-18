@@ -101,9 +101,21 @@ class ChangeInfo
         if (!$this->basicVerif($password) || !$this->basicVerif($newPassword)) {
             return ['status' => 'error', 'message' => "Veuillez renseigner tous les champs."];
         }
+        if ($password !== $newPassword) {
+            return ['status' => 'error', 'message' => "Les mots de passe ne correspondent pas."];
+        }
+        if (empty($password)) {
+            return ['status' => 'error', 'message' => "Le mot de passe est requis."];
+        }
+        if (strlen($password) < 6) {
+            return ['status' => 'error', 'message' => "Le mot de passe doit contenir au moins 6 caractères."];
+        }
+        if (!preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password)) {
+            return ['status' => 'error', 'message' => "Le mot de passe doit contenir au moins une lettre majuscule et un chiffre."];
+        }
 
         // Hachage du mot de passe
-        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         $query = "UPDATE users SET password = :password WHERE id = :id";
         $stmt = $this->con->prepare($query);

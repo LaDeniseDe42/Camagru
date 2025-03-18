@@ -2,20 +2,43 @@
 require_once __DIR__ . "/../config/database.php";
 require_once __DIR__ . "/../config/session.php";
 require_once __DIR__ . "/../controllers/AuthController.php";
+require_once __DIR__ . "/../controllers/PhotoController.php";
 
-$authController = new AuthController();
-requireLogin();
 
-$user_id = $_SESSION['user_id'] ?? null;
-$house = $_SESSION['house'] ?? "Moldu";
+if (!isLoggedIn())
+{
+    header("Location: login.php");
+    exit();
+}
+//recupere les infos de session
+$user = $_SESSION['user'];
+$email = $_SESSION['email'];
+$username =$_SESSION['username'];
+$user_id = $_SESSION['user_id'];
+$house = $_SESSION['house'];
+$sub_house = strtolower($house);
+
 $message = "";
+$dbConnection = new Database();
+$con = $dbConnection->getConnection();
+$photoController = new PhotoController($con);
+$photos = $photoController->getUserPhotos($_SESSION['user_id']);
+$true_photo = $photoController->getAllImgOfgalleryUserId($user_id);
 
-// Récupération des photos de l'utilisateur connecté
-$photos = [];
-if ($user_id) {
-    $stmt = $pdo->prepare("SELECT filename, filepath, uploaded_at FROM photos WHERE user_id = ? ORDER BY uploaded_at DESC");
-    $stmt->execute([$user_id]);
-    $photos = $stmt->fetchAll();
+// var_dump($_POST);
+// var_dump($_FILES);
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])){
+    $photoController->uploadPhoto($user_id, $_FILES['file']);
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['photo_id'])) {
+    if ($photoController->deleteUserPhoto($_POST['photo_id'], $user_id)) {
+        $message = "Photo supprimée avec succès !";
+    }if (file_exists($photoController->deleteThisImg($user_id, $_POST['photo_id']))) {
+        $message = "Photo supprimée avec succès !";
+    } else {
+        $message = "Échec de la suppression.";
+    }
 }
 ?>
 
@@ -28,29 +51,7 @@ if ($user_id) {
 </head>
 <body class="<?= htmlspecialchars($house) ?>">
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
-
-    <!-- Affichage des messages de succès ou d'erreur -->
-    <?php if (isset($_GET['message'])) : ?>
-        <div class="error-container">
-            <p class="<?= ($_GET['status'] ?? 'error') === 'success' ? 'success-message' : 'error-message' ?>">
-                <?= htmlspecialchars($_GET['message']); ?>
-            </p>
-        </div>
-    <?php endif; ?>
-
-    <h2>Vos Photos</h2>
-    <div class="gallery">
-        <?php if (!empty($photos)) : ?>
-            <?php foreach ($photos as $photo) : ?>
-                <div class="photo-card">
-                    <img src="<?= htmlspecialchars($photo['filepath']); ?>" alt="Photo de l'utilisateur">
-                    <p>Ajoutée le : <?= htmlspecialchars($photo['uploaded_at']); ?></p>
-                </div>
-            <?php endforeach; ?>
-        <?php else : ?>
-            <p>Aucune photo trouvée.</p>
-        <?php endif; ?>
-    </div>
+    <?php include __DIR__ . '/../Views/auth/gallery.php'; ?>
 
     <footer></footer>
     <script src="assets/js/modal.js"></script>

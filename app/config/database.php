@@ -19,7 +19,7 @@ class Database {
                 $this->username,
                 $this->password
             );
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // permet de throw les eventuels problemes
         } catch (PDOException $exception) {
             die("Erreur de connexion à la base de données: " . $exception->getMessage());
         }

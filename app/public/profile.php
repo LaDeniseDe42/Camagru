@@ -46,22 +46,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_house'])) {
         $house = $_POST['house'];
         $result = $changeInfo->updateHouse($house);
-        //REGARDER SI LE status du MESSAGE CONTENU DANS RESULT EST UN SUCCES OU UNE ERREUR
-        // $result['status'] === 'success' ? $successMessage = $result['message'] : $errorMessage = $result['message'];
         majInfo();
-        header("Location: profile.php?message=" . $result['message']);
+        header("Location: profile.php?message=" . $result['message'] . "&status=" . $result['status']);
         exit();
     } elseif (isset($_POST['update_username'])) {
         $username = $_POST['username'];
         $result = $changeInfo->updateUsername($username);
         majInfo();
-        header("Location: profile.php?message=" . $result['message']);
+        header("Location: profile.php?message=" . $result['message'] . "&status=" . $result['status']);
         exit();
     } elseif (isset($_POST['update_email'])) {
         $email = $_POST['email'];
         $result = $changeInfo->updateEmail($email);
         majInfo();
-        header("Location: profile.php?message=" . $result['message']);
+        header("Location: profile.php?message=" . $result['message'] . "&status=" . $result['status']);
+        exit();
+    } elseif (isset($_POST['update_password'])) {
+        $password = $_POST['password'];
+        $password2 = $_POST['confirm_password'];
+        $result = $changeInfo->updatePassword($password, $password2);
+        majInfo();
+        header("Location: profile.php?message=" . $result['message'] . "&status=" . $result['status']);
         exit();
     }
 
@@ -79,17 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="<?php echo $house ?>">
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
     <?php include __DIR__ . "/../Views/auth/profile.php"; ?>
-<?php if (isset($_GET['message'])) : ?>
-        <?php
-        $message = $_GET['message'];
-        $status = $_GET['status'] ?? 'error';
-        ?>
-        <div class="error-container">
-            <p class="<?= $status === 'success' ? 'success-message' : 'error-message' ?>" style="font-weight: bold; font-size: 1.2em;">
-            <?= htmlspecialchars($message); ?>
-            </p>
-        </div>
-    <?php endif; ?>
     <footer>
     </footer>
     <script src="assets/js/modal.js"></script>

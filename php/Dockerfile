@@ -3,21 +3,12 @@ FROM php:8.2-fpm
 # Installer sendmail et d'autres dépendances
 RUN apt-get update && apt-get install -y sendmail msmtp
 
-# Créer le dossier gallery si nécessaire et donner les permissions adéquates
-RUN mkdir -p /var/www/html/gallery && \
-    chown -R www-data:www-data /var/www/html/gallery && \
-    chmod -R 775 /var/www/html/gallery
+# Créer le dossier gallery dans public et donner les permissions adéquates
+RUN mkdir -p /gallery && \
+    chown -R www-data:www-data /gallery && \
+    chmod -R 775 /gallery
 
 RUN chmod 1777 /tmp
-
-# Créer le dossier gallery si nécessaire et donner les permissions adéquates
-RUN mkdir -p /var/www/html/gallery && \
-    chown -R www-data:www-data /var/www/html/gallery && \
-    chmod -R 775 /var/www/html/gallery
-
-# Assurez-vous que le dossier /tmp ait les bonnes permissions
-RUN chmod 1777 /tmp
-
 
 # Installer les extensions PHP nécessaires
 RUN docker-php-ext-install pdo pdo_mysql mysqli

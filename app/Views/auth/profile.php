@@ -15,29 +15,25 @@
 <p>Maison: <strong><?= htmlspecialchars($house); ?></strong>
 <button onclick="openModal('houseModal')">Modifier</button>
 </p>
-<?php if (!empty($successMessage)) : ?>
-    <div class="error-container">
-        <p class="success-message"><?= htmlspecialchars($successMessage); ?></p>
-    </div>
-<?php endif; ?>
-
-<?php if (!empty($errorMessage)) : ?>
-    <div class="error-container">
-        <p class="error-message"><?= htmlspecialchars($errorMessage); ?></p>
-    </div>
-<?php endif; ?>
-<?php if ($message) : ?>
-    <div class="error-container">
-        <p class="success-message"><?= htmlspecialchars($message); ?></p>
-    </div>
-<?php endif; ?>
+<br>
+<p>Mot de passe: <strong>********</strong>
+<button onclick="openModal('mdpModal')">Modifier</button>
+</p>
+<br>
+</div>
+<div class="messageSOrF">
+    <?php if (isset($_GET['message'])) : ?>
+        <p class="<?= ($_GET['status'] ?? 'error') === 'success' ? 'success-message' : 'error-message' ?>">
+            <?= htmlspecialchars($_GET['message']); ?>
+        </p>
+    <?php endif; ?>
 </div>
 
 <div id="houseModal" class="modal" style="display: none;">
     <div class="modal-content">
         <h2 id="modalTitle">Modifier la maison</h2>
         <form action="profile.php" method="post">
-            <select name="house" id="modalInput">
+            <select name="house" id="modalHouse">
                 <option value="Gryffondor">Gryffondor</option>
                 <option value="Poufsouffle">Poufsouffle</option>
                 <option value="Serdaigle">Serdaigle</option>
@@ -55,7 +51,7 @@
     <div class="modal-content">
         <h2 id="modalTitle">Modifier l'username</h2>
         <form action="profile.php" method="post">
-            <input type="text" name="username" id="modalInput" placeholder="Nouveau nom d'utilisateur">
+            <input type="text" name="username" id="modalUser" placeholder="Nouveau nom d'utilisateur">
             <button type="submit" name="update_username">Modifier</button>
         </form>
         <button onclick="closeModal()">Fermer</button>
@@ -67,9 +63,20 @@
     <div class="modal-content">
         <h2 id="modalTitle">Modifier l'email</h2>
         <form action="profile.php" method="post">
-            <input type="text" name="email" id="modalInput" placeholder="Nouvel email">
+            <input type="text" name="email" id="modalEmail" placeholder="Nouvel email">
         <button type="submit" name="update_email">Modifier</button>
         </form>
         <button onclick="closeModal()">Fermer</button>
     </div>
 </div>
+
+<div id="mdpModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2 id="modalTitle">Modifier le mot de passe</h2>
+        <form action="profile.php" method="post">
+            <input type="password" name="password" id="modalMdp" placeholder="Nouveau mot de passe">
+            <input type="password" name="confirm_password" id="modalInput" placeholder="Confirmer le mot de passe">
+        <button type="submit" name="update_password">Modifier</button>
+        </form>
+        <button onclick="closeModal()">Fermer</button>
+    </div>

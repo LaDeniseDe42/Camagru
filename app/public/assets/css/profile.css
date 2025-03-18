@@ -177,6 +177,23 @@
   margin-top: 20px;
 }
 
+/* === css pour 'success-message' : 'error-message' === */
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
 /* === Boutons === */
 button {
   padding: 10px;

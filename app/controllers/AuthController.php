@@ -80,6 +80,13 @@ class AuthController {
         }
     }
 
+    public function giveinfoConcernThisUser($user_id) {
+        $userModel = new User($this->database->getConnection());
+        $this_user = $userModel->userExist($user_id);
+        return $this_user;
+    }
+
+
     public function confirmEmail($token) {
         $con = $this->database->getConnection();
         $query = "UPDATE users SET is_confirmed = 1 WHERE confirmation_token = :token";

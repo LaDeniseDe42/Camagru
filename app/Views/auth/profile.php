@@ -1,12 +1,12 @@
 
 <div class=<?php echo $sub_house ?>>
-    <h2>Mon Profil</h2>
-    <br>
+<h2>Mon Profil</h2>
+<br>
     <h3>Informations personnelles</h3>
     <br><br>
     <p>Nom d'utilisateur: <strong><?= htmlspecialchars($username); ?></strong>
     <button onclick="openModal('userModal')">Modifier</button>
-</p>
+    </p>
 <br>
 <p>Email: <strong><?= htmlspecialchars($user_mail); ?></strong>
 <button onclick="openModal('emailModal')">Modifier</button>
@@ -79,4 +79,4 @@
         <button type="submit" name="update_password">Modifier</button>
         </form>
         <button onclick="closeModal()">Fermer</button>
-    </div>
+</div>

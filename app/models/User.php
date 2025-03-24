@@ -25,6 +25,23 @@ class User {
 
         return $stmt->execute();
     }
+
+    public function userExist($user_id) {
+        $query = "SELECT * FROM users WHERE id = :id";
+        $stmt = $this->dbConnection->prepare($query);
+        $stmt->bindParam(':id', $user_id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC); // Retourne l'utilisateur S'IL existe
+    }
+
+    public function getUsername($userId) {
+        $query = "SELECT username FROM users WHERE id = :id";
+        $stmt = $this->dbConnection->prepare($query);
+        $stmt->bindParam(':id', $userId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['username'] : null;
+    }
 }
 
 ?>

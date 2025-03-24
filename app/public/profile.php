@@ -7,13 +7,12 @@ $authController = new AuthController();
 $message = "";
 
 requireLogin();
-$house = $_SESSION['house'] ?? "Moldu";
-
 $user_mail = $_SESSION['user'] ?? null;
 $user_id = $_SESSION['user_id'] ?? null;
 $username = $_SESSION['username'] ?? null;
 $house = $_SESSION['house'] ?? "Moldu";
-$sub_house = whatSubHouse($house);
+$sub_house = strtolower($house);
+$poufsouffle ="#ffdb58";
 
 function majInfo()
 {
@@ -21,24 +20,7 @@ function majInfo()
     $user_id = $_SESSION['user_id'] ?? null;
     $username = $_SESSION['username'] ?? null;
     $house = $_SESSION['house'] ?? "Moldu";
-    $sub_house = whatSubHouse($house);
-}
-
-function whatSubHouse($house)
-{
-    if ($house === "Gryffondor") {
-        return "gryffondor";
-    } elseif ($house === "Poufsouffle") {
-        return "poufsouffle";
-    } elseif ($house === "Serdaigle") {
-        return "serdaigle";
-    } elseif ($house === "Serpentard") {
-        return "serpentard";
-    } elseif ($house === "Crakmol") {
-        return "crakmol";
-    } else {
-        return "moldu";
-    }
+    $sub_house = strtolower($house);
 }
 
 $changeInfo = new ChangeInfo();
@@ -81,11 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="/../assets/css/profile.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
 </head>
-<body class="<?php echo $house ?>">
+<body class="<?= htmlspecialchars($house) ?>">
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
-    <?php include __DIR__ . "/../Views/auth/profile.php"; ?>
-    <footer>
-    </footer>
+    <?php include __DIR__ . '/../Views/auth/profile.php'; ?>
+
+    <footer></footer>
     <script src="assets/js/modal.js"></script>
 </body>
 </html>

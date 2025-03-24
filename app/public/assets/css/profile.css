@@ -1,5 +1,6 @@
-/* === Général === */
-* {
+html,
+body {
+  height: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -9,160 +10,153 @@
 /* === Thèmes des maisons === */
 .Gryffondor {
   background-image: url("../img/GRI.jpeg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
   color: #d3a625;
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 100% auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  overflow-y: auto;
 }
 
 .Poufsouffle {
-  /* background-color: #ffdb58; */
   background-image: url("../img/POU.jpeg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
   color: #372e29;
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 100% auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  overflow-y: auto;
 }
 
 .Serdaigle {
   background-image: url("../img/SERD.jpeg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
   color: #946b2d;
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 100% auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  overflow-y: auto;
 }
 
 .Serpentard {
   background-image: url("../img/SER.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
   color: #aaaaaa;
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 100% auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  overflow-y: auto;
 }
 
 .Moldu {
   background-image: url("../img/MOL.webp");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
   color: #ff6600;
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 100% auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  overflow-y: auto;
 }
 
 .Crakmol {
   background-image: url("../img/CRA.jpg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
   color: #c0c0c0;
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 100% auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  overflow-y: auto;
 }
 
 /* === Thèmes des maisons === */
 .gryffondor {
   background-color: #7f0909;
-  opacity: 90%;
   color: #d3a625;
   padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 500px;
+  width: 60%;
   text-align: center;
   margin-top: 20px;
+  overflow-y: auto;
+  max-height: 75%;
 }
 
 .poufsouffle {
   background-color: #ffdb58;
-  opacity: 90%;
   color: #372e29;
   padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 500px;
+  width: 60%;
   text-align: center;
   margin-top: 20px;
+  overflow-y: auto;
+  max-height: 75%;
 }
 
 .serdaigle {
   background-color: #0e1a40;
   color: #946b2d;
-  opacity: 90%;
   padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 500px;
+  width: 60%;
   text-align: center;
   margin-top: 20px;
+  overflow-y: auto;
+  max-height: 75%;
 }
 
 .serpentard {
   background-color: #1a472a;
-  opacity: 90%;
   color: #aaaaaa;
   padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 500px;
+  width: 60%;
   text-align: center;
   margin-top: 20px;
+  overflow-y: auto;
+  max-height: 75%;
 }
 
 .moldu {
   background-color: #3d3d3d;
-  opacity: 90%;
   color: #ff6600;
   padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 500px;
+  width: 60%;
   text-align: center;
   margin-top: 20px;
+  overflow-y: auto;
+  max-height: 75%;
 }
 
 .crakmol {
   background-color: #4b0082;
   color: #c0c0c0;
-  opacity: 90%;
   padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 500px;
+  width: 60%;
   text-align: center;
   margin-top: 20px;
+  overflow-y: auto;
+  max-height: 75%;
 }
 
 /* === Container principal === */
@@ -171,13 +165,12 @@
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 500px;
+  width: 60%;
+  max-width: 90%;
   text-align: center;
   margin-top: 20px;
 }
 
-/* === css pour 'success-message' : 'error-message' === */
 .success-message {
   background-color: #d4edda;
   color: #155724;
@@ -224,7 +217,7 @@ button:hover {
   background-color: #aaaaaa;
   color: #1a472a;
 }
-.molu button {
+.moldu button {
   background-color: #ff6600;
   color: #3d3d3d;
 }
@@ -279,5 +272,77 @@ button:hover {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.col-4 {
+  width: 33.33%;
+  height: 33.33%;
+  padding: 10px;
+}
+
+.addPhoto {
+  width: 60%;
+  max-height: 70px;
+  max-width: 500px;
+  padding: 20px;
+  border-radius: 12px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+}
+
+.addPhoto:hover {
+  transform: scale(1.02);
+}
+
+.addPhoto form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.addPhoto label:hover {
+  background: #444;
+}
+
+.addPhoto input[type="file"] {
+  background: #07820d;
+}
+
+.addPhoto button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.addPhoto button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsiveness */
+@media screen and (max-width: 600px) {
+  .addPhoto {
+    width: 90%;
   }
 }

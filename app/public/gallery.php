@@ -39,28 +39,71 @@ if (isset($_GET['user']) && $_GET['user'] != $_SESSION['user_id']) {
 
 $photoController = new PhotoController($con);
 $true_photo = $photoController->getAllImgOfgalleryUserId($this_user_id);
+// var_dump($true_photo);
 
 
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])){
-    $result = $photoController->uploadPhoto($user_id, $_FILES['file']);
+    $result = $photoController->uploadPhoto($this_user_id, $_FILES['file']);
     if ($result === false) {
         header("Location: gallery.php?message=" . urlencode("Le format de fichier n est pas valide, les formats acceptés sont jpg, jpeg, png, gif"));
         exit();
     }
-    header("Location: gallery.php");
+    header("Location: gallery.php?user=$this_user_id");
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['photo_id'])) {
-    if ($photoController->deleteUserPhoto($_POST['photo_id'], $this_user_id)) {
-        $message = "Photo supprimée avec succès !";
-    }if (file_exists($photoController->deleteThisImg($this_user_id, $_POST['photo_id'] ))) {
-        header("Location: gallery.php");
+// if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
+//     if ($photoController->deleteUserPhoto($_POST['delete'], $this_user_id)) {
+//         if ($photoController->deleteThisImg($this_user_id, $_POST['delete'])) {
+//             header("Location: gallery.php?user=$this_user_id");
+//             exit();
+//         } else {
+//             header("Location: gallery.php?message=Echec de la suppression du fichier&status=error-message");
+//         }
+//     } else {
+//         header("Location: gallery.php?message=Echec de la suppression de la photo&status=error-message");
+//     }
+// }
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
+    if ($photoController->deletePhotoWithFile($_POST['delete'], $this_user_id)) {
+        header("Location: gallery.php?user=$this_user_id");
         exit();
     } else {
-        header("Location: gallery.php?message=" . $result['message'] . "&status=" . $result['status']);
+        header("Location: gallery.php?message=Echec de la suppression&status=error-message");
     }
 }
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['photo_id'])) {
+    $photo_id = $_POST['photo_id'];
+    $currentReaction = $photoController->getUserReaction($photo_id, $_SESSION['user_id']);
+
+    if (isset($_POST['like'])) {
+        if ($currentReaction === 'like') {
+            // Supprimer le like s'il est déjà actif
+            $photoController->removeReaction($photo_id, $_SESSION['user_id']);
+        } else {
+            // Ajouter un like
+            $photoController->likePhoto($photo_id, $_SESSION['user_id'], 'like');
+        }
+    } elseif (isset($_POST['dislike'])) {
+        if ($currentReaction === 'dislike') {
+            // Supprimer le dislike s'il est déjà actif
+            $photoController->removeReaction($photo_id, $_SESSION['user_id']);
+        } else {
+            // Ajouter un dislike
+            $photoController->likePhoto($photo_id, $_SESSION['user_id'], 'dislike');
+        }
+    }
+    //recuperer le user id de la photo
+    $user_id = $photoController->getUserIdByPhotoId($photo_id);
+    header("Location: gallery.php?user=$user_id");
+    exit();
+}
+
+
+
+
 ?>
 
 <!DOCTYPE html>

@@ -9,18 +9,38 @@
 
 <div class=<?php echo $this_sub_house; ?>>
 <h2>Galerie de <?= htmlspecialchars($this_username) ?></h2>
+
     <div class="row">
-        <?php foreach ($true_photo as $photo) : ?>
-            <div class="col-4">
-                    <img src="<?= htmlspecialchars($photo['filepath']) ?>" alt="<?= htmlspecialchars($photo['filename']) ?>" style="width:100%">
-                <?php if ($my_profile) : ?>
-                <form action="gallery.php" method="POST">
-                    <input type="hidden" name="photo_id" value="<?= htmlspecialchars($photo['filename']) ?>">
-                    <button type="submit">Supprimer</button>
-                </form>
-                <?php endif; ?>
-            </div>
-        <?php endforeach; ?>
+    <?php foreach ($true_photo as $photo) : ?>
+    <?php $userReaction = $photoController->getUserReaction($photo['photo_id'], $this_user_id); ?>
+    <div class="col-4">
+        <img src="<?= htmlspecialchars($photo['filepath']) ?>" alt="<?= htmlspecialchars($photo['filename']) ?>" style="width:100%">
+        
+        <?php if ($my_profile) : ?>
+        <form action="gallery.php" method="POST">
+            <input type="hidden" name="delete" value="<?= htmlspecialchars($photo['filename']) ?>">
+            <button type="submit">Supprimer</button>
+        </form>
+        <?php endif; ?>
+
+        <!-- Afficher les likes et dislikes -->
+        <form action="gallery.php" method="POST">
+            <input type="hidden" name="photo_id" value="<?= htmlspecialchars($photo['photo_id']) ?>">
+            
+            <button type="submit" name="like" 
+                class="<?= ($userReaction === 'like') ? 'active' : '' ?>">
+                👍 <?= htmlspecialchars($photo['nb_likes']) ?>
+            </button>
+            
+            <button type="submit" name="dislike" 
+                class="<?= ($userReaction === 'dislike') ? 'active' : '' ?>">
+                👎 <?= htmlspecialchars($photo['nb_dislikes']) ?>
+            </button>
+        </form>
+    </div>
+<?php endforeach; ?>
+
+
     </div>
 </div>
 

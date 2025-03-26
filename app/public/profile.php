@@ -62,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Profil</title>
     <link rel="stylesheet" href="/../assets/css/profile.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
+    <link rel="stylesheet" href="/../assets/css/modalProfile.css">
 </head>
 <body class="<?= htmlspecialchars($house) ?>">
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>

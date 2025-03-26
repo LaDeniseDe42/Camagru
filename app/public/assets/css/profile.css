@@ -225,7 +225,7 @@ button:hover {
   background-color: #c0c0c0;
   color: #4b0082;
 }
-/* === Modals === */
+/* === Modals ===
 .modal {
   display: none;
   position: fixed;
@@ -264,7 +264,7 @@ button:hover {
 }
 
 /* === Animation === */
-@keyframes fadeIn {
+/* @keyframes fadeIn {
   from {
     opacity: 0;
     transform: scale(0.9);
@@ -273,7 +273,7 @@ button:hover {
     opacity: 1;
     transform: scale(1);
   }
-}
+} */ 
 
 .row {
   display: flex;

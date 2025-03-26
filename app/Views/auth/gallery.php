@@ -52,5 +52,64 @@
         <button type="submit">Uploader</button>
     </form>
 </div>
+
+
+<!-- Bouton pour ouvrir la webcam -->
+<div class="<?php echo $this_sub_house; ?>">
+    <h2 class="title"> Prendre une photo avec la webcam </h2>
+    <button id="startCamButton">Prendre une photo avec la caméra</button>
+    <div id="cameraContainer" style="display:none;">
+        <video id="video" width="640" height="480" autoplay></video>
+        <button id="snap">Snap Photo</button>
+    </div>
+    
+<div id="photoModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h3>Prévisualisation de la photo</h3>
+        <img id="capturedImage" width="640" height="480" />
+        <form action="gallery.php" id="camForm" method="POST">
+            <input type="hidden" name="photocam" id="photocam">
+            <button type="submit" id="cToi">Uploader</button>
+            <button type="button" id="discard">Annuler</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- Style CSS pour le modal -->
+<style>
+    /* Style du modal */
+.modal {
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* S'assurer que le modal soit au-dessus de tout */
+    overflow: auto;
+}
+
+/* Contenu du modal */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 70%;
+    max-width: 700px;
+    overflow-y: auto;
+}
+
+/* Cacher la caméra quand on est dans le modal */
+#cameraContainer {
+    display: none;
+}
+
+</style>
+
 <?php endif; ?>
 

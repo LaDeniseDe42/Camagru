@@ -11,25 +11,74 @@ class PhotoController {
     }
 
     public function uploadPhoto($userId, $file) {
+        // var_dump("j'arrive bien ici");
         if (isset($file['name']) && $file['error'] == 0) {
+            return $this->handleFileUpload($userId, $file);
+        }
+        // Vérifiez si c'est une image en base64
+        if (is_string($file)) {
+            // Traitement des images en base64
+            return $this->handleBase64Upload($userId, $file);
+        }
+        return false; // Retourner false si les données sont invalides
+    }   
+        private function handleFileUpload($userId, $file) {
             $uploadDir = '/gallery/' . $userId . '/';
             if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0777, true); // Crée le dossier s'il n'existe pas
+                mkdir($uploadDir, 0777, true);
             }
-            
+        
             $filename = preg_replace("/[^a-zA-Z0-9_\.-]/", "_", basename($file['name']));
             $filepath = $uploadDir . $filename;
-            
+        
             if (!preg_match('/\.(jpg|jpeg|png|gif)$/i', $filename)) {
                 return false;
             }
-            
+        
             if (move_uploaded_file($file['tmp_name'], $filepath)) {
                 return $this->photoModel->addPhoto($userId, $filename, $filepath);
             }
+        
+            return false;
         }
-        return false;
-    }
+        
+        private function handleBase64Upload($userId, $base64Data) {
+            var_dump("DANS BASE64");
+            // Vérifier le format de l'image (jpg, jpeg, png, gif)
+            $imageData = base64_decode($base64Data);
+            if ($imageData === false) {
+                return false; // Erreur de décodage base64
+            }
+        
+            // Déterminer le type de l'image à partir de la chaîne base64
+            $imageType = null;
+            if (strpos($base64Data, 'jpeg') !== false) {
+                $imageType = 'jpeg';
+            } elseif (strpos($base64Data, 'png') !== false) {
+                $imageType = 'png';
+            } elseif (strpos($base64Data, 'gif') !== false) {
+                $imageType = 'gif';
+            }
+        
+            if (!$imageType) {
+                return false; // Format non valide
+            }
+            // Créer un nom de fichier unique
+            $filename = 'photo_' . time() . '.' . $imageType;
+            $uploadDir = '/gallery/' . $userId . '/';
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            // Définir le chemin du fichier
+            $filepath = $uploadDir . $filename;
+            // Enregistrer l'image décodée dans un fichier
+            if (file_put_contents($filepath, $imageData)) {
+                // Ajouter l'image à la base de données
+                return $this->photoModel->addPhoto($userId, $filename, $filepath);
+            }
+            return false; // Échec de l'enregistrement
+        }
+        
 
     public function getUserPhotos($userId) {
         return $this->photoModel->getPhotosByUser($userId);
@@ -49,7 +98,6 @@ class PhotoController {
         //Supprimer la photo de la base de données
         return $this->photoModel->deletePhoto($photoId, $userId);
     }
-    
 
     public function getAllImgOfgalleryUserId($user_id) {
         $directory = "/gallery/$user_id/";

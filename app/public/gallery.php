@@ -5,7 +5,6 @@ require_once __DIR__ . "/../controllers/AuthController.php";
 require_once __DIR__ . "/../controllers/PhotoController.php";
 $message = "";
 
-
 if (!isLoggedIn())
 {
     header("Location: login.php");
@@ -43,6 +42,7 @@ $true_photo = $photoController->getAllImgOfgalleryUserId($this_user_id);
 
 
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])){
+    var_dump($_FILES['file']); // Affiche les détails du fichier reçu
     $result = $photoController->uploadPhoto($this_user_id, $_FILES['file']);
     if ($result === false) {
         header("Location: gallery.php?message=" . urlencode("Le format de fichier n est pas valide, les formats acceptés sont jpg, jpeg, png, gif"));
@@ -52,18 +52,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])){
     exit();
 }
 
-// if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
-//     if ($photoController->deleteUserPhoto($_POST['delete'], $this_user_id)) {
-//         if ($photoController->deleteThisImg($this_user_id, $_POST['delete'])) {
-//             header("Location: gallery.php?user=$this_user_id");
-//             exit();
-//         } else {
-//             header("Location: gallery.php?message=Echec de la suppression du fichier&status=error-message");
-//         }
-//     } else {
-//         header("Location: gallery.php?message=Echec de la suppression de la photo&status=error-message");
-//     }
-// }
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
     if ($photoController->deletePhotoWithFile($_POST['delete'], $this_user_id)) {
         header("Location: gallery.php?user=$this_user_id");
@@ -100,10 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['photo_id'])) {
     header("Location: gallery.php?user=$user_id");
     exit();
 }
-
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -119,5 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['photo_id'])) {
 
     <footer></footer>
     <script src="assets/js/modal.js"></script>
+    <script src="assets/js/cam.js"></script>
 </body>
 </html>

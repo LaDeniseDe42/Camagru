@@ -38,11 +38,8 @@ if (isset($_GET['user']) && $_GET['user'] != $_SESSION['user_id']) {
 
 $photoController = new PhotoController($con);
 $true_photo = $photoController->getAllImgOfgalleryUserId($this_user_id);
-// var_dump($true_photo);
-
 
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])){
-    var_dump($_FILES['file']); // Affiche les détails du fichier reçu
     $result = $photoController->uploadPhoto($this_user_id, $_FILES['file']);
     if ($result === false) {
         header("Location: gallery.php?message=" . urlencode("Le format de fichier n est pas valide, les formats acceptés sont jpg, jpeg, png, gif"));
@@ -96,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['photo_id'])) {
     <title>Galerie</title>
     <link rel="stylesheet" href="/../assets/css/profile.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
+    <link rel="stylesheet" href="/../assets/css/galleryStyle.css">
 </head>
 <body class="<?= htmlspecialchars($this_house) ?>">
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>

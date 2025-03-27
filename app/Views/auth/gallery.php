@@ -45,23 +45,46 @@
 </div>
 
 <?php if ($my_profile) : ?>
-<div class=<?php echo $this_sub_house; ?>>
-<h2 class="title"> Ajouter une nouvelle photo </h2>
+<div class="divUpload">
+<!-- <h2 class="title"> Ajouter une nouvelle photo </h2> -->
     <form action="gallery.php" method="POST" enctype="multipart/form-data">
         <input type="file" name="file" required>
-        <button type="submit">Uploader</button>
+        <button type="submit">Uploader une nouvelle image</button>
     </form>
 </div>
 
 
 <!-- Bouton pour ouvrir la webcam -->
-<div class="<?php echo $this_sub_house; ?>">
-    <h2 class="title"> Prendre une photo avec la webcam </h2>
+ <div class="divCam">
+    <!-- <h2 class="title"> Prendre une photo avec la webcam </h2> -->
     <button id="startCamButton">Prendre une photo avec la caméra</button>
     <div id="cameraContainer" style="display:none;">
+        <select id="filterSelect">
+            <option value="none">Aucun filtre</option>
+            <option value="grayscale(100%)">Noir et blanc</option>
+            <option value="sepia(100%)">Sépia</option>
+            <option value="invert(100%)">Inversé</option>
+            <option value="blur(5px)">Flou</option>
+            <option value="contrast(2000%)">Contraste</option>
+            <option value="hue-rotate(90deg)">Teinte</option>
+            <option value="invert(100%) sepia(100%)">Inversé et sépia</option>
+            <option value="invert(100%) sepia(100%) contrast(200%) saturate(200%)">Night Vision</option>
+        </select>
+
+        <label for="imageFilterSelect">Filtres Image :</label>
+        <select id="imageFilterSelect">
+            <option value="none">Aucun filtre</option>
+            <option value="tree">Arbre</option>
+             <option value="titan">Titan</option>
+            <!-- <option value="hat">Chapeau</option> -->
+        </select>
+
         <video id="video" width="640" height="480" autoplay></video>
+        <img id="filterImage" src="" style="position: absolute; top: 0; left: 0; width: 640px; height: 480px; pointer-events: none; display: none;">
+
         <button id="snap">Snap Photo</button>
-    </div>
+        <button id="closeCamButton">Fermer la caméra</button>
+</div>
     
 <div id="photoModal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -74,42 +97,6 @@
         </form>
     </div>
 </div>
-
-
-<!-- Style CSS pour le modal -->
-<style>
-    /* Style du modal */
-.modal {
-    position: fixed;
-    top:0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* S'assurer que le modal soit au-dessus de tout */
-    overflow: auto;
-}
-
-/* Contenu du modal */
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    width: 70%;
-    max-width: 700px;
-    overflow-y: auto;
-}
-
-/* Cacher la caméra quand on est dans le modal */
-#cameraContainer {
-    display: none;
-}
-
-</style>
 
 <?php endif; ?>
 

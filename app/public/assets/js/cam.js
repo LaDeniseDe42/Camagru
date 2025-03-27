@@ -9,6 +9,31 @@ const photoInput = document.getElementById('photocam');
 let capturedImageData = null;  // Déclare la variable globalement
 const cToiButton = document.getElementById('cToi');
 
+const filterSelect = document.getElementById('filterSelect');
+const imageFilterSelect = document.getElementById('imageFilterSelect');
+const filterImage = document.getElementById('filterImage');
+
+filterSelect.addEventListener('change', () => {
+    video.style.filter = filterSelect.value;
+});
+
+// Appliquer les filtres Image
+imageFilterSelect.addEventListener('change', () => {
+  const filterValue = imageFilterSelect.value;
+  if (filterValue === 'none') {
+      filterImage.style.display = 'none';
+  } else {
+      filterImage.src = `../assets/img/filters/${filterValue}.png`;
+
+      filterImage.style.display = 'block';
+      filterImage.onload = () => {
+        filterImage.style.width = video.clientWidth + "px";
+        filterImage.style.height = video.clientHeight + "px";
+    };
+  }
+});
+
+
 // Démarrer la caméra quand l'utilisateur clique sur le bouton
 startCamButton.addEventListener('click', () => {
     startCamButton.style.display = 'none'; // Cacher le bouton "Prendre une photo"
@@ -23,28 +48,53 @@ startCamButton.addEventListener('click', () => {
 });
 
 snapButton.addEventListener('click', () => {
-  const canvas = document.createElement('canvas');
-  canvas.width = 640;
-  canvas.height = 480;
+  // const canvas = document.createElement('canvas');
+  // canvas.width = 640;
+  // canvas.height = 480;
+  // const context = canvas.getContext('2d');
+  // context.filter = filterSelect.value;
+  // context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  let canvas = document.getElementById('canvas');
+  if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'canvas';
+      canvas.width = 640;
+      canvas.height = 480;
+      canvas.style.position = 'absolute';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.display = 'none'; // Caché par défaut
+
+      // Ajouter le canvas au même conteneur que la vidéo et l'image du filtre
+      document.getElementById('cameraContainer').appendChild(canvas);
+  }
+
   const context = canvas.getContext('2d');
+  context.filter = filterSelect.value;
   context.drawImage(video, 0, 0, canvas.width, canvas.height);
+   // Dessiner l’image du filtre si un filtre image est sélectionné
+   if (imageFilterSelect.value !== 'none') {
+    const filterImg = new Image();
+    filterImg.src = filterImage.src;
+    filterImg.onload = () => {
+        context.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
+        finalizeImage(canvas);
+    };
+    } else {
+        finalizeImage(canvas);
+    }
 
-  // Convertir l'image en base64 dans le format JPEG ou PNG selon le besoin
-  const format = 'image/jpeg'; // Changez ici pour 'image/png' si vous préférez PNG
-  const imageQuality = 0.8; // Qualité de l'image pour le JPEG (0.0 à 1.0)
-  capturedImageData = canvas.toDataURL(format, imageQuality); // Format et qualité
-
-  // Nettoyer la chaîne base64 pour enlever le préfixe data:image/jpeg;base64,
-  const base64Image = capturedImageData.replace(/^data:image\/(jpeg|png|gif);base64,/, '');
-
-  // Vérifier que l'image est capturée et afficher l'image dans le modal
-  capturedImage.src = capturedImageData;
-  photoInput.src = capturedImageData; // Mettre l'image dans le champ caché
-  photoModal.style.display = 'block'; // Afficher le modal
-
-  // Cacher la caméra
-  cameraContainer.style.display = 'none';
 });
+
+//Converti l'image en base64 dans le format JPEG 
+function finalizeImage(canvas) {
+  capturedImageData = canvas.toDataURL('image/jpeg', 0.8);
+  capturedImage.src = capturedImageData;
+  photoModal.style.display = 'block';
+  cameraContainer.style.display = 'none';
+}
 
 // Annuler la photo (retour à la caméra)
 discardButton.addEventListener('click', () => {
@@ -69,6 +119,7 @@ function dataURItoBlob(dataURI) {
 
 // Ajouter un écouteur d'événement sur le bouton "cToiButton"
 cToiButton.addEventListener('click', () => {
+  event.preventDefault();
   if (!capturedImageData) {
       console.error("Aucune image capturée !");
       return;
@@ -77,10 +128,6 @@ cToiButton.addEventListener('click', () => {
   const blob = dataURItoBlob(capturedImageData);
   let fileName = Date.now() + '.jpeg';
   const file = new File([blob], fileName, { type: 'image/jpeg' });
-  console.log("Nom du fichier:", file.name);
-console.log("Type du fichier:", file.type);
-console.log("Taille du fichier:", file.size, "bytes");
-
   // Créer un objet FormData pour l'envoyer en POST
   const formData = new FormData();
   formData.append('file', file); // Correspond au $_FILES['file'] en PHP
@@ -90,7 +137,20 @@ console.log("Taille du fichier:", file.size, "bytes");
       method: 'POST',
       body: formData,
   })
+  .then(response => {
+    window.location.reload();
+    // reload uniquement une partie de la page celle de la classe col-4
+    //  document.querySelector('.col-4').innerHTML = response;
+  })
   .catch(error => {
     console.error("Erreur Fetch :", error);
 });
+  photoModal.style.display = 'none';
 });
+
+closeCamButton.addEventListener('click', () => {
+  cameraContainer.style.display = 'none';
+  startCamButton.style.display = 'block';
+  video.srcObject.getTracks().forEach(track => track.stop());
+}
+);

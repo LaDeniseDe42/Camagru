@@ -48,37 +48,41 @@ startCamButton.addEventListener('click', () => {
 });
 
 snapButton.addEventListener('click', () => {
-  let canvas = document.getElementById('canvas');
-  if (!canvas) {
-      canvas = document.createElement('canvas');
-      canvas.id = 'canvas';
-      canvas.width = 640;
-      canvas.height = 480;
-      canvas.style.position = 'absolute';
-      canvas.style.top = '0';
-      canvas.style.left = '0';
-      canvas.style.width = '100%';
-      canvas.style.height = '100%';
-      canvas.style.display = 'none'; // Caché par défaut
+    let canvas = document.getElementById('canvas');
+    if (!canvas) {
+        canvas = document.createElement('canvas');
+        canvas.id = 'canvas';
+        canvas.width = 640;
+        canvas.height = 480;
+        canvas.style.position = 'absolute';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.display = 'none'; // Caché par défaut
+        document.getElementById('cameraContainer').appendChild(canvas);
+    }
 
-      // Ajouter le canvas au même conteneur que la vidéo et l'image du filtre
-      document.getElementById('cameraContainer').appendChild(canvas);
-  }
-  const context = canvas.getContext('2d');
-  context.filter = filterSelect.value;
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
-   // Dessiner l’image du filtre si un filtre image est sélectionné
-   if (imageFilterSelect.value !== 'none') {
-    const filterImg = new Image();
-    filterImg.src = filterImage.src;
-    filterImg.onload = () => {
-        context.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
-        finalizeImage(canvas);
-    };
+    const context = canvas.getContext('2d');
+
+    // Appliquer le filtre CSS seulement sur la vidéo
+    context.filter = filterSelect.value;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Désactiver le filtre pour le filtre image
+    context.filter = 'none';
+
+    // Ajouter l’image du filtre par-dessus
+    if (imageFilterSelect.value !== 'none') {
+        const filterImg = new Image();
+        filterImg.src = filterImage.src;
+        filterImg.onload = () => {
+            context.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
+            finalizeImage(canvas);
+        };
     } else {
         finalizeImage(canvas);
     }
-
 });
 
 //Converti l'image en base64 dans le format JPEG 
@@ -153,7 +157,6 @@ const startRecordingButton = document.getElementById('startRecording');
 const stopRecordingButton = document.getElementById('stopRecording');
 const downloadLink = document.getElementById('downloadLink');
 const recordedVideo = document.getElementById('recordedVideo');
-
 let mediaRecorder;
 let recordedChunks = [];
 
@@ -191,6 +194,44 @@ startRecordingButton.addEventListener('click', () => {
     startRecordingButton.disabled = true;
     stopRecordingButton.disabled = false;
 });
+// startRecordingButton.addEventListener('click', () => {
+//     recordedChunks = [];
+
+//     // Utiliser le flux du canvas au lieu du flux brut de la caméra
+//     const stream = startCanvasRecording(); 
+
+//     mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+//     mediaRecorder.ondataavailable = (event) => {
+//         if (event.data.size > 0) {
+//             recordedChunks.push(event.data);
+//         }
+//     };
+
+//     mediaRecorder.onstop = () => {
+//         const blob = new Blob(recordedChunks, { type: 'video/webm' });
+
+//         const formData = new FormData();
+//         formData.append('file', blob, 'video_' + Date.now() + '.webm');
+//         formData.append('uploadVideo', '1');
+//         formData.append('type', 'video');
+
+//         fetch('gallery.php', {
+//             method: 'POST',
+//             body: formData,
+//         })
+//         .then(response => response.text())
+//         .then(data => {
+//             console.log(data);
+//             location.reload(); // Recharger la page pour afficher la vidéo
+//         })
+//         .catch(error => console.error('Erreur:', error));
+//     };
+
+//     mediaRecorder.start();
+//     startRecordingButton.disabled = true;
+//     stopRecordingButton.disabled = false;
+// });
 
 // Arrêter l'enregistrement
 stopRecordingButton.addEventListener('click', () => {
@@ -198,3 +239,32 @@ stopRecordingButton.addEventListener('click', () => {
     startRecordingButton.disabled = false;
     stopRecordingButton.disabled = true;
 });
+
+// function startCanvasRecording() {
+//     const canvas = document.createElement('canvas');
+//     const ctx = canvas.getContext('2d');
+//     canvas.width = video.videoWidth;
+//     canvas.height = video.videoHeight;
+
+//     const stream = canvas.captureStream(); // Capture la vidéo du canvas
+
+//     const drawFrame = () => {
+//         ctx.clearRect(0, 0, canvas.width, canvas.height); // Nettoyer avant de redessiner
+        
+//         ctx.filter = filterSelect.value; // Appliquer le filtre sélectionné
+//         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+//         if (imageFilterSelect.value !== 'none') {
+//             const filterImg = new Image();
+//             filterImg.src = filterImage.src;
+//             filterImg.onload = () => {
+//                 ctx.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
+//             };
+//         }
+
+//         requestAnimationFrame(drawFrame); // Repasser à la frame suivante
+//     };
+//     drawFrame();
+
+//     return stream;
+// }

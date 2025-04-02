@@ -44,10 +44,20 @@ $publications = $publicationController->getPublications($this_user_id);
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['normalFile'])) {
     $type = 'photo';
     $result = $publicationController->uploadPublication($this_user_id, $_FILES['normalFile'], $type);
+    if ($result['success']) {
+        $message = "Publication envoyée avec succès.";
+    } else {
+        $message = "Erreur lors de l'envoi de la publication : " . $result['message'];
+    }
 }
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])) {
     $type = $_POST['type'] ?? 'photo';
     $result = $publicationController->uploadPublication($this_user_id, $_FILES['file'], $type);
+    if ($result['success']) {
+        $message = "Publication envoyée avec succès.";
+    } else {
+        $message = "Erreur lors de l'envoi de la publication : " . $result['message'];
+    }
 }
 
 // Gestion des likes et dislikes
@@ -67,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['publication_id'])) {
     header("Location: gallery.php?user=$user_id");
     exit();
 }
+// fin de pour les likes et dislikes
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletePublication'])) {
     $publication_id = $_POST['deletePublication'];
@@ -74,8 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletePublication'])) 
     header("Location: gallery.php?message=" . urlencode("Publication supprimée avec succès"));
     exit();
 }
-
-// fin de pour les likes et dislikes
 ?>
 
 <!DOCTYPE html>

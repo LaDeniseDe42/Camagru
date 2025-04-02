@@ -7,57 +7,61 @@
     <?php endif; ?>
 </div>
 
-<div class=<?php echo $this_sub_house; ?>>
-<h2>Galerie de <?= htmlspecialchars($this_username) ?></h2>
+<div class="<?= htmlspecialchars($this_sub_house) ?>">
+    <h2>Galerie de <?= htmlspecialchars($this_username) ?></h2>
 
     <div class="row">
-    <?php foreach ($true_photo as $photo) : ?>
-    <?php $userReaction = $photoController->getUserReaction($photo['photo_id'], $this_user_id); ?>
-    <div class="col-4">
-        <img src="<?= htmlspecialchars($photo['filepath']) ?>" alt="<?= htmlspecialchars($photo['filename']) ?>" style="width:100%">
-        
-        <?php if ($my_profile) : ?>
-        <form action="gallery.php" method="POST">
-            <input type="hidden" name="delete" value="<?= htmlspecialchars($photo['filename']) ?>">
-            <button type="submit">Supprimer</button>
-        </form>
-        <?php endif; ?>
-
-        <!-- Afficher les likes et dislikes -->
-        <form action="gallery.php" method="POST">
-            <input type="hidden" name="photo_id" value="<?= htmlspecialchars($photo['photo_id']) ?>">
-            
-            <button type="submit" name="like" 
-                class="<?= ($userReaction === 'like') ? 'active' : '' ?>">
-                👍 <?= htmlspecialchars($photo['nb_likes']) ?>
-            </button>
-            
-            <button type="submit" name="dislike" 
-                class="<?= ($userReaction === 'dislike') ? 'active' : '' ?>">
-                👎 <?= htmlspecialchars($photo['nb_dislikes']) ?>
-            </button>
-        </form>
-    </div>
-<?php endforeach; ?>
-
-
+        <?php foreach ($publications as $publication) : ?>
+            <?php $userReaction = $publicationController->getUserReaction($publication['id'], $this_user_id); ?>
+            <div class="col-4">
+                <?php if ($publication['type'] === 'photo') : ?>
+                    <img src="<?= htmlspecialchars($publication['filepath']) ?>" alt="<?= htmlspecialchars($publication['filename']) ?>" style="width:100%">
+                <?php elseif ($publication['type'] === 'video') : ?>
+                    <video width="100%" controls>
+                        <source src="<?= htmlspecialchars($publication['filepath']) ?>" type="video/webm">
+                        Votre navigateur ne supporte pas la lecture de vidéos.
+                    </video>
+                <?php endif; ?>
+                
+                <?php if ($my_profile) : ?>
+                    <form action="gallery.php" method="POST">
+                        <input type="hidden" name="deletePublication" value="<?= htmlspecialchars($publication['id']) ?>">
+                        <button type="submit">Supprimer</button>
+                    </form>
+                <?php endif; ?>
+                
+                <!-- Afficher les likes et dislikes -->
+                <form action="gallery.php" method="POST">
+                    <input type="hidden" name="publication_id" value="<?= htmlspecialchars($publication['id']) ?>">
+                    
+                    <button type="submit" name="like" class="<?= ($userReaction === 'like') ? 'active' : '' ?>">
+                        👍 <?= htmlspecialchars($publication['nb_likes']) ?>
+                    </button>
+                    
+                    <button type="submit" name="dislike" class="<?= ($userReaction === 'dislike') ? 'active' : '' ?>">
+                        👎 <?= htmlspecialchars($publication['nb_dislikes']) ?>
+                    </button>
+                </form>
+            </div>
+        <?php endforeach; ?>
     </div>
 </div>
 
 <?php if ($my_profile) : ?>
-<div class="divUpload">
-<!-- <h2 class="title"> Ajouter une nouvelle photo </h2> -->
-    <form action="gallery.php" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" required>
-        <button type="submit">Uploader une nouvelle image</button>
-    </form>
-</div>
+    <div class="divUpload">
+        <form action="gallery.php" method="POST" enctype="multipart/form-data">
+            <input type="file" name="normalFile" required>
+            <button type="submit">Uploader un fichier</button>
+        </form>
+    </div>
+<?php endif; ?>
+
 
 
 <!-- Bouton pour ouvrir la webcam -->
+<?php if ($my_profile) : ?>
  <div class="divCam">
-    <!-- <h2 class="title"> Prendre une photo avec la webcam </h2> -->
-    <button id="startCamButton">Prendre une photo avec la caméra</button>
+    <button id="startCamButton">Prendre une photo ou une vidéo</button>
     <div id="cameraContainer" style="display:none;">
         <select id="filterSelect">
             <option value="none">Aucun filtre</option>
@@ -76,14 +80,22 @@
             <option value="none">Aucun filtre</option>
             <option value="tree">Arbre</option>
              <option value="titan">Titan</option>
-            <!-- <option value="hat">Chapeau</option> -->
+            <option value="wanted">Wanted</option>
+            <option value="hC">Choipeaux magique</option>
         </select>
 
+    <div style="position: relative; width: 640px; height: 480px;">
         <video id="video" width="640" height="480" autoplay></video>
-        <img id="filterImage" src="" style="position: absolute; top: 0; left: 0; width: 640px; height: 480px; pointer-events: none; display: none;">
-
-        <button id="snap">Snap Photo</button>
-        <button id="closeCamButton">Fermer la caméra</button>
+        <img id="filterImage" src="" style="display: none;">
+        <video id="recordedVideo" controls style="display: none;"></video>
+    </div>
+    <button id="snap">Snap Photo</button>
+    <button id="closeCamButton">Fermer la caméra</button>
+    <div id="videoControls">
+        <button id="startRecording">Démarrer l'enregistrement</button>
+        <button id="stopRecording" disabled>Arrêter l'enregistrement</button>
+        <a id="downloadLink" style="display: none;">Télécharger la vidéo</a>
+    </div>
 </div>
     
 <div id="photoModal" class="modal" style="display:none;">

@@ -63,7 +63,7 @@ volumes:
   gallery:
 # docker-compose up -d --build pour lancer le tout
 # docker compose down pour tout stop
-# docker-compose down pour arrêter les services
+# docker exec -it mysql_db mysql -uuser -p pour se connecter à MySQL
 # docker volume inspect mysql_data pour voir les données de MySQL
 
 # MySQL démarre et initialise la base de données.

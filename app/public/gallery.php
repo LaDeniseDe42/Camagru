@@ -2,7 +2,7 @@
 require_once __DIR__ . "/../config/database.php";
 require_once __DIR__ . "/../config/session.php";
 require_once __DIR__ . "/../controllers/AuthController.php";
-require_once __DIR__ . "/../controllers/PhotoController.php";
+require_once __DIR__ . "/../controllers/PublicationController.php";
 $message = "";
 
 if (!isLoggedIn())
@@ -11,11 +11,12 @@ if (!isLoggedIn())
     exit();
 }
 
+// Pour savoir si on est sur son propre profil ou celui d'un autre utilisateur
 $dbConnection = new Database();
 $con = $dbConnection->getConnection();
 $UserController = new AuthController();
 $my_profile = true;
-if (isset($_GET['user']) && $_GET['user'] != $_SESSION['user_id']) {
+if (isset($_GET['user']) && !empty($_GET['user']) && $_GET['user'] != $_SESSION['user_id']) {
     $my_profile = false;
     $this_user_id = $_GET['user'];
     $this_user = $UserController->giveinfoConcernThisUser($this_user_id);
@@ -35,56 +36,46 @@ if (isset($_GET['user']) && $_GET['user'] != $_SESSION['user_id']) {
     $this_email = $_SESSION['email'];
     $this_user = $_SESSION['user'];
 }
+// fin des informations concernant la gallerie de l'utilisateur
 
-$photoController = new PhotoController($con);
-$true_photo = $photoController->getAllImgOfgalleryUserId($this_user_id);
-
-if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])){
-    $result = $photoController->uploadPhoto($this_user_id, $_FILES['file']);
-    if ($result === false) {
-        header("Location: gallery.php?message=" . urlencode("Le format de fichier n est pas valide, les formats acceptés sont jpg, jpeg, png, gif"));
-        exit();
-    }
-    header("Location: gallery.php?user=$this_user_id");
-    exit();
+// pour la publication
+$publicationController = new PublicationController($con);
+$publications = $publicationController->getPublications($this_user_id);
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['normalFile'])) {
+    $type = 'photo';
+    $result = $publicationController->uploadPublication($this_user_id, $_FILES['normalFile'], $type);
+}
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])) {
+    $type = $_POST['type'] ?? 'photo';
+    $result = $publicationController->uploadPublication($this_user_id, $_FILES['file'], $type);
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
-    if ($photoController->deletePhotoWithFile($_POST['delete'], $this_user_id)) {
-        header("Location: gallery.php?user=$this_user_id");
-        exit();
-    } else {
-        header("Location: gallery.php?message=Echec de la suppression&status=error-message");
-    }
-}
+// Gestion des likes et dislikes
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['publication_id'])) {
+    $publication_id = $_POST['publication_id'];
 
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['photo_id'])) {
-    $photo_id = $_POST['photo_id'];
-    $currentReaction = $photoController->getUserReaction($photo_id, $_SESSION['user_id']);
+    // Récupérer la réaction actuelle de l'utilisateur
+    $currentReaction = $publicationController->getUserReaction($publication_id, $_SESSION['user_id']);
 
     if (isset($_POST['like'])) {
-        if ($currentReaction === 'like') {
-            // Supprimer le like s'il est déjà actif
-            $photoController->removeReaction($photo_id, $_SESSION['user_id']);
-        } else {
-            // Ajouter un like
-            $photoController->likePhoto($photo_id, $_SESSION['user_id'], 'like');
-        }
+        $publicationController->reactToPublication($_SESSION['user_id'], $publication_id, 'like');
     } elseif (isset($_POST['dislike'])) {
-        if ($currentReaction === 'dislike') {
-            // Supprimer le dislike s'il est déjà actif
-            $photoController->removeReaction($photo_id, $_SESSION['user_id']);
-        } else {
-            // Ajouter un dislike
-            $photoController->likePhoto($photo_id, $_SESSION['user_id'], 'dislike');
-        }
+        $publicationController->reactToPublication($_SESSION['user_id'], $publication_id, 'dislike');
     }
-    //recuperer le user id de la photo
-    $user_id = $photoController->getUserIdByPhotoId($photo_id);
+    // Récupérer l'utilisateur propriétaire de la publication
+    $user_id = $publicationController->getUserIdByPublicationId($publication_id);
     header("Location: gallery.php?user=$user_id");
     exit();
 }
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletePublication'])) {
+    $publication_id = $_POST['deletePublication'];
+    $publicationController->deletePublication($publication_id, $_SESSION['user_id']);
+    header("Location: gallery.php?message=" . urlencode("Publication supprimée avec succès"));
+    exit();
+}
+
+// fin de pour les likes et dislikes
 ?>
 
 <!DOCTYPE html>

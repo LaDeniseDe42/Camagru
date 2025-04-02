@@ -6,7 +6,7 @@ const capturedImage = document.getElementById('capturedImage');
 const photoModal = document.getElementById('photoModal');
 const discardButton = document.getElementById('discard');
 const photoInput = document.getElementById('photocam');
-let capturedImageData = null;  // Déclare la variable globalement
+let capturedImageData = null;
 const cToiButton = document.getElementById('cToi');
 
 const filterSelect = document.getElementById('filterSelect');
@@ -27,8 +27,8 @@ imageFilterSelect.addEventListener('change', () => {
 
       filterImage.style.display = 'block';
       filterImage.onload = () => {
-        filterImage.style.width = video.clientWidth + "px";
-        filterImage.style.height = video.clientHeight + "px";
+        filterImage.style.width = canvas.Width + "px";
+        filterImage.style.height = canvas.Height + "px";
     };
   }
 });
@@ -36,7 +36,7 @@ imageFilterSelect.addEventListener('change', () => {
 
 // Démarrer la caméra quand l'utilisateur clique sur le bouton
 startCamButton.addEventListener('click', () => {
-    startCamButton.style.display = 'none'; // Cacher le bouton "Prendre une photo"
+    startCamButton.style.display = 'none'; // Cacher le bouton permettant de prendre la photo
     cameraContainer.style.display = 'block'; // Afficher la caméra
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
@@ -48,12 +48,6 @@ startCamButton.addEventListener('click', () => {
 });
 
 snapButton.addEventListener('click', () => {
-  // const canvas = document.createElement('canvas');
-  // canvas.width = 640;
-  // canvas.height = 480;
-  // const context = canvas.getContext('2d');
-  // context.filter = filterSelect.value;
-  // context.drawImage(video, 0, 0, canvas.width, canvas.height);
   let canvas = document.getElementById('canvas');
   if (!canvas) {
       canvas = document.createElement('canvas');
@@ -70,7 +64,6 @@ snapButton.addEventListener('click', () => {
       // Ajouter le canvas au même conteneur que la vidéo et l'image du filtre
       document.getElementById('cameraContainer').appendChild(canvas);
   }
-
   const context = canvas.getContext('2d');
   context.filter = filterSelect.value;
   context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -131,21 +124,21 @@ cToiButton.addEventListener('click', () => {
   // Créer un objet FormData pour l'envoyer en POST
   const formData = new FormData();
   formData.append('file', file); // Correspond au $_FILES['file'] en PHP
-
+  formData.append('type', 'photo');
   // Envoi via fetch() vers gallery.php
+  console.log("Envoi de la requête...");
   fetch('gallery.php', {
       method: 'POST',
       body: formData,
   })
   .then(response => {
     window.location.reload();
-    // reload uniquement une partie de la page celle de la classe col-4
-    //  document.querySelector('.col-4').innerHTML = response;
   })
   .catch(error => {
     console.error("Erreur Fetch :", error);
 });
   photoModal.style.display = 'none';
+  cameraContainer.style.display = 'none';
 });
 
 closeCamButton.addEventListener('click', () => {
@@ -154,3 +147,54 @@ closeCamButton.addEventListener('click', () => {
   video.srcObject.getTracks().forEach(track => track.stop());
 }
 );
+
+
+const startRecordingButton = document.getElementById('startRecording');
+const stopRecordingButton = document.getElementById('stopRecording');
+const downloadLink = document.getElementById('downloadLink');
+const recordedVideo = document.getElementById('recordedVideo');
+
+let mediaRecorder;
+let recordedChunks = [];
+
+// Démarrer l'enregistrement
+startRecordingButton.addEventListener('click', () => {
+    recordedChunks = [];
+    const stream = video.captureStream(); // Capture le flux vidéo
+    mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+    mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+        }
+    };
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+
+    const formData = new FormData();
+    formData.append('file', blob, 'video_' + Date.now() + '.webm');
+    formData.append('uploadVideo', '1');
+    formData.append('type', 'video');
+    fetch('gallery.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log(data);
+        location.reload(); // Recharger la page pour afficher la vidéo
+    })
+    .catch(error => console.error('Erreur:', error));
+};
+
+    mediaRecorder.start();
+    startRecordingButton.disabled = true;
+    stopRecordingButton.disabled = false;
+});
+
+// Arrêter l'enregistrement
+stopRecordingButton.addEventListener('click', () => {
+    mediaRecorder.stop();
+    startRecordingButton.disabled = false;
+    stopRecordingButton.disabled = true;
+});

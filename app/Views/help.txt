@@ -1,1 +1,17 @@
 app/views/ → Contient les fichiers HTML/PHP affichés à l’utilisateur.
+    <div class="comments">
+        <h3>Commentaires</h3>
+        <?php if (empty($allcoments)): ?>
+            <p>Aucun commentaire pour le moment.</p>
+        <?php else: ?>
+            <?php foreach ($allcoments as $comment): ?>
+                <div class="comment">
+                    <strong><?= htmlspecialchars($comment['username']) ?>:</strong>
+                    <p><?= htmlspecialchars($comment['content']) ?></p>
+                    <span class="timestamp"><?= htmlspecialchars($comment['created_at']) ?></span>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        <textarea id="theComment" data-post-id="<?= $publicationId ?>" placeholder="Laissez un commentaire..."></textarea>
+        <button id="newComment">Poster</button>
+    </div>

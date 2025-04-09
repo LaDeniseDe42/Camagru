@@ -9,45 +9,54 @@ const photoInput = document.getElementById('photocam');
 let capturedImageData = null;
 const cToiButton = document.getElementById('cToi');
 
-const filterSelect = document.getElementById('filterSelect');
-const imageFilterSelect = document.getElementById('imageFilterSelect');
-const filterImage = document.getElementById('filterImage');
 
-filterSelect.addEventListener('change', () => {
-    video.style.filter = filterSelect.value;
-});
+
+const filterSelect = document.getElementById('filterSelect');
+if (filterSelect) {
+    filterSelect.addEventListener('change', () => {
+        video.style.filter = filterSelect.value;
+    });
+}
 
 // Appliquer les filtres Image
-imageFilterSelect.addEventListener('change', () => {
-  const filterValue = imageFilterSelect.value;
-  if (filterValue === 'none') {
-      filterImage.style.display = 'none';
-  } else {
-      filterImage.src = `../assets/img/filters/${filterValue}.png`;
+const imageFilterSelect = document.getElementById('imageFilterSelect');
+const filterImage = document.getElementById('filterImage');
+if (imageFilterSelect) {
+    imageFilterSelect.addEventListener('change', () => {
+    const filterValue = imageFilterSelect.value;
+    if (filterValue === 'none') {
+        filterImage.style.display = 'none';
+    } else {
+        filterImage.src = `../assets/img/filters/${filterValue}.png`;
 
-      filterImage.style.display = 'block';
-      filterImage.onload = () => {
-        filterImage.style.width = canvas.Width + "px";
-        filterImage.style.height = canvas.Height + "px";
-    };
-  }
-});
+        filterImage.style.display = 'block';
+        filterImage.onload = () => {
+            filterImage.style.width = canvas.Width + "px";
+            filterImage.style.height = canvas.Height + "px";
+        };
+    }
+    });
+}
 
+let mediaStream; // pour stocker la vidéo et l'audio
+if (startCamButton) {
+    startCamButton.addEventListener('click', () => {
+        startCamButton.style.display = 'none';
+        cameraContainer.style.display = 'block';
+        
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                mediaStream = stream; // Stocke le flux avec vidéo et audio
+                video.srcObject = mediaStream;
+            })
+            .catch(err => {
+                console.error("Erreur d'accès à la webcam ou au microphone : ", err);
+            });
+    });
+}
 
-// Démarrer la caméra quand l'utilisateur clique sur le bouton
-startCamButton.addEventListener('click', () => {
-    startCamButton.style.display = 'none'; // Cacher le bouton permettant de prendre la photo
-    cameraContainer.style.display = 'block'; // Afficher la caméra
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-            video.srcObject = stream;
-        })
-        .catch(err => {
-            console.error("Erreur d'accès à la webcam : ", err);
-        });
-});
-
-snapButton.addEventListener('click', () => {
+if (snapButton) {
+    snapButton.addEventListener('click', () => {
     let canvas = document.getElementById('canvas');
     if (!canvas) {
         canvas = document.createElement('canvas');
@@ -83,7 +92,8 @@ snapButton.addEventListener('click', () => {
     } else {
         finalizeImage(canvas);
     }
-});
+    });
+}
 
 //Converti l'image en base64 dans le format JPEG 
 function finalizeImage(canvas) {
@@ -94,10 +104,12 @@ function finalizeImage(canvas) {
 }
 
 // Annuler la photo (retour à la caméra)
-discardButton.addEventListener('click', () => {
-    photoModal.style.display = 'none';
-    cameraContainer.style.display = 'block';
-});
+if (discardButton) {
+    discardButton.addEventListener('click', () => {
+        photoModal.style.display = 'none';
+        cameraContainer.style.display = 'block';
+    });
+}
 
 // Fonction pour convertir une image Base64 en un objet Blob
 function dataURItoBlob(dataURI) {
@@ -115,156 +127,97 @@ function dataURItoBlob(dataURI) {
 }
 
 // Ajouter un écouteur d'événement sur le bouton "cToiButton"
-cToiButton.addEventListener('click', () => {
-  event.preventDefault();
-  if (!capturedImageData) {
-      console.error("Aucune image capturée !");
-      return;
-  }
-  // Convertir l'image en fichier JPEG
-  const blob = dataURItoBlob(capturedImageData);
-  let fileName = Date.now() + '.jpeg';
-  const file = new File([blob], fileName, { type: 'image/jpeg' });
-  // Créer un objet FormData pour l'envoyer en POST
-  const formData = new FormData();
-  formData.append('file', file); // Correspond au $_FILES['file'] en PHP
-  formData.append('type', 'photo');
-  // Envoi via fetch() vers gallery.php
-  console.log("Envoi de la requête...");
-  fetch('gallery.php', {
-      method: 'POST',
-      body: formData,
-  })
-  .then(response => {
-    window.location.reload();
-  })
-  .catch(error => {
-    console.error("Erreur Fetch :", error);
-});
-  photoModal.style.display = 'none';
-  cameraContainer.style.display = 'none';
-});
+if (cToiButton) {
+    cToiButton.addEventListener('click', () => {
+    event.preventDefault();
+    if (!capturedImageData) {
+        console.error("Aucune image capturée !");
+        return;
+    }
+    // Convertir l'image en fichier JPEG
+    const blob = dataURItoBlob(capturedImageData);
+    let fileName = Date.now() + '.jpeg';
+    const file = new File([blob], fileName, { type: 'image/jpeg' });
+    // Créer un objet FormData pour l'envoyer en POST
+    const formData = new FormData();
+    formData.append('file', file); // Correspond au $_FILES['file'] en PHP
+    formData.append('type', 'photo');
+    // Envoi via fetch() vers gallery.php
+    console.log("Envoi de la requête...");
+    fetch('gallery.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error("Erreur Fetch :", error);
+    });
+    photoModal.style.display = 'none';
+    cameraContainer.style.display = 'none';
+    });
 
-closeCamButton.addEventListener('click', () => {
-  cameraContainer.style.display = 'none';
-  startCamButton.style.display = 'block';
-  video.srcObject.getTracks().forEach(track => track.stop());
+    closeCamButton.addEventListener('click', () => {
+    cameraContainer.style.display = 'none';
+    startCamButton.style.display = 'block';
+    video.srcObject.getTracks().forEach(track => track.stop());
+    }
+    );
 }
-);
-
 
 const startRecordingButton = document.getElementById('startRecording');
 const stopRecordingButton = document.getElementById('stopRecording');
 const downloadLink = document.getElementById('downloadLink');
 const recordedVideo = document.getElementById('recordedVideo');
 let mediaRecorder;
-let recordedChunks = [];
 
-// Démarrer l'enregistrement
-startRecordingButton.addEventListener('click', () => {
-    recordedChunks = [];
-    const stream = video.captureStream(); // Capture le flux vidéo
-    mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-
-    mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-            recordedChunks.push(event.data);
+if (startRecordingButton) {
+    startRecordingButton.addEventListener('click', () => {
+        if (!mediaStream) {
+            console.error("Aucun flux disponible !");
+            return;
         }
-    };
-  mediaRecorder.onstop = () => {
-    const blob = new Blob(recordedChunks, { type: 'video/webm' });
 
-    const formData = new FormData();
-    formData.append('file', blob, 'video_' + Date.now() + '.webm');
-    formData.append('uploadVideo', '1');
-    formData.append('type', 'video');
-    fetch('gallery.php', {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => response.text())
-    .then(data => {
-        console.log(data);
-        location.reload(); // Recharger la page pour afficher la vidéo
-    })
-    .catch(error => console.error('Erreur:', error));
-};
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(mediaStream, { mimeType: 'video/webm' });
 
-    mediaRecorder.start();
-    startRecordingButton.disabled = true;
-    stopRecordingButton.disabled = false;
-});
-// startRecordingButton.addEventListener('click', () => {
-//     recordedChunks = [];
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
 
-//     // Utiliser le flux du canvas au lieu du flux brut de la caméra
-//     const stream = startCanvasRecording(); 
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
 
-//     mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            const formData = new FormData();
+            formData.append('file', blob, 'video_' + Date.now() + '.webm');
+            formData.append('uploadVideo', '1');
+            formData.append('type', 'video');
+            fetch('gallery.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                location.reload(); // Recharger la page pour afficher la vidéo
+            })
+            .catch(error => console.error('Erreur:', error));
+        };
 
-//     mediaRecorder.ondataavailable = (event) => {
-//         if (event.data.size > 0) {
-//             recordedChunks.push(event.data);
-//         }
-//     };
-
-//     mediaRecorder.onstop = () => {
-//         const blob = new Blob(recordedChunks, { type: 'video/webm' });
-
-//         const formData = new FormData();
-//         formData.append('file', blob, 'video_' + Date.now() + '.webm');
-//         formData.append('uploadVideo', '1');
-//         formData.append('type', 'video');
-
-//         fetch('gallery.php', {
-//             method: 'POST',
-//             body: formData,
-//         })
-//         .then(response => response.text())
-//         .then(data => {
-//             console.log(data);
-//             location.reload(); // Recharger la page pour afficher la vidéo
-//         })
-//         .catch(error => console.error('Erreur:', error));
-//     };
-
-//     mediaRecorder.start();
-//     startRecordingButton.disabled = true;
-//     stopRecordingButton.disabled = false;
-// });
+        mediaRecorder.start();
+        startRecordingButton.disabled = true;
+        stopRecordingButton.disabled = false;
+    });
+}
 
 // Arrêter l'enregistrement
-stopRecordingButton.addEventListener('click', () => {
-    mediaRecorder.stop();
-    startRecordingButton.disabled = false;
-    stopRecordingButton.disabled = true;
-});
-
-// function startCanvasRecording() {
-//     const canvas = document.createElement('canvas');
-//     const ctx = canvas.getContext('2d');
-//     canvas.width = video.videoWidth;
-//     canvas.height = video.videoHeight;
-
-//     const stream = canvas.captureStream(); // Capture la vidéo du canvas
-
-//     const drawFrame = () => {
-//         ctx.clearRect(0, 0, canvas.width, canvas.height); // Nettoyer avant de redessiner
-        
-//         ctx.filter = filterSelect.value; // Appliquer le filtre sélectionné
-//         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-//         if (imageFilterSelect.value !== 'none') {
-//             const filterImg = new Image();
-//             filterImg.src = filterImage.src;
-//             filterImg.onload = () => {
-//                 ctx.drawImage(filterImg, 0, 0, canvas.width, canvas.height);
-//             };
-//         }
-
-//         requestAnimationFrame(drawFrame); // Repasser à la frame suivante
-//     };
-//     drawFrame();
-
-//     return stream;
-// }
+if (stopRecordingButton) {
+    stopRecordingButton.addEventListener('click', () => {
+        mediaRecorder.stop();
+        startRecordingButton.disabled = false;
+        stopRecordingButton.disabled = true;
+    });
+}

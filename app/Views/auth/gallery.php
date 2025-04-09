@@ -9,18 +9,24 @@
 
 <div class="<?= htmlspecialchars($this_sub_house) ?>">
     <h2>Galerie de <?= htmlspecialchars($this_username) ?></h2>
+    <?php if (!isset($this_user_id)) : ?>
+        <?php $this_user_id = $_SESSION['user_id'] ?? null; ?>
+    <?php endif; ?>
 
     <div class="row">
         <?php foreach ($publications as $publication) : ?>
             <?php $userReaction = $publicationController->getUserReaction($publication['id'], $this_user_id); ?>
             <div class="col-4">
                 <?php if ($publication['type'] === 'photo') : ?>
-                    <img src="<?= htmlspecialchars($publication['filepath']) ?>" alt="<?= htmlspecialchars($publication['filename']) ?>" style="width:100%">
+                    <a href="media.php?user=<?= urlencode($this_user_id ?? '') ?>&file=<?= urlencode($publication['filepath']) ?>">
+                        <img src="<?= htmlspecialchars($publication['filepath']) ?>" alt="<?= htmlspecialchars($publication['filename']) ?>" style="width:100%">
+                    </a>
                 <?php elseif ($publication['type'] === 'video') : ?>
-                    <video width="100%" controls>
-                        <source src="<?= htmlspecialchars($publication['filepath']) ?>" type="video/webm">
-                        Votre navigateur ne supporte pas la lecture de vidéos.
-                    </video>
+                    <a href="media.php?user=<?= $publication['user_id'] ?>&file=<?= urlencode($publication['filepath']) ?>">
+                        <video width="100%" controls>
+                            <source src="<?= htmlspecialchars($publication['filepath']) ?>" type="video/webm">
+                        </video>
+                    </a>
                 <?php endif; ?>
                 
                 <?php if ($my_profile) : ?>
@@ -55,8 +61,6 @@
         </form>
     </div>
 <?php endif; ?>
-
-
 
 <!-- Bouton pour ouvrir la webcam -->
 <?php if ($my_profile) : ?>

@@ -3,9 +3,9 @@ services:
     image: nginx:latest
     container_name: nginx_server
     ports:
-      - "8080:80" # Le site sera accessible sur http://localhost:8080
+      - "8080:80"
     volumes:
-      - ./app:/var/www/html # Monte le dossier contenant ton code PHP
+      - ./app:/var/www/html # Monte le dossier contenant le code PHP
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf # Configuration Nginx
       - gallery:/gallery
     depends_on:

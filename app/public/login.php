@@ -26,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['username'] = $result['username']; // Stocke le nom d'utilisateur en session
         $_SESSION['user_id'] = $result['user_id']; // Stocke l'id de l'utilisateur en session
         $_SESSION['house'] = $result['house']; // Stocke la maison de l'utilisateur en session
+        $csrf_token = bin2hex(random_bytes(32)); // Génère un token CSRF
+        $_SESSION['csrf_token'] = $csrf_token; // Stocke le token CSRF en session
         header("Location: index.php"); // Redirige vers l'accueil
         exit();
     } else {

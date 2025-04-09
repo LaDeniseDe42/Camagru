@@ -28,6 +28,7 @@ if (isset($_GET['user']) && !empty($_GET['user']) && $_GET['user'] != $_SESSION[
     $this_email = $this_user['email'];
     $this_house = $this_user['house'];
     $this_sub_house = strtolower($this_house);
+
 } else {
     $this_user_id = $_SESSION['user_id'];
     $this_username = $_SESSION['username'];
@@ -82,7 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['publication_id'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletePublication'])) {
     $publication_id = $_POST['deletePublication'];
     $publicationController->deletePublication($publication_id, $_SESSION['user_id']);
-    header("Location: gallery.php?message=" . urlencode("Publication supprimée avec succès"));
+    $message = "Publication supprimée avec succès.";
+    // Rediriger vers la galerie de l'utilisateur
+   
+    header("Location: gallery.php?user=$_SESSION[user_id]");
+    // header("Location: gallery.php?message=" . urlencode("Publication supprimée avec succès"));
     exit();
 }
 ?>

@@ -16,6 +16,12 @@ class PublicationController {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
+    public function getPublicationIdWithFilename($filename) {
+        $stmt = $this->dbConnection->prepare("SELECT id FROM publications WHERE filename = ?");
+        $stmt->execute([$filename]);
+        return $stmt->fetchColumn();
+    }
+
     public function getUserReaction($publicationId, $userId) {
         $stmt = $this->dbConnection->prepare("SELECT reaction FROM publication_likes WHERE publication_id = ? AND user_id = ?");
         $stmt->execute([$publicationId, $userId]);
@@ -60,17 +66,40 @@ class PublicationController {
         $this->publicationModel->deletePublication($publicationId, $userId);
     }
 
-    public function addComment($userId, $publicationId, $content) {
-        $stmt = $this->dbConnection->prepare("INSERT INTO comments (user_id, publication_id, content) VALUES (?, ?, ?)");
-        $stmt->execute([$userId, $publicationId, $content]);
-        return ['success' => true, 'message' => 'Commentaire ajouté.'];
-    }
-
+    
     public function reactToPublication($userId, $publicationId, $reaction) {
         if (!in_array($reaction, ['like', 'dislike'])) {
             return false;
-          }
+        }
         $this->publicationModel->reactToPub($userId, $publicationId, $reaction);
+    }
+    
+    public function getAllComments($publicationId) {
+        $stmt = $this->dbConnection->prepare("
+        SELECT comments.*, users.username 
+        FROM comments 
+        JOIN users ON comments.user_id = users.id 
+        WHERE comments.publication_id = ? 
+        ORDER BY comments.created_at DESC
+        ");
+        $stmt->execute([$publicationId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAuthorIdOfComment($commentId) {
+       return $this->publicationModel->getAuthorIdOfComment($commentId);
+    }
+    
+    public function deleteComment($commentId, $userId) {
+        return $this->publicationModel->deleteComment($commentId, $userId);
+    }
+    
+    public function addComment($userId, $publicationId, $content) {
+        return $this->publicationModel->addComment($userId, $publicationId, $content);   
+    }
+    
+    public function modifyComment($commentId, $userId, $newContent) {
+        return $this->publicationModel->modifyComment($commentId, $userId, $newContent);
     }
 }
 

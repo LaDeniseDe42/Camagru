@@ -44,39 +44,63 @@ $publicationController = new PublicationController($con);
 $publications = $publicationController->getPublications($this_user_id);
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['normalFile'])) {
     $type = 'photo';
+
     $result = $publicationController->uploadPublication($this_user_id, $_FILES['normalFile'], $type);
-    if ($result['success']) {
+    if ($result['success'] === true) {
         $message = "Publication envoyée avec succès.";
+        header("Location: gallery.php?user=$this_user_id");
+        exit();
     } else {
         $message = "Erreur lors de l'envoi de la publication : " . $result['message'];
+        header("Location: gallery.php?user=$this_user_id&message=" . urlencode($message));
+        exit();
     }
 }
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])) {
     $type = $_POST['type'] ?? 'photo';
     $result = $publicationController->uploadPublication($this_user_id, $_FILES['file'], $type);
-    if ($result['success']) {
+    if ($result['success'] === true) {
         $message = "Publication envoyée avec succès.";
     } else {
         $message = "Erreur lors de l'envoi de la publication : " . $result['message'];
     }
 }
 
-// Gestion des likes et dislikes
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['publication_id'])) {
-    $publication_id = $_POST['publication_id'];
-
-    // Récupérer la réaction actuelle de l'utilisateur
-    $currentReaction = $publicationController->getUserReaction($publication_id, $_SESSION['user_id']);
-
-    if (isset($_POST['like'])) {
-        $publicationController->reactToPublication($_SESSION['user_id'], $publication_id, 'like');
-    } elseif (isset($_POST['dislike'])) {
-        $publicationController->reactToPublication($_SESSION['user_id'], $publication_id, 'dislike');
+// Pour les likes et dislikes
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['publication_id']) && isset($_POST['csrf_token'])) {
+    if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        echo json_encode(['status' => 'error', 'message' => 'Token CSRF invalide.']);
+        exit;
     }
-    // Récupérer l'utilisateur propriétaire de la publication
-    $user_id = $publicationController->getUserIdByPublicationId($publication_id);
-    header("Location: gallery.php?user=$user_id");
-    exit();
+
+    $userId = $_SESSION['user_id'] ?? null;
+    $publicationId = $_POST['publication_id'];
+    if (!$userId) {
+        echo json_encode(['status' => 'error', 'message' => 'Utilisateur non connecté.']);
+        exit;
+    }
+    $reaction = null;
+    if (isset($_POST['like'])) {
+        $reaction = 'like';
+    } elseif (isset($_POST['dislike'])) {
+        $reaction = 'dislike';
+    }
+    if ($reaction) {
+        $result = $publicationController->reactToPublication($userId, $publicationId, $reaction);
+        if ($result && isset($result['nb_likes'], $result['nb_dislikes'])) {
+            echo json_encode([
+                'status' => 'success',
+                'nb_likes' => $result['nb_likes'],
+                'nb_dislikes' => $result['nb_dislikes'],
+                'user_reaction' => $result['user_reaction'],
+            ]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Échec de la réaction.']);
+        }
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Aucune action valide.']);
+    }
+    exit;
 }
 // fin de pour les likes et dislikes
 
@@ -84,10 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletePublication'])) 
     $publication_id = $_POST['deletePublication'];
     $publicationController->deletePublication($publication_id, $_SESSION['user_id']);
     $message = "Publication supprimée avec succès.";
-    // Rediriger vers la galerie de l'utilisateur
-   
     header("Location: gallery.php?user=$_SESSION[user_id]");
-    // header("Location: gallery.php?message=" . urlencode("Publication supprimée avec succès"));
     exit();
 }
 ?>
@@ -105,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletePublication'])) 
     <?php include __DIR__ . '/../Views/auth/gallery.php'; ?>
 
     <footer></footer>
-    <script src="assets/js/modal.js"></script>
     <script src="assets/js/cam.js"></script>
+    <script src="assets/js/update_gallery.js"></script>
 </body>
 </html>

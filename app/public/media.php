@@ -22,10 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   exit;
 }
 
-
-$dbConnection = new Database();
-$con = $dbConnection->getConnection();
 $UserController = new AuthController();
+$con = $UserController->getConnection();
 $my_profile = true;
 if (isset($_GET['user']) && !empty($_GET['user']) && $_GET['user'] != $_SESSION['user_id']) {
   $my_profile = false;
@@ -51,12 +49,41 @@ $allcoments = $publicationController->getAllComments($publicationId);
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment']) && $_POST['token'] == $csrf_token && !isset($_POST['editComment'])) {
     $content = $_POST['comment'];
     $result = $publicationController->addComment($this_user_id, $publicationId, $content);
+    
+    //envoyer un mail au proprietaire de la publication
+    $user_id_to_send = $publicationController->getUserIdByPublicationId($publicationId);
+    if ($user_id_to_send != $this_user_id) {
+      if ($UserController->wantEmailNotif($user_id_to_send) == 1) {
+
+        $user_email = $UserController->getEmail($user_id_to_send);
+        $user_email = $user_email['email'];
+        $user_username = $UserController->getUsername($user_id_to_send);
+        $user_username = $user_username['username'];
+        $guy_who_comment = $UserController->getUsername($this_user_id);
+        $guy_who_comment = $guy_who_comment['username'];
+        $subject = "Nouveau commentaire sur votre publication";
+        $message = "
+        <html>
+        <head><title>Nouveau commentaire</title></head>
+        <body>
+          <p>Bonjour <strong>$user_username</strong>,</p>
+          <p>Vous avez reçu un nouveau commentaire de la part de <strong>$guy_who_comment</strong> sur votre publication :</p>
+          <blockquote>$content</blockquote>
+          <p>Cordialement,<br>LaDeniseDe42.</p>
+        </body>
+        </html>
+        ";
+        $headers = "MIME-Version: 1.0" . "\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8" . "\r\n";
+        $headers .= "From: no-reply@camagru.com" . "\r\n";
+        mail($user_email, $subject, $message, $headers);
+      }
+    }
     if ($result['success']) {
-      // On suppose que l'ID est dans $result['comment_id']
       echo json_encode([
           "success" => true,
           "message" => "Commentaire ajouté",
-          "comment_id" => $result['comment_id'], // tu dois t'assurer que ton contrôleur renvoie cet ID
+          "comment_id" => $result['comment_id'],
           "username" => $_SESSION['username'],
           "created_at" => date("Y-m-d H:i:s")
       ]);
@@ -67,12 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment']) && $_POST['
       ]);
   }
   exit;
-    //   if ($result['success']) {
-  //     echo "Commentaire ajouté";
-  // } else {
-  //     echo "Erreur lors de l'ajout du commentaire : " . $result['message'];
-  // }
-  // exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteComment']) && $_POST['token'] == $csrf_token) {
@@ -80,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteComment']) && $_
   $user_id_to_send = $publicationController->getAuthorIdOfComment($commentId);
   $result = $publicationController->deleteComment($commentId, $user_id_to_send);
   if ($result['success']) {
-    // $message = "Publication supprimée avec succès.";
     echo json_encode([
       "success" => true,
       "message" => "Commentaire supprimé",
@@ -100,14 +120,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editComment']) && $_PO
   $newComment = $_POST['newContent'];
   $result = $publicationController->modifyComment($commentId, $this_user_id, $newComment);
   if ($result['success']) {
-    echo json_encode([  // Renvoi la réponse en JSON
+    echo json_encode([
         "success" => true,
         "message" => "Commentaire modifié avec succès.",
         "comment_id" => $commentId,
-        "new_content" => $newComment // Retourner le nouveau texte
+        "new_content" => $newComment
     ]);
 } else {
-    echo json_encode([  // En cas d'erreur, renvoi également un JSON
+    echo json_encode([
         "success" => false,
         "message" => "Erreur lors de la modification du commentaire."
     ]);

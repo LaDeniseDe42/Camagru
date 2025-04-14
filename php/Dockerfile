@@ -43,5 +43,10 @@ RUN touch /var/log/mail.log && \
 RUN chmod 600 /etc/msmtprc
 RUN chown www-data:www-data /etc/msmtprc
 
+# Configuration des limites de taille d'upload dans PHP
+RUN echo "upload_max_filesize=70M" > /usr/local/etc/php/conf.d/uploads.ini \
+ && echo "post_max_size=70M" >> /usr/local/etc/php/conf.d/uploads.ini \
+ && echo "memory_limit=128M" >> /usr/local/etc/php/conf.d/uploads.ini
+
 # Définir le répertoire de travail
 WORKDIR /var/www/html

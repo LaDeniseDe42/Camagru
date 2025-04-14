@@ -11,7 +11,7 @@
         <div class="comments">
             <h3>Commentaires</h3>
                 <?php if (empty($allcoments)): ?>
-                        <p>Aucun commentaire pour le moment.</p>
+                        <p id="noComment">Aucun commentaire pour le moment.</p>
                     <?php else: ?>
                     <?php foreach ($allcoments as $comment): ?>
                         <div class="comment">

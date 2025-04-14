@@ -172,6 +172,37 @@ const downloadLink = document.getElementById('downloadLink');
 const recordedVideo = document.getElementById('recordedVideo');
 let mediaRecorder;
 
+
+
+const publishButton = document.getElementById('publishButton');
+const cancelButton = document.getElementById('cancelButton');
+
+publishButton.addEventListener('click', () => {
+    const blob = document.getElementById('previewVideo').blobToUpload;
+    // const videoToHide = document.getElementById('videoHide');
+    // videoToHide.style.display = 'none';
+
+    const formData = new FormData();
+    formData.append('file', blob, 'video_' + Date.now() + '.webm');
+    formData.append('uploadVideo', '1');
+    formData.append('type', 'video');
+
+    fetch('gallery.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log('Vidéo envoyée avec succès !');
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Erreur envoi vidéo :', error);
+    });
+});
+
+
+
 if (startRecordingButton) {
     startRecordingButton.addEventListener('click', () => {
         if (!mediaStream) {
@@ -180,6 +211,7 @@ if (startRecordingButton) {
         }
 
         recordedChunks = [];
+        mediaRecorder = null;
         mediaRecorder = new MediaRecorder(mediaStream, { mimeType: 'video/webm' });
 
         mediaRecorder.ondataavailable = (event) => {
@@ -187,29 +219,47 @@ if (startRecordingButton) {
                 recordedChunks.push(event.data);
             }
         };
-
         mediaRecorder.onstop = () => {
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
-
-            const formData = new FormData();
-            formData.append('file', blob, 'video_' + Date.now() + '.webm');
-            formData.append('uploadVideo', '1');
-            formData.append('type', 'video');
-            fetch('gallery.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log(data);
-                location.reload(); // Recharger la page pour afficher la vidéo
-            })
-            .catch(error => console.error('Erreur:', error));
+            const videoURL = URL.createObjectURL(blob);
+            
+            const previewVideo = document.getElementById('previewVideo');
+            const previewControls = document.getElementById('previewControls');
+            previewControls.classList.add('show');
+            // const snpaBtn = document.getElementById('snap');
+            // snpaBtn.style.display = 'none';
+            // const videoHide = document.getElementById('video');
+            // videoHide.style.display = 'none';
+            // const fermerLaCamBtn = document.getElementById('closeCamButton');
+            // fermerLaCamBtn.style.display = 'none';
+            // const startRecordingButton = document.getElementById('startRecording');
+            // startRecordingButton.style.display = 'none';
+            // const stopRecordingButton = document.getElementById('stopRecording');
+            // stopRecordingButton.style.display = 'none';
+            // const downloadLink = document.getElementById('downloadLink');
+            // downloadLink.style.display = 'block';
+            
+            previewVideo.src = videoURL;
+            previewVideo.style.display = 'block';
+            previewVideo.style = "z-index: 99999";
+            // previewControls.style.display = 'block';
+        
+            // Stocke la vidéo pour publication future
+            previewVideo.blobToUpload = blob;
         };
+        
 
         mediaRecorder.start();
         startRecordingButton.disabled = true;
         stopRecordingButton.disabled = false;
+        // Arrêter automatiquement après 6 secondes
+        setTimeout(() => {
+            if (mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                startRecordingButton.disabled = false;
+                stopRecordingButton.disabled = true;
+            }
+        }, 6000);
     });
 }
 
@@ -221,3 +271,34 @@ if (stopRecordingButton) {
         stopRecordingButton.disabled = true;
     });
 }
+
+
+cancelButton.addEventListener('click', () => {
+    const previewControls = document.getElementById('previewControls');
+    const previewVideo = document.getElementById('previewVideo');
+    const videoToHide = document.getElementById('video');
+    const vidbtn = document.getElementById('videoControls');
+    const fermerLaCamBtn = document.getElementById('closeCamButton');
+    const startRecordingButton = document.getElementById('startRecording');
+    const stopRecordingButton = document.getElementById('stopRecording');
+    const downloadLink = document.getElementById('downloadLink');
+    const snpaBtn = document.getElementById('snap');
+
+    
+    previewVideo.pause();
+    previewVideo.removeAttribute('src');
+    previewVideo.load();
+    
+    // previewControls.style.display = 'none';
+    previewControls.classList.remove('show');
+    recordedChunks = [];
+    mediaRecorder = null;
+
+    // videoToHide.style.display = 'block';
+    // vidbtn.style.display = 'block';
+    // fermerLaCamBtn.style.display = 'block';
+    // startRecordingButton.style.display = 'block';
+    // stopRecordingButton.style.display = 'block';
+    // snpaBtn.style.display = 'block';
+    // downloadLink.style.display = 'none';
+});

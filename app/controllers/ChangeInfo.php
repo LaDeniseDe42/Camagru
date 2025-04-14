@@ -15,7 +15,7 @@ class ChangeInfo
         $this->con = $this->database->getConnection();
     }
 
-    public function updateUsername($username)
+    public function updateUsername($username, $userId)
     {
         if (!$this->basicVerif($username)) {
             return ['status' => 'error', 'message' => "Veuillez renseigner un nom d'utilisateur."];
@@ -26,17 +26,29 @@ class ChangeInfo
         if (!preg_match('/^[a-zA-Z0-9]+$/', $username)) {
             return ['status' => 'error', 'message' => "Le nom d'utilisateur ne peut contenir que des lettres et des chiffres."];
         }
+        // Vérifier si le nom d'utilisateur existe déjà
+        $query = "SELECT * FROM users WHERE username = :username";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            return ['status' => 'error', 'message' => "Ce nom d'utilisateur est déjà utilisé."];
+        }
 
         $query = "UPDATE users SET username = :username WHERE id = :id";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':id', $_SESSION['user_id']);
 
-        if ($stmt->execute()) {
-            $_SESSION['username'] = $username;
-            return ['status' => 'success', 'message' => "Nom d'utilisateur mis à jour avec succès."];
-        } else {
-            return ['status' => 'error', 'message' => "Erreur lors de la mise à jour."];
+        try {
+            if ($stmt->execute()) {
+                $_SESSION['username'] = $username;
+                return ['status' => 'success', 'message' => "Nom d'utilisateur mis à jour avec succès."];
+            } else {
+                return ['status' => 'error', 'message' => "Erreur lors de la mise à jour."];
+            }
+        } catch (PDOException $e) {
+            return ['status' => 'error', 'message' => "Erreur SQL : " . $e->getMessage()];
         }
     }
 
@@ -132,6 +144,27 @@ class ChangeInfo
     private function basicVerif($variable)
     {
         return !empty($variable);
+    }
+
+    public function wantEmailNotif($user_id) {
+        $query = "SELECT notifications FROM users WHERE id = :id";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(':id', $user_id);
+        $stmt->execute();
+        return $stmt->fetchColumn(); // Retourne uniquement la valeur de la colonne "notifications"
+    }
+
+    public function updateNotif($want_email_notif) {
+        $query = "UPDATE users SET notifications = :notifications WHERE id = :id";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(':notifications', $want_email_notif);
+        $stmt->bindParam(':id', $_SESSION['user_id']);
+
+        if ($stmt->execute()) {
+            return ['status' => 'success', 'message' => "Préférences de notification mises à jour avec succès."];
+        } else {
+            return ['status' => 'error', 'message' => "Erreur lors de la mise à jour."];
+        }
     }
 }
 ?>

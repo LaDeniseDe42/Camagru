@@ -101,6 +101,10 @@ class AuthController {
         }
     }
 
+    public function getConnection() {
+        return $this->database->getConnection();
+    }
+
     public function resend_pass($email)
 {
     if (empty($email)) {
@@ -289,6 +293,33 @@ class AuthController {
             return ['status' => 'error', 'message' => "Mot de passe incorrect."];
         }
     }
+    public function getEmail($user_id) {
+        $con = $this->database->getConnection();
+        $query = "SELECT email FROM users WHERE id = :id";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':id', $user_id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC); 
+    }
+
+    public function getUsername($user_id) {
+        $con = $this->database->getConnection();
+        $query = "SELECT username FROM users WHERE id = :id";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':id', $user_id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC); 
+    }
+
+    public function wantEmailNotif($user_id) {
+        $con = $this->database->getConnection();
+        $query = "SELECT notifications FROM users WHERE id = :id";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':id', $user_id);
+        $stmt->execute();
+        return $stmt->fetchColumn(); // Retourne uniquement la valeur de la colonne "notifications"
+    }
+
 }
 
 ?>

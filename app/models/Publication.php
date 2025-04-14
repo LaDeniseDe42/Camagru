@@ -105,6 +105,13 @@ class Publication {
       }
   }
 
+  public function getPublicationById($id) {
+    $stmt = $this->dbConnection->prepare("SELECT * FROM publications WHERE id = ?");
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
   }
   
   ?>

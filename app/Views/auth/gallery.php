@@ -37,17 +37,12 @@
                 <?php endif; ?>
                 
                 <!-- Afficher les likes et dislikes -->
-                <form action="gallery.php" method="POST">
-                    <input type="hidden" name="publication_id" value="<?= htmlspecialchars($publication['id']) ?>">
-                    
-                    <button type="submit" name="like" class="<?= ($userReaction === 'like') ? 'active' : '' ?>">
-                        👍 <?= htmlspecialchars($publication['nb_likes']) ?>
-                    </button>
-                    
-                    <button type="submit" name="dislike" class="<?= ($userReaction === 'dislike') ? 'active' : '' ?>">
-                        👎 <?= htmlspecialchars($publication['nb_dislikes']) ?>
-                    </button>
-                </form>
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                <input type="hidden" name="publication_id" value="<?= htmlspecialchars($publication['id']) ?>">
+                <div class="reaction-buttons" data-id="<?= $publication['id'] ?>">
+                    <button class="like-button <?= ($userReaction === 'like') ? 'active' : '' ?>">👍 <?= $publication['nb_likes'] ?></button>
+                    <button class="dislike-button <?= ($userReaction === 'dislike') ? 'active' : '' ?>">👎 <?= $publication['nb_dislikes'] ?></button>
+                </div>
             </div>
         <?php endforeach; ?>
     </div>
@@ -88,7 +83,7 @@
             <option value="hC">Choipeaux magique</option>
         </select>
 
-    <div style="position: relative; width: 640px; height: 480px;">
+    <div id="videoHide" style="position: relative; width: 640px; height: 480px;">
         <video id="video" width="640" height="480" autoplay></video>
         <img id="filterImage" src="" style="display: none;">
         <video id="recordedVideo" controls style="display: none;"></video>
@@ -102,6 +97,7 @@
     </div>
 </div>
     
+
 <div id="photoModal" class="modal" style="display:none;">
     <div class="modal-content">
         <h3>Prévisualisation de la photo</h3>
@@ -114,5 +110,14 @@
     </div>
 </div>
 
+
+
 <?php endif; ?>
 
+<div id="previewControls">
+    <video id="previewVideo" controls></video>
+    <div>
+        <button id="publishButton">Publier</button>
+        <button id="cancelButton">Annuler</button>
+    </div>
+</div>

@@ -37,7 +37,7 @@ class PublicationController {
 
     public function uploadPublication($userId, $file, $type) {
         // $this->publicationModel->uploadPublication($userId, $file, $type);
-        $allowedTypes = ['photo' => ['jpg', 'jpeg', 'png'], 'video' => ['mp4', 'avi', 'mov', 'webm']];
+        $allowedTypes = ['photo' => ['jpg', 'jpeg', 'png', 'gif'], 'video' => ['mp4', 'avi', 'mov', 'webm']];
         if (!isset($allowedTypes[$type])) {
             return ['success' => false, 'message' => 'Type de fichier non valide.'];
         }
@@ -45,6 +45,11 @@ class PublicationController {
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($extension, $allowedTypes[$type])) {
             return ['success' => false, 'message' => 'Extension non autorisée.'];
+        }
+
+        $maxSize = 10 * 1024 * 1024;
+        if ($file['size'] > $maxSize) {
+            return ['success' => false, 'message' => 'Fichier trop volumineux. Taille maximale : 10 Mo.'];
         }
         $uploadDir = "/gallery/$userId/$type/";
         if (!is_dir($uploadDir)) {
@@ -59,7 +64,7 @@ class PublicationController {
             $stmt->execute([$userId, $type, $filename, $filepath]);
             return ['success' => true, 'message' => 'Publication envoyée.', 'filename' => $filename];
         }
-        return ['success' => false, 'message' => 'Erreur lors du téléchargement.'];
+        return ['success' => false, 'message' => 'Erreur lors du téléchargement. userId : ' . $userId . ' file: ' . $file['name'] . ' type: ' . $type . ' filepath: ' . $filepath . ' $file[tmp_name]=  ' . $file['tmp_name']];
     }
 
     public function deletePublication($publicationId, $userId) {
@@ -71,7 +76,8 @@ class PublicationController {
         if (!in_array($reaction, ['like', 'dislike'])) {
             return false;
         }
-        $this->publicationModel->reactToPub($userId, $publicationId, $reaction);
+        $result = $this->publicationModel->reactToPub($userId, $publicationId, $reaction);
+        return $this->getReactionData($publicationId, $userId);
     }
     
     public function getAllComments($publicationId) {
@@ -101,6 +107,17 @@ class PublicationController {
     public function modifyComment($commentId, $userId, $newContent) {
         return $this->publicationModel->modifyComment($commentId, $userId, $newContent);
     }
+
+    public function getReactionData($publicationId, $userId) {
+        $stmt = $this->publicationModel->getPublicationById($publicationId);
+        $reaction = $this->getUserReaction($publicationId, $userId);
+        return [
+            'nb_likes' => $stmt['nb_likes'],
+            'nb_dislikes' => $stmt['nb_dislikes'],
+            'user_reaction' => $reaction,
+        ];
+    }
+    
 }
 
 

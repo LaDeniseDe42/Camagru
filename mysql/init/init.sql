@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
     is_confirmed TINYINT(1) DEFAULT 0,
     house ENUM('Gryffondor', 'Poufsouffle', 'Serdaigle', 'Serpentard', 'Moldu', 'Crakmol') DEFAULT 'Moldu',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    notifications BOOLEAN DEFAULT TRUE, 
+    notifications BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS publications (

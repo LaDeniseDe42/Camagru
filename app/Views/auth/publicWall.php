@@ -1,28 +1,28 @@
 
-
-<div class=<?php echo $sub_house ?>>
-    <p> Bienvenue <?php echo htmlspecialchars($username); ?> </p>
-    <p> ici, tu peux partager tes photos avec le monde entier ! </p>
-    <form action="publicWall.php" method="POST" enctype="multipart/form-data">
-        <input type="file" name="photo" accept="image/*" required>
-        <button type="submit">Uploader</button>
-    </form>
-</div>
-
-
 <div class=<?php echo $sub_house ?>>
     <!-- ici afficher une zone scrollable avec les publications les plus recente des differents user -->
     <h2>Publications</h2>
     <div class="publications">
-    <!-- sous chaque plublication afficher le nom de l'utilisateur et la date de publication -->
-    </div>  
+        <?php foreach ($allPublications as $publication): ?>
+            <div class="publication" data-id="<?= $publication['id'] ?>">
+                <?php if ($publication['type'] === 'photo'): ?>
+                    <a href="media.php?user=<?= urlencode($publication["user_id"]) ?>&file=<?= urlencode($publication['filepath']) ?>">
+                    <img src="<?= htmlspecialchars($publication['filepath']) ?>" alt="<?= htmlspecialchars($publication['filename']) ?>" style="width:100%">
+                    </a>
+                <?php else: ?>
+                    <a href="media.php?user=<?= $publication['user_id'] ?>&file=<?= urlencode($publication['filepath']) ?>">
+                    <video width="100%" controls>
+                            <source src="<?= htmlspecialchars($publication['filepath']) ?>" type="video/webm">
+                    </video>
+                    </a>
+                <?php endif ?>
+                <a href="gallery.php?user=<?= $publication['user_id'] ?>">
+                <p>Posté par : <?php echo htmlspecialchars($publication['username']); ?></p>
+                </a>
+                <p>Le : <?php echo htmlspecialchars($publication['uploaded_at']); ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div id="more-publications"></div>
+    <button id="loadMoreBtn">Voir plus</button>
 </div>
-
-
-
-<!-- <div class="container">
-        <form action="publicWall.php" method="POST" enctype="multipart/form-data">
-            <input type="file" name="photo" accept="image/*" required>
-            <button type="submit">Uploader</button>
-        </form>
-</div> -->

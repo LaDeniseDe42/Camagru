@@ -81,6 +81,7 @@
              <option value="titan">Titan</option>
             <option value="wanted">Wanted</option>
             <option value="hC">Choipeaux magique</option>
+            <option value="harry">Vif d'or</option>
         </select>
 
     <div id="videoHide" style="position: relative; width: 640px; height: 480px;">

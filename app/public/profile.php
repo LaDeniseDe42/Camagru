@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json');
+    // header('Content-Type: application/json');
     if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         echo json_encode(['status' => 'error', 'message' => 'Token CSRF invalide.']);
         exit;

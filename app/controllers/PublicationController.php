@@ -15,6 +15,48 @@ class PublicationController {
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    // public function getAllPublications() {
+    //     $stmt = $this->dbConnection->prepare("SELECT * FROM publications ORDER BY uploaded_at DESC");
+    //     $stmt->execute();
+    //     $publications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //     foreach ($publications as &$publication) {
+    //         $ownerStmt = $this->dbConnection->prepare("SELECT username FROM users WHERE id = ?");
+    //         $ownerStmt->execute([$publication['user_id']]);
+    //         $publication['username'] = $ownerStmt->fetchColumn();
+    //     }
+
+    //     return $publications;
+    // }
+    public function getNewPublications(array $excludedIds = [], int $limit = 5): array {
+        $placeholders = implode(',', array_fill(0, count($excludedIds), '?'));
+    
+        $sql = "SELECT p.*, u.username 
+                FROM publications p
+                JOIN users u ON p.user_id = u.id ";
+    
+        if (!empty($excludedIds)) {
+            $sql .= "WHERE p.id NOT IN ($placeholders) ";
+        }
+    
+        $sql .= "ORDER BY p.uploaded_at DESC LIMIT ?";
+    
+        $stmt = $this->dbConnection->prepare($sql);
+    
+        // Bind les ids exclus
+        foreach ($excludedIds as $i => $id) {
+            $stmt->bindValue($i + 1, (int)$id, PDO::PARAM_INT);
+        }
+    
+        // Bind la limite à la fin
+        $stmt->bindValue(count($excludedIds) + 1, $limit, PDO::PARAM_INT);
+    
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    
     
     public function getPublicationIdWithFilename($filename) {
         $stmt = $this->dbConnection->prepare("SELECT id FROM publications WHERE filename = ?");

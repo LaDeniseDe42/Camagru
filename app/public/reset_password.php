@@ -20,8 +20,7 @@ if (isset($_GET["token"]) && $_SERVER["REQUEST_METHOD"] === "POST") {
     if ($password !== $confirm_password) {
         echo "Les mots de passe ne correspondent pas.";
         exit();
-    }
-    else {
+    } else {
         $result = $authController->reset_password($password, $_GET["token"]);
         if ($result['status'] === 'success') {
             $successMessage = "Votre mot de passe a été réinitialisé avec succès.";
@@ -36,36 +35,41 @@ if (isset($_GET["token"]) && $_SERVER["REQUEST_METHOD"] === "POST") {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>MDP oublie</title>
     <link rel="stylesheet" href="/../assets/css/logister.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
 </head>
+
 <body>
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
     <div class="container">
-    <form method="post">
-        <input type="password" name="password" placeholder="Nouveau mot de passe" required>
-        <input type="password" name="confirm_password" placeholder="Confirmez le mot de passe" required>
-        <button type="submit">Réinitialiser</button>
-    </form>
-         <!-- Message de succès -->
-         <?php if (!empty($successMessage)) : ?>
-        <div class="error-container">
-            <p class="success-message"><?= htmlspecialchars($successMessage); ?></p>
-        </div>
-    <?php endif; ?>
+        <form method="post">
+            <input type="password" name="password" placeholder="Nouveau mot de passe" required>
+            <input type="password" name="confirm_password" placeholder="Confirmez le mot de passe" required>
+            <button type="submit">Réinitialiser</button>
+        </form>
+        <!-- Message de succès -->
+        <?php if (!empty($successMessage)): ?>
+            <div class="error-container">
+                <p class="success-message"><?= htmlspecialchars($successMessage); ?></p>
+            </div>
+        <?php endif; ?>
 
-    <!-- Message d'erreur -->
-    <?php if (!empty($errorMessage)) : ?>
-        <div class="error-container">
-            <p class="error-message"><?= htmlspecialchars($errorMessage); ?></p>
-        </div>
-    <?php endif; ?>
-</div>
-<br>
-</div>
+        <!-- Message d'erreur -->
+        <?php if (!empty($errorMessage)): ?>
+            <div class="error-container">
+                <p class="error-message"><?= htmlspecialchars($errorMessage); ?></p>
+            </div>
+        <?php endif; ?>
+    </div>
+    <br>
+    </div>
     <footer>
+        <p>&copy; 2025 Camagru. Tous droits réservés par MOI.</p>
     </footer>
+    <script src="/../assets/js/navScript.js"></script>
 </body>
+
 </html>

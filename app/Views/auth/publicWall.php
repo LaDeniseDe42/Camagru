@@ -1,28 +1,45 @@
-
 <div class=<?php echo $sub_house ?>>
-    <!-- ici afficher une zone scrollable avec les publications les plus recente des differents user -->
-    <h2>Publications</h2>
+    <?php if ($isLog): ?>
+        <h2>Publications</h2>
+    <?php else: ?>
+        <h2>Voici une partie des trésors auquel vous pourriez acceder en vous connectant </h2>
+    <?php endif; ?>
     <div class="publications">
         <?php foreach ($allPublications as $publication): ?>
             <div class="publication" data-id="<?= $publication['id'] ?>">
                 <?php if ($publication['type'] === 'photo'): ?>
-                    <a href="media.php?user=<?= urlencode($publication["user_id"]) ?>&file=<?= urlencode($publication['filepath']) ?>">
-                    <img src="<?= htmlspecialchars($publication['filepath']) ?>" alt="<?= htmlspecialchars($publication['filename']) ?>" style="width:100%">
+                    <a
+                        href="media.php?user=<?= urlencode($publication["user_id"]) ?>&file=<?= urlencode($publication['filepath']) ?>">
+                        <img src="<?= htmlspecialchars($publication['filepath']) ?>"
+                            alt="<?= htmlspecialchars($publication['filename']) ?>" style="width:75%">
                     </a>
                 <?php else: ?>
                     <a href="media.php?user=<?= $publication['user_id'] ?>&file=<?= urlencode($publication['filepath']) ?>">
-                    <video width="100%" controls>
+                        <video width="75%" controls>
                             <source src="<?= htmlspecialchars($publication['filepath']) ?>" type="video/webm">
-                    </video>
+                        </video>
                     </a>
-                <?php endif ?>
+                </div>
+            <?php endif ?>
+            <?php if ($isLog): ?>
+                <div class="reaction-buttons" data-id="<?= $publication['id'] ?>">
+                    <button class="like-button <?= ($userReaction === 'like') ? 'active' : '' ?>">👍
+                        <?= $publication['nb_likes'] ?></button>
+                    <button class="dislike-button <?= ($userReaction === 'dislike') ? 'active' : '' ?>">👎
+                        <?= $publication['nb_dislikes'] ?></button>
+                </div>
                 <a href="gallery.php?user=<?= $publication['user_id'] ?>">
-                <p>Posté par : <?php echo htmlspecialchars($publication['username']); ?></p>
+                    <p>Posté par : <?php echo htmlspecialchars($publication['username']); ?></p>
                 </a>
                 <p>Le : <?php echo htmlspecialchars($publication['uploaded_at']); ?></p>
             </div>
-        <?php endforeach; ?>
-    </div>
+        <?php endif ?>
+    <?php endforeach; ?>
+</div>
+<?php if ($isLog): ?>
     <div id="more-publications"></div>
     <button id="loadMoreBtn">Voir plus</button>
+<?php else: ?>
+    <p>Connectez-vous pour voir plus de publications !</p>
+<?php endif; ?>
 </div>

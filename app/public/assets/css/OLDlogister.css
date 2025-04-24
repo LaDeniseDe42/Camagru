@@ -1,35 +1,23 @@
-/* === Variables globales === */
-:root {
-  --color-primary: #4caf50;
-  --color-primary-hover: #45a049;
-  --color-bg: #f4f4f9;
-  --color-text: #333;
-  --color-white: #ffffff;
-  --color-error: red;
-  --color-success: green;
-  --font-base: "Arial", sans-serif;
-}
-
-/* === Reset et base === */
+/* Styles de base */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: var(--font-base);
+  font-family: "Arial", sans-serif;
 }
 
+/* Mise en page générale */
 body {
-  background-color: var(--color-bg);
+  background-color: #f4f4f9;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  color: var(--color-text);
-  padding: 20px;
+  color: #333;
 }
 
-/* === Conteneur principal === */
+/* Conteneur principal */
 .container {
   display: flex;
   flex-direction: column;
@@ -38,13 +26,14 @@ body {
   max-width: 400px;
 }
 
-/* === Formulaire === */
+/* Formulaire */
 form {
-  background-color: var(--color-white);
+  background-color: #ffffff;
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
+  box-sizing: border-box;
   text-align: center;
 }
 
@@ -65,16 +54,16 @@ input[type="password"] {
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus {
-  border-color: var(--color-primary);
+  border-color: #4caf50;
   outline: none;
 }
 
-/* === Bouton === */
+/* Bouton */
 button {
   width: 100%;
   padding: 12px;
-  background-color: var(--color-primary);
-  color: var(--color-white);
+  background-color: #4caf50;
+  color: white;
   border: none;
   border-radius: 4px;
   font-size: 16px;
@@ -83,10 +72,10 @@ button {
 }
 
 button:hover {
-  background-color: var(--color-primary-hover);
+  background-color: #45a049;
 }
 
-/* === Liens === */
+/* Lien d'inscription */
 .login-link {
   text-align: center;
   font-size: 14px;
@@ -94,45 +83,45 @@ button:hover {
 }
 
 .login-link a {
-  color: var(--color-primary);
+  color: #4caf50;
   text-decoration: none;
 }
 
-/* === Messages d'état === */
-.error-container,
-.success-message {
+/* Message d'erreur */
+.error-container {
   display: flex;
   justify-content: center;
   width: 100%;
   margin-top: 10px;
 }
 
-.error-message,
-.success-message {
+.error-message {
+  background-color: #ffe6e6;
   padding: 10px;
+  border: 1px solid red;
   border-radius: 4px;
   text-align: center;
   font-size: 14px;
+  color: red;
+  width: 100%;
+  max-width: 400px;
+}
+.success-message {
+  background-color: #e6ffe6;
+  padding: 10px;
+  border: 1px solid green;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  color: green;
   width: 100%;
   max-width: 400px;
 }
 
-.error-message {
-  background-color: #ffe6e6;
-  border: 1px solid var(--color-error);
-  color: var(--color-error);
-}
-
-.success-message {
-  background-color: #e6ffe6;
-  border: 1px solid var(--color-success);
-  color: var(--color-success);
-}
-
-/* === Footer === */
+/* Footer */
 footer {
   background-color: #333;
-  color: var(--color-white);
+  color: white;
   width: 100%;
   padding: 10px;
   text-align: center;
@@ -141,15 +130,4 @@ footer {
   bottom: 0;
   left: 0;
   box-sizing: border-box;
-}
-
-/* === Responsive === */
-@media (max-width: 480px) {
-  form {
-    padding: 20px;
-  }
-
-  button {
-    font-size: 14px;
-  }
 }

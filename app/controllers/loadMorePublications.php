@@ -9,7 +9,7 @@ $existingIds = $input['existingIds'] ?? [];
 
 $authController = new AuthController();
 $con = $authController->getConnection();
-$publicationController = new PublicationController($con); // adapte si besoin
+$publicationController = new PublicationController($con);
 
 $newPublications = $publicationController->getNewPublications($existingIds, 5);
 echo json_encode($newPublications);

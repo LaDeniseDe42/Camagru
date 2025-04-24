@@ -17,7 +17,7 @@ require_once __DIR__ . "/../models/User.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $_POST['email'];
-    
+
     $result = $authController->resend_pass($email);
     if ($result['status'] === 'success') {
         $successMessage = "Un email a été envoyé. Veuillez vérifier votre boîte de réception pour reinitialiser le mdp.";
@@ -31,15 +31,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>MDP oublie</title>
     <link rel="stylesheet" href="/../assets/css/logister.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
 </head>
+
 <body>
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
     <?php include __DIR__ . "/../Views/auth/forgot_password.php"; ?>
     <footer>
+        <p>&copy; 2025 Camagru. Tous droits réservés par MOI.</p>
     </footer>
+    <script src="/../assets/js/navScript.js"></script>
 </body>
+
 </html>

@@ -15,6 +15,7 @@ $username = $_SESSION['username'] ?? null;
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +23,7 @@ $username = $_SESSION['username'] ?? null;
     <link rel="stylesheet" href="/../assets/css/styles.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
 </head>
+
 <body>
     <?php include(__DIR__ . '/../Views/auth/navbar.php'); ?>
     <div class="background-slider"></div>
@@ -29,7 +31,7 @@ $username = $_SESSION['username'] ?? null;
         <h1>Bienvenue sur Camagru</h1>
     </header>
 
-    
+
 
     <main>
         <?php if ($is_logged_in): ?>
@@ -42,8 +44,10 @@ $username = $_SESSION['username'] ?? null;
     </main>
 
     <footer>
-        <p>&copy; 2025 Camagru. Tous droits réservés.</p>
+        <p>&copy; 2025 Camagru. Tous droits réservés par MOI.</p>
     </footer>
     <script src="/../assets/js/slider.js"></script>
+    <script src="/../assets/js/navScript.js"></script>
 </body>
+
 </html>

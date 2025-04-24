@@ -5,8 +5,7 @@ require_once __DIR__ . "/../controllers/AuthController.php";
 require_once __DIR__ . "/../controllers/PublicationController.php";
 $message = "";
 
-if (!isLoggedIn())
-{
+if (!isLoggedIn()) {
   header("Location: login.php");
   exit();
 }
@@ -35,11 +34,13 @@ if (isset($_GET['user']) && !empty($_GET['user']) && $_GET['user'] != $_SESSION[
   }
   $this_username = $this_user['username'];
   $this_house = $this_user['house'];
+  $this_sub_house = strtolower($this_house);
 } else {
   $this_user_id = $_SESSION['user_id'];
   $this_username = $_SESSION['username'];
   $this_house = $_SESSION['house'];
   $this_user = $_SESSION['user'];
+  $this_sub_house = strtolower($this_house);
 }
 $csrf_token = $_SESSION['csrf_token'];
 
@@ -47,22 +48,22 @@ $publicationController = new PublicationController($con);
 $publicationId = $publicationController->getPublicationIdWithFilename($file);
 $allcoments = $publicationController->getAllComments($publicationId);
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment']) && $_POST['token'] == $csrf_token && !isset($_POST['editComment'])) {
-    $content = $_POST['comment'];
-    $result = $publicationController->addComment($this_user_id, $publicationId, $content);
-    
-    //envoyer un mail au proprietaire de la publication
-    $user_id_to_send = $publicationController->getUserIdByPublicationId($publicationId);
-    if ($user_id_to_send != $this_user_id) {
-      if ($UserController->wantEmailNotif($user_id_to_send) == 1) {
+  $content = $_POST['comment'];
+  $result = $publicationController->addComment($this_user_id, $publicationId, $content);
 
-        $user_email = $UserController->getEmail($user_id_to_send);
-        $user_email = $user_email['email'];
-        $user_username = $UserController->getUsername($user_id_to_send);
-        $user_username = $user_username['username'];
-        $guy_who_comment = $UserController->getUsername($this_user_id);
-        $guy_who_comment = $guy_who_comment['username'];
-        $subject = "Nouveau commentaire sur votre publication";
-        $message = "
+  //envoyer un mail au proprietaire de la publication
+  $user_id_to_send = $publicationController->getUserIdByPublicationId($publicationId);
+  if ($user_id_to_send != $this_user_id) {
+    if ($UserController->wantEmailNotif($user_id_to_send) == 1) {
+
+      $user_email = $UserController->getEmail($user_id_to_send);
+      $user_email = $user_email['email'];
+      $user_username = $UserController->getUsername($user_id_to_send);
+      $user_username = $user_username['username'];
+      $guy_who_comment = $UserController->getUsername($this_user_id);
+      $guy_who_comment = $guy_who_comment['username'];
+      $subject = "Nouveau commentaire sur votre publication";
+      $message = "
         <html>
         <head><title>Nouveau commentaire</title></head>
         <body>
@@ -73,25 +74,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment']) && $_POST['
         </body>
         </html>
         ";
-        $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-Type: text/html; charset=UTF-8" . "\r\n";
-        $headers .= "From: no-reply@camagru.com" . "\r\n";
-        mail($user_email, $subject, $message, $headers);
-      }
+      $headers = "MIME-Version: 1.0" . "\r\n";
+      $headers .= "Content-Type: text/html; charset=UTF-8" . "\r\n";
+      $headers .= "From: no-reply@camagru.com" . "\r\n";
+      mail($user_email, $subject, $message, $headers);
     }
-    if ($result['success']) {
-      echo json_encode([
-          "success" => true,
-          "message" => "Commentaire ajouté",
-          "comment_id" => $result['comment_id'],
-          "username" => $_SESSION['username'],
-          "created_at" => date("Y-m-d H:i:s")
-      ]);
+  }
+  if ($result['success']) {
+    echo json_encode([
+      "success" => true,
+      "message" => "Commentaire ajouté",
+      "comment_id" => $result['comment_id'],
+      "username" => $_SESSION['username'],
+      "created_at" => date("Y-m-d H:i:s")
+    ]);
   } else {
-      echo json_encode([
-          "success" => false,
-          "message" => "Erreur lors de l'ajout du commentaire : " . $result['message']
-      ]);
+    echo json_encode([
+      "success" => false,
+      "message" => "Erreur lors de l'ajout du commentaire : " . $result['message']
+    ]);
   }
   exit;
 }
@@ -105,14 +106,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteComment']) && $_
       "success" => true,
       "message" => "Commentaire supprimé",
       "comment_id" => $commentId
-  ]);
-} else {
-  echo json_encode([
+    ]);
+  } else {
+    echo json_encode([
       "success" => false,
       "message" => "Erreur lors de la suppression du commentaire."
-  ]);
-}
-exit;
+    ]);
+  }
+  exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editComment']) && $_POST['token'] == $csrf_token) {
@@ -121,36 +122,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editComment']) && $_PO
   $result = $publicationController->modifyComment($commentId, $this_user_id, $newComment);
   if ($result['success']) {
     echo json_encode([
-        "success" => true,
-        "message" => "Commentaire modifié avec succès.",
-        "comment_id" => $commentId,
-        "new_content" => $newComment
+      "success" => true,
+      "message" => "Commentaire modifié avec succès.",
+      "comment_id" => $commentId,
+      "new_content" => $newComment
     ]);
-} else {
+  } else {
     echo json_encode([
-        "success" => false,
-        "message" => "Erreur lors de la modification du commentaire."
+      "success" => false,
+      "message" => "Erreur lors de la modification du commentaire."
     ]);
-}
-exit;
+  }
+  exit;
 }
 
 ?>
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Media de <?= htmlspecialchars($this_username) ?></title>
-    <link rel="stylesheet" href="/../assets/css/profile.css">
-    <link rel="stylesheet" href="/../assets/css/navbar.css">
-    <link rel="stylesheet" href="/../assets/css/comment.css">
-  </head>
-  <body class="<?= htmlspecialchars($this_house) ?>">
-    <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
-    <?php include __DIR__ . '/../Views/auth/media.php'; ?>
-    
-    <footer></footer>
-    <script src="assets/js/modal.js"></script>
-    <script src="assets/js/comments.js"></script>
-  </body>
-  </html>
+
+<head>
+  <title>Media de <?= htmlspecialchars($this_username) ?></title>
+  <link rel="stylesheet" href="/../assets/css/profile.css">
+  <link rel="stylesheet" href="/../assets/css/navbar.css">
+  <link rel="stylesheet" href="/../assets/css/comment.css">
+  <link rel="stylesheet" href="/../assets/css/styles.css">
+</head>
+
+<body class="Theme-<?= htmlspecialchars($this_house) ?>">
+  <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
+  <?php include __DIR__ . '/../Views/auth/media.php'; ?>
+
+  <footer>
+    <p>&copy; 2025 Camagru. Tous droits réservés par MOI.</p>
+  </footer>
+  <script src="assets/js/modal.js"></script>
+  <script src="assets/js/comments.js"></script>
+  <script src="/../assets/js/navScript.js"></script>
+</body>
+
+</html>

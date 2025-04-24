@@ -39,9 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['status' => 'error', 'message' => $result['message']]);
             }
             exit;
-        }
-        else
-        {
+        } else {
             $username = trim($_POST['username']);
             $result = $change->updateUsername($username, $userId);
             if ($result['status'] === 'success') {
@@ -127,18 +125,24 @@ $want_email_notif = $want_email_notif == 1 ? 'Oui' : 'Non';
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Profil</title>
     <link rel="stylesheet" href="/../assets/css/profile.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
     <link rel="stylesheet" href="/../assets/css/modalProfile.css">
 </head>
-<body id="house" class="<?= htmlspecialchars($house) ?>">
+
+<body id="house" class="Theme-<?= htmlspecialchars($house) ?>">
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
     <?php include __DIR__ . '/../Views/auth/profile.php'; ?>
 
-    <footer></footer>
+    <footer>
+        <p>&copy; 2025 Camagru. Tous droits réservés par MOI.</p>
+    </footer>
     <script src="assets/js/modal.js"></script>
     <script src="assets/js/update_profile.js"></script>
+    <script src="assets/js/navScript.js"></script>
 </body>
+
 </html>

@@ -4,8 +4,9 @@
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Mot de passe" required>
         <input type="password" name="confirm_password" placeholder="Confirmez le mot de passe" required>
-        <select name="house" optional>
+        <select name="house">
             <option value="" disabled selected>Maison Harry Potter</option>
+            <option value="Crakmol" selected disabled hidden>Maison Harry Potter</option>
             <option value="gryffondor">Gryffondor</option>
             <option value="poufsouffle">Poufsouffle</option>
             <option value="serdaigle">Serdaigle</option>
@@ -21,14 +22,14 @@
     </div>
 
     <!-- Message de succès -->
-    <?php if (!empty($successMessage)) : ?>
+    <?php if (!empty($successMessage)): ?>
         <div class="error-container">
             <p class="success-message"><?= htmlspecialchars($successMessage); ?></p>
         </div>
     <?php endif; ?>
 
     <!-- Message d'erreur -->
-    <?php if (!empty($errorMessage)) : ?>
+    <?php if (!empty($errorMessage)): ?>
         <div class="error-container">
             <p class="error-message"><?= htmlspecialchars($errorMessage); ?></p>
         </div>

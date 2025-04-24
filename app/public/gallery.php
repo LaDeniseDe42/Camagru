@@ -5,8 +5,7 @@ require_once __DIR__ . "/../controllers/AuthController.php";
 require_once __DIR__ . "/../controllers/PublicationController.php";
 $message = "";
 
-if (!isLoggedIn())
-{
+if (!isLoggedIn()) {
     header("Location: login.php");
     exit();
 }
@@ -115,18 +114,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletePublication'])) 
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Galerie</title>
     <link rel="stylesheet" href="/../assets/css/profile.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
     <link rel="stylesheet" href="/../assets/css/galleryStyle.css">
 </head>
-<body class="<?= htmlspecialchars($this_house) ?>">
+
+<body class="Theme-<?= htmlspecialchars($this_house) ?>">
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
     <?php include __DIR__ . '/../Views/auth/gallery.php'; ?>
 
-    <footer></footer>
     <script src="assets/js/cam.js"></script>
     <script src="assets/js/update_gallery.js"></script>
+    <?php if ($my_profile): ?>
+        <script src="assets/js/uploadBasic.js"></script>
+    <?php endif; ?>
+    <script src="/../assets/js/navScript.js"></script>
+
+
+    <footer>
+        <p>&copy; 2025 Camagru. Tous droits réservés par MOI.</p>
+    </footer>
 </body>
+
 </html>

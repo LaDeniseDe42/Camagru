@@ -1,0 +1,236 @@
+/* Conteneur principal */
+.container {
+  /* margin-top: 10px; */
+  width: 90%;
+  max-width: 800px;
+  /* max-width: 50%; */
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 90vh;
+  overflow-y: auto; 
+  margin: 0 auto;
+}
+
+/* Section média (image/vidéo) */
+.container img, .container video {
+  /* margin-top: 2px; */
+  width: 100%;
+  max-width: 100%;
+  max-height: 60%;
+  height: auto;
+  object-fit: contain;  /* Préserve les proportions tout en remplissant l'espace */
+  margin: 0 auto;  /* Centre le média horizontalement */
+  display: block;  /* Permet au média d'être centré */
+}
+
+/* Section commentaires */
+.comments {
+  background-color: #f2e6e6;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;  /* Permet le défilement vertical des commentaires */
+}
+
+.comments h3 {
+  font-size: 1.3rem;
+  color: #333;
+  font-weight: 600;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.comment {
+  background-color: #ede2e2;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.comment strong {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+.comment p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.comment .timestamp {
+  font-size: 0.9rem;
+  color: #888;
+  display: block;
+  margin-top: 10px;
+}
+
+/* Formulaire de commentaire */
+textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  margin-top: 15px;
+  box-sizing: border-box;
+}
+
+textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Bouton de commentaire */
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.btnD {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 30%;
+  transition: background-color 0.3s ease;
+  top: 10%;
+  right: 70%;
+}
+
+#btnM {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  /* padding: 12px 20px; */
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 30%;
+  top: 60%;
+  right: 70%;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  /* Réduction de la largeur pour les petits écrans */
+  .container {
+      width: 95%;
+      padding: 15px;
+  }
+
+  /* Vidéo/Image en taille plus petite */
+  .container img, .container video {
+      width: 100%;
+      height: auto;
+  }
+
+  /* Section des commentaires plus grande */
+  .comments {
+      max-height: 300px;
+  }
+
+  /* Bouton de commentaire plus grand */
+  button {
+      font-size: 1.2rem;
+      padding: 15px;
+  }
+
+  /* Texte de commentaire légèrement plus grand */
+  .comment p {
+      font-size: 1.1rem;
+  }
+
+  .comment strong {
+      font-size: 1.2rem;
+  }
+
+  /* Texte placeholder et textarea */
+  textarea {
+      font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Très petite largeur d'écran */
+  .comments {
+      padding: 15px;
+  }
+
+  textarea {
+      font-size: 1rem;
+  }
+
+  button {
+      font-size: 1.1rem;
+      padding: 14px;
+  }
+}
+
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+.modal-content textarea {
+  width: 100%;
+  height: 100px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 1em;
+}
+
+.modal-content .close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}

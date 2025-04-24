@@ -1,26 +1,11 @@
-/* === Variables globales === */
-:root {
-  --color-overlay: rgba(0, 0, 0, 0.5);
-  --color-white: #ffffff;
-  --color-upload-btn: #07820d;
-  --color-upload-btn-hover: #056d0a;
-  --color-upload-filtered-btn: #007bff;
-  --color-upload-filtered-btn-hover: #0056b3;
-  --color-text-light: white;
-  --color-input-border: #ccc;
-  --font-size-small: 0.8em;
-  --border-radius: 10px;
-  --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* === Modal général === */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--color-overlay);
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Fond semi-transparent */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,10 +13,11 @@
   overflow: auto;
 }
 
+/* Contenu du modal */
 .modal-content {
-  background-color: var(--color-white);
+  background-color: white;
   padding: 20px;
-  border-radius: var(--border-radius);
+  border-radius: 10px;
   text-align: center;
   width: 70%;
   max-width: 700px;
@@ -39,64 +25,64 @@
   margin: auto;
 }
 
-/* === Divs d'interaction === */
+
 .divUpload,
 .divCam {
-  position: absolute;
   left: 1%;
   max-width: 16%;
-  font-size: var(--font-size-small);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: 0.8em;
   font-weight: bold;
-  color: var(--color-text-light);
+  color: white;
   margin: 10px 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  /* à adapter si nécessaire */
+  background-color: rgba(red, green, blue, alpha);
   padding: 10px;
   display: flex;
   flex-direction: column;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
 .divUpload {
+  position: absolute;
   top: 60%;
 }
 
 .divCam {
+  position: absolute;
   top: 30%;
 }
 
-/* === Vidéo et filtres === */
-#video,
-#filterImage {
+#video {
   position: absolute;
   top: 0;
   left: 0;
 }
 
 #filterImage {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
 }
 
-/* === Caméra === */
 #cameraContainer {
   display: none;
   position: fixed;
   top: 4px;
   bottom: 4px;
   left: 50%;
-  transform: translateX(-50%);
-  background: var(--color-white);
+  transform: translate(-50%, 0);
+  background: white;
   padding: 20px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
   z-index: 10000;
   overflow-y: auto;
 }
 
-/* === Formulaire dans upload === */
+
 .divUpload form {
   display: flex;
   flex-wrap: wrap;
@@ -108,7 +94,7 @@
   width: 100%;
 }
 
-/* === Aperçu vidéo (prévisualisation) === */
+
 #previewControls {
   display: none;
   position: fixed;
@@ -139,11 +125,12 @@
   font-size: 16px;
 }
 
-/* === Input fichier === */
+
+/* Style de l'input fichier */
 #fileInput {
   padding: 10px;
-  background-color: var(--color-upload-btn);
-  color: var(--color-text-light);
+  background-color: #07820d;
+  color: white;
   border: none;
   border-radius: 8px;
   font-weight: bold;
@@ -152,49 +139,46 @@
 }
 
 #fileInput:hover {
-  background-color: var(--color-upload-btn-hover);
+  background-color: #056d0a;
 }
 
-/* === Conteneur d'aperçu === */
+/* Conteneur de l'aperçu */
 #previewContainer {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.95);
   padding: 15px;
-  border-radius: var(--border-radius);
+  border-radius: 10px;
+  margin-top: 20px;
   text-align: center;
-  box-shadow: var(--box-shadow);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   width: 90%;
   max-width: 500px;
-  z-index: 10000;
 }
 
-/* === Select des filtres === */
+/* Select des filtres */
 #uploadFilterSelect {
   padding: 8px;
   border-radius: 6px;
   font-size: 14px;
-  margin: 10px 0;
-  border: 1px solid var(--color-input-border);
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
   width: 80%;
   max-width: 300px;
 }
 
-/* === Canvas d'aperçu === */
+/* Canvas de prévisualisation */
 #uploadCanvas {
   margin-top: 10px;
   max-width: 100%;
-  border: 2px solid var(--color-input-border);
+  border: 2px solid #ccc;
   border-radius: 8px;
 }
 
-/* === Bouton d'upload d'image filtrée === */
+/* Bouton d'upload de l’image filtrée */
 #uploadFilteredImage {
   margin-top: 15px;
-  background-color: var(--color-upload-filtered-btn);
-  color: var(--color-white);
+  background-color: #007bff;
+  color: white;
   border: none;
   padding: 10px 15px;
   border-radius: 8px;
@@ -205,24 +189,5 @@
 }
 
 #uploadFilteredImage:hover {
-  background-color: var(--color-upload-filtered-btn-hover);
-}
-
-/* === Responsive === */
-@media (max-width: 768px) {
-  .modal-content {
-    width: 90%;
-  }
-
-  .divUpload,
-  .divCam {
-    max-width: 90%;
-    left: 5%;
-    font-size: 0.9em;
-  }
-
-  #cameraContainer {
-    width: 90%;
-    max-height: 90%;
-  }
+  background-color: #0056b3;
 }

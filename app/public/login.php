@@ -16,9 +16,9 @@ $message = "";
 // Vérifie si le formulaire a été soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupère les données du formulaire
-    $emailOrUsername= $_POST['email'];
+    $emailOrUsername = $_POST['email'];
     $password = $_POST['password'];
-    
+
     $result = $authController->login($emailOrUsername, $password);
     if ($result['status'] === 'success') {
         $_SESSION['user'] = $emailOrUsername; // Stocke l'email ou l'username en session
@@ -38,15 +38,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Connexion</title>
     <link rel="stylesheet" href="/../assets/css/logister.css">
     <link rel="stylesheet" href="/../assets/css/navbar.css">
 </head>
+
 <body>
     <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
     <?php include __DIR__ . "/../Views/auth/login.php"; ?>
     <footer>
+        <p>&copy; 2025 Camagru. Tous droits réservés par MOI.</p>
     </footer>
+    <script src="/../assets/js/navScript.js"></script>
 </body>
+
 </html>

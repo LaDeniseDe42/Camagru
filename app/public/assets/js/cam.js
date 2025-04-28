@@ -43,7 +43,9 @@ if (startCamButton) {
     startCamButton.addEventListener('click', () => {
         startCamButton.style.display = 'none';
         cameraContainer.style.display = 'block';
-
+        if (startRecordingButton.disabled = true) {
+            startRecordingButton.disabled = false;
+        }
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then(stream => {
                 mediaStream = stream; // Stocke le flux avec vidéo et audio
@@ -159,12 +161,6 @@ if (cToiButton) {
     closeCamButton.addEventListener('click', () => {
         cameraContainer.style.display = 'none';
         startCamButton.style.display = 'block';
-        // const filterSelect = document.getElementById('filterSelect');
-        // const imageFilterSelect = document.getElementById('imageFilterSelect');
-        // if (filterSelect.value === 'none' && imageFilterSelect.value === 'none') {
-        //     imageFilterSelect.style.display = 'block';
-        //     filterSelect.style.display = 'block';
-        // }
         video.srcObject.getTracks().forEach(track => track.stop());
     }
     );
@@ -203,21 +199,19 @@ publishButton.addEventListener('click', () => {
 });
 
 
-
+let stopRecordingTimeoutId;
 if (startRecordingButton) {
     startRecordingButton.addEventListener('click', () => {
         if (!mediaStream) {
             console.error("Aucun flux disponible !");
             return;
         }
-        //retirer les btn filtre
-        // const filterSelect = document.getElementById('filterSelect');
-        // const imageFilterSelect = document.getElementById('imageFilterSelect');
-        // filterSelect.style.display = 'none';
-        // filterSelect.value = 'none';
-        // imageFilterSelect.value = 'none';
-        // imageFilterSelect.style.display = 'none';
-        // Cacher le bouton "Prendre une photo"
+        filterImage.style.display = 'none';
+        let saveFilterSelect = document.getElementById('filterSelect');
+        video.style = 'none';
+        filterSelect.style.display = 'none';
+        imageFilterSelect.style.display = 'none';
+
         const snapButton = document.getElementById('snap');
         snapButton.style.display = 'none';
 
@@ -231,6 +225,15 @@ if (startRecordingButton) {
             }
         };
         mediaRecorder.onstop = () => {
+            if (stopRecordingTimeoutId) {
+                clearTimeout(stopRecordingTimeoutId);
+                stopRecordingTimeoutId = null;
+            }
+            video.style.filter = saveFilterSelect.value;
+            filterImage.style.display = 'block';
+            snapButton.style.display = 'block';
+            filterSelect.style.display = 'block';
+            imageFilterSelect.style.display = 'block';
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
             const videoURL = URL.createObjectURL(blob);
 
@@ -252,7 +255,7 @@ if (startRecordingButton) {
         startRecordingButton.disabled = true;
         stopRecordingButton.disabled = false;
         // Arrêter automatiquement après 6 secondes
-        setTimeout(() => {
+        stopRecordingTimeoutId = setTimeout(() => {
             if (mediaRecorder.state === 'recording') {
                 mediaRecorder.stop();
                 startRecordingButton.disabled = false;
@@ -268,12 +271,6 @@ if (stopRecordingButton) {
         mediaRecorder.stop();
         startRecordingButton.disabled = false;
         stopRecordingButton.disabled = true;
-        //     const filterSelect = document.getElementById('filterSelect');
-        // const imageFilterSelect = document.getElementById('imageFilterSelect');
-        // if (filterSelect.value === 'none' && imageFilterSelect.value === 'none') {
-        //     imageFilterSelect.style.display = 'block';
-        //     filterSelect.style.display = 'block';
-        // }
     });
 }
 
@@ -288,19 +285,12 @@ cancelButton.addEventListener('click', () => {
     const stopRecordingButton = document.getElementById('stopRecording');
     const downloadLink = document.getElementById('downloadLink');
     const snpaBtn = document.getElementById('snap');
-    // const filterSelect = document.getElementById('filterSelect');
-    // const imageFilterSelect = document.getElementById('imageFilterSelect');
-    // if (filterSelect.value === 'none' && imageFilterSelect.value === 'none') {
-    //     imageFilterSelect.style.display = 'block';
-    //     filterSelect.style.display = 'block';
-    // }
 
 
     previewVideo.pause();
     previewVideo.removeAttribute('src');
     previewVideo.load();
 
-    // previewControls.style.display = 'none';
     previewControls.classList.remove('show');
     recordedChunks = [];
     mediaRecorder = null;

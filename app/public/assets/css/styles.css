@@ -3,7 +3,6 @@
   --color-primary-dark: #45a049;
   --color-background: #f4f4f9;
   --color-text: #333;
-  --color-footer-bg: #333;
   --color-white: #fff;
 
   --font-main: "Arial", sans-serif;
@@ -89,20 +88,6 @@ a {
 
 a:hover {
   color: var(--color-primary-dark);
-}
-
-/* === Footer === */
-footer {
-  background-color: var(--color-footer-bg);
-  color: var(--color-white);
-  width: 100%;
-  padding: 10px;
-  text-align: center;
-  font-size: 14px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  box-sizing: border-box;
 }
 
 /* === Background slider === */

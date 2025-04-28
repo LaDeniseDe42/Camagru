@@ -10,7 +10,6 @@
         </div>
     <?php endif; ?>
 
-    <!-- Message d'erreur -->
     <?php if (!empty($errorMessage)): ?>
         <div class="error-container">
             <p class="error-message"><?= htmlspecialchars($errorMessage); ?></p>

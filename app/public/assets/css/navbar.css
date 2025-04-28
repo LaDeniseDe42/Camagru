@@ -1,11 +1,7 @@
-/* =======================
-   Navbar Latérale
-========================== */
 #navbar {
   position: fixed;
   top: 0;
   right: -180px;
-  /* Cachée par défaut */
   width: 200px;
   height: 100%;
   background-color: #4caf50;
@@ -47,12 +43,9 @@
   color: #ffd700;
 }
 
-/* =======================
-   Menu Hamburger (Mobile)
-========================== */
+/* pour petit écran */
 #navbar-toggle {
   position: fixed;
-  /* Pour qu’il reste en haut même au scroll */
   top: 15vh;
   left: 5px;
   display: none;
@@ -62,22 +55,18 @@
   width: 30px;
   cursor: pointer;
   z-index: 1100;
-  /* Plus élevé que la navbar */
 }
 
 #navbar-toggle div {
   width: 30px;
   height: 4px;
   background-color: #4caf50;
-  /* Même couleur que la navbar */
   border-radius: 5px;
 }
 
-/* Responsive pour les petits écrans */
 @media (max-width: 768px) {
   #navbar {
     right: -200px;
-    /* La navbar est cachée à droite sur mobile */
   }
 
   /* Affichage du bouton hamburger sur mobile */
@@ -87,7 +76,6 @@
 
   #navbar-content {
     display: none;
-    /* Caché par défaut sur mobile */
   }
 
   #navbar.open #navbar-content {
@@ -103,8 +91,17 @@
 
   #navbar ul li {
     font-size: 16px;
-    /* Réduit la taille des liens */
     margin: 15px 0;
-    /* Plus petit espace entre les éléments */
   }
+}
+
+footer {
+  background-color: #333;
+  color: #fff;
+  width: 100%;
+  text-align: center;
+  font-size: 10px;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
 }

@@ -7,14 +7,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
-require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../config/setup.php";
 require_once __DIR__ . "/../config/session.php";
 require_once __DIR__ . "/../controllers/AuthController.php";
 require_once __DIR__ . "/../controllers/PublicationController.php";
 
 $isLog = isLoggedIn();
-// requireLogin();
-//recupere les infos de session
+
 if ($isLog) {
     $user = $_SESSION['user'];
     $email = $_SESSION['email'];
@@ -27,8 +26,8 @@ if ($isLog) {
     $email = null;
     $username = "AnonymousUser";
     $user_id = null;
-    $house = "Serpentard";
-    $sub_house = "serpentard";
+    $house = "Crakmol";
+    $sub_house = "crakmol";
 }
 
 $authController = new AuthController();
@@ -88,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="assets/js/modal.js"></script>
     <script src="assets/js/wall.js"></script>
     <script src="assets/js/navScript.js"></script>
-    <!-- <script src="assets/js/update_gallery.js"></script> -->
 </body>
 
 </html>

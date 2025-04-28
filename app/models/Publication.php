@@ -9,14 +9,6 @@ class Publication
     }
 
 
-    // public function getPublicationsByUser($userId)
-    // {
-    //     $query = "SELECT * FROM publications WHERE user_id = ? ORDER BY uploaded_at DESC";
-    //     $stmt = $this->dbConnection->prepare($query);
-    //     $stmt->execute([$userId]);
-    //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    // }
-
     public function deletePublication($publicationId, $userId)
     {
         $query = "DELETE FROM publications WHERE id = ? AND user_id = ?";

@@ -1,20 +1,15 @@
 <?php
 session_start();
 
-function isLoggedIn() {
+function isLoggedIn()
+{
     return isset($_SESSION["user_id"]);
 }
 
-function requireLogin() {
+function requireLogin()
+{
     if (!isLoggedIn()) {
         header("Location: login.php");
         exit();
     }
 }
-
-function logout() {
-    session_destroy();
-    header("Location: login.php");
-    exit();
-}
-?>

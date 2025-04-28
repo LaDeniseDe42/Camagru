@@ -1,1 +1,0 @@
-public/ → Dossier accessible publiquement (CSS, JS, images).

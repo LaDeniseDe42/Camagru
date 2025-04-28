@@ -20,12 +20,12 @@ function appendPublicationsToDOM(publications) {
     if (pub.type === 'photo') {
       mediaContent = `
         <a href="media.php?user=${pub.user_id}&file=${encodeURIComponent(pub.filepath)}">
-          <img src="${pub.filepath}" alt="${pub.filename}" style="width:75%">
+          <img src="${pub.filepath}" alt="${pub.filename}" style="width:50% ; height:50%;">
         </a>`;
     } else {
       mediaContent = `
         <a href="media.php?user=${pub.user_id}&file=${encodeURIComponent(pub.filepath)}">
-          <video width="75%" controls>
+          <video width="50% ; height:50%;" controls>
             <source src="${pub.filepath}" type="video/webm">
           </video>
         </a>`;

@@ -13,12 +13,14 @@ function openModal(infoType) {
   };
   // Fonction pour détecter la maison actuelle
   function detectHouse() {
-    for (let house in houseColors) {
-      if (body.classList.contains(house)) {
-        return house;
-      }
+    const houseElement = document.querySelector("#infoHouse");
+    if (houseElement) {
+      const houseClass = houseElement.className;
+      const houseName = houseClass.match(/(Poufsouffle|Serpentard|Gryffondor|Serdaigle|Moldu|Crakmol)/);
+      return houseName ? houseName[0] : "Moldu";
     }
     return "Moldu";
+
   }
   let house = detectHouse();
   modalToOpen = document.getElementById(infoType);
@@ -30,7 +32,7 @@ function openModal(infoType) {
       houseColors[house].text;
   }
   modalToOpen.style.display = "flex";
-  // Fonction pour fermer le modal
+
   function closeModal() {
     modalToOpen.style.display = "none";
   }

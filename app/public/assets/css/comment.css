@@ -137,9 +137,7 @@ button:focus {
   outline: none;
 }
 
-/* =======================
-   Modal
-========================== */
+
 .modal {
   position: fixed;
   top: 0;
@@ -180,9 +178,7 @@ button:focus {
   color: #666;
 }
 
-/* =======================
-   Responsive Design
-========================== */
+/* petit ecran */
 @media (max-width: 768px) {
   .container {
     width: 95%;

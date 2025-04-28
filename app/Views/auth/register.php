@@ -2,8 +2,9 @@
     <form action="register.php" method="post">
         <input type="text" name="username" placeholder="Nom d'utilisateur" required>
         <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Mot de passe" required>
-        <input type="password" name="confirm_password" placeholder="Confirmez le mot de passe" required>
+        <input type="password" name="password" placeholder="Mot de passe" autocomplete="password" required>
+        <input type="password" name="confirm_password" placeholder="Confirmez le mot de passe" autocomplete="password"
+            required>
         <select name="house">
             <option value="" disabled selected>Maison Harry Potter</option>
             <option value="Crakmol" selected disabled hidden>Maison Harry Potter</option>
@@ -21,14 +22,12 @@
         <p>Vous avez déjà un compte ? <a href="login.php">Connectez-vous</a></p>
     </div>
 
-    <!-- Message de succès -->
     <?php if (!empty($successMessage)): ?>
         <div class="error-container">
             <p class="success-message"><?= htmlspecialchars($successMessage); ?></p>
         </div>
     <?php endif; ?>
 
-    <!-- Message d'erreur -->
     <?php if (!empty($errorMessage)): ?>
         <div class="error-container">
             <p class="error-message"><?= htmlspecialchars($errorMessage); ?></p>

@@ -49,8 +49,6 @@
   font-weight: bold;
   color: var(--color-text-light);
   margin: 10px 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  /* à adapter si nécessaire */
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -121,6 +119,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  overflow: scroll;
 }
 
 #previewControls.show {
@@ -166,9 +165,11 @@
   border-radius: var(--border-radius);
   text-align: center;
   box-shadow: var(--box-shadow);
-  width: 90%;
+  width: 80%;
   max-width: 500px;
   z-index: 10000;
+  overflow-y: auto;
+  max-height: 90vh;
 }
 
 /* === Select des filtres === */

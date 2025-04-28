@@ -101,3 +101,6 @@
         <button onclick="closeModal()">Fermer</button>
     </div>
 </div>
+
+<div id="infoHouse" class="<?= htmlspecialchars($house) ?>" style="display: none;">
+</div>

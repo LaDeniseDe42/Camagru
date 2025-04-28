@@ -10,10 +10,9 @@ RUN mkdir -p /gallery && \
 
 RUN chmod 1777 /tmp
 
-# Installer les extensions PHP nécessaires
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 
-# Configuration de sendmail (ou msmtp) pour envoyer des e-mails via un serveur SMTP
+# Configuration de sendmail pour envoyer des e-mails via un serveur SMTP
 RUN echo "sendmail_path = '/usr/bin/msmtp -C /etc/msmtprc -t -i'" >> /usr/local/etc/php/conf.d/sendmail.ini
 RUN echo "mail.log = /var/log/mail.log" >> /usr/local/etc/php/conf.d/sendmail.ini
 # remplacer sendmail_path dans le fichier php.ini

@@ -1,14 +1,11 @@
 <?php
-require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../config/setup.php";
 require_once __DIR__ . "/../config/session.php";
 require_once __DIR__ . "/../controllers/AuthController.php";
 require_once __DIR__ . "/../controllers/PublicationController.php";
 $message = "";
 
-if (!isLoggedIn()) {
-  header("Location: login.php");
-  exit();
-}
+requireLogin();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $file = isset($_POST['file']) ? basename(htmlspecialchars($_POST['file'])) : '';

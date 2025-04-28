@@ -1,20 +1,24 @@
 <?php
-// require_once __DIR__ . "/../config/database.php";
+// require_once __DIR__ . "/../config/setup.php";
 
-class User {
+class User
+{
 
     private $dbConnection;
 
-    public function __construct($dbConnection) {
+    public function __construct($dbConnection)
+    {
         $this->dbConnection = $dbConnection;
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->dbConnection;
     }
 
     // Crée un nouvel utilisateur
-    public function createUser($username, $email, $password, $house, $token) {
+    public function createUser($username, $email, $password, $house, $token)
+    {
         $query = "INSERT INTO users (username, email, password, house, confirmation_token, is_confirmed) VALUES (:username, :email, :password, :house, :token, 0)";
         $stmt = $this->dbConnection->prepare($query);
         $stmt->bindParam(':username', $username);
@@ -26,7 +30,8 @@ class User {
         return $stmt->execute();
     }
 
-    public function userExist($user_id) {
+    public function userExist($user_id)
+    {
         $query = "SELECT * FROM users WHERE id = :id";
         $stmt = $this->dbConnection->prepare($query);
         $stmt->bindParam(':id', $user_id);
@@ -34,7 +39,8 @@ class User {
         return $stmt->fetch(PDO::FETCH_ASSOC); // Retourne l'utilisateur S'IL existe
     }
 
-    public function getUsername($userId) {
+    public function getUsername($userId)
+    {
         $query = "SELECT username FROM users WHERE id = :id";
         $stmt = $this->dbConnection->prepare($query);
         $stmt->bindParam(':id', $userId);

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../config/setup.php";
 require_once __DIR__ . "/../controllers/AuthController.php";
 
 if (!isset($_GET['token'])) {
@@ -16,6 +16,6 @@ if ($response['status'] === 'error') {
 }
 header("Location: login.php");
 $successMessage = "La confirmation a bien ete effectuee. Vous pouvez maintenant vous connecter.";
-header("Location: login.php?message=" . urlencode($successMessage)); 
+header("Location: login.php?message=" . urlencode($successMessage));
 exit();
 ?>

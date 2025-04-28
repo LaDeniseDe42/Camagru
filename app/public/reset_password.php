@@ -50,14 +50,12 @@ if (isset($_GET["token"]) && $_SERVER["REQUEST_METHOD"] === "POST") {
             <input type="password" name="confirm_password" placeholder="Confirmez le mot de passe" required>
             <button type="submit">Réinitialiser</button>
         </form>
-        <!-- Message de succès -->
         <?php if (!empty($successMessage)): ?>
             <div class="error-container">
                 <p class="success-message"><?= htmlspecialchars($successMessage); ?></p>
             </div>
         <?php endif; ?>
 
-        <!-- Message d'erreur -->
         <?php if (!empty($errorMessage)): ?>
             <div class="error-container">
                 <p class="error-message"><?= htmlspecialchars($errorMessage); ?></p>

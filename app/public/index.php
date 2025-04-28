@@ -2,13 +2,10 @@
 // Démarre la session pour vérifier si l'utilisateur est connecté
 session_start();
 
-// Vérifie si un utilisateur est connecté
+// Vérifie si l'tilisateur est connecté
 $is_logged_in = isset($_SESSION['user']);
-//recuperer l'username de l'utilisateur s'il est connecté
 $user_mail = $_SESSION['user_mail'] ?? null;
-//recuperer l'id de l'utilisateur s'il est connecté
 $user_id = $_SESSION['user_id'] ?? null;
-//recuperer l'email de l'utilisateur s'il est connecté
 $username = $_SESSION['username'] ?? null;
 
 ?>
@@ -36,7 +33,7 @@ $username = $_SESSION['username'] ?? null;
     <main>
         <?php if ($is_logged_in): ?>
             <p>Bonjour, <?php echo htmlspecialchars($username); ?> !</p>
-            <p><a href="logout.php">Se déconnecter</a></p> <!-- Lien pour se déconnecter -->
+            <p><a href="logout.php">Se déconnecter</a></p>
         <?php else: ?>
             <p>Vous n'êtes pas connecté.</p>
             <p><a href="login.php">Se connecter</a> ou <a href="register.php">S'inscrire</a></p>

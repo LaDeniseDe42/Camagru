@@ -66,7 +66,6 @@ class PublicationController
 
     public function getUserIdByPublicationId($publicationId)
     {
-        // $this->publicationModel->getUserIdByPubId($publicationId);
         $stmt = $this->dbConnection->prepare("SELECT user_id FROM publications WHERE id = ?");
         $stmt->execute([$publicationId]);
         return $stmt->fetchColumn();
@@ -74,7 +73,6 @@ class PublicationController
 
     public function uploadPublication($userId, $file, $type)
     {
-        // $this->publicationModel->uploadPublication($userId, $file, $type);
         $allowedTypes = ['photo' => ['jpg', 'jpeg', 'png', 'gif'], 'video' => ['mp4', 'avi', 'mov', 'webm']];
         if (!isset($allowedTypes[$type])) {
             return ['success' => false, 'message' => 'Type de fichier non valide.'];

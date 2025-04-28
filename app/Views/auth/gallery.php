@@ -43,7 +43,6 @@
                     </form>
                 <?php endif; ?>
 
-                <!-- Afficher les likes et dislikes -->
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                 <input type="hidden" name="publication_id" value="<?= htmlspecialchars($publication['id']) ?>">
                 <div class="reaction-buttons" data-id="<?= $publication['id'] ?>">
@@ -78,10 +77,8 @@
 
 <?php endif; ?>
 
-<!-- Bouton pour ouvrir la webcam -->
 <?php if ($my_profile): ?>
     <div class="divCam">
-        <!-- <button id="startCamButton">Prendre une photo ou une vidéo</button> -->
         <div id="cameraContainer" style="display:none;">
             <select id="filterSelect">
                 <option value="none">Aucun filtre</option>

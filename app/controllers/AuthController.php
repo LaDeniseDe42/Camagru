@@ -1,16 +1,19 @@
 <?php
 
-require_once __DIR__ . '/../models/User.php'; // Charger ton modèle utilisateur
-require_once __DIR__ . '/../config/database.php'; // Configuration de la base de données
+require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../config/setup.php';
 
-class AuthController {
+class AuthController
+{
 
     private $database;
-    public function __construct() {
+    public function __construct()
+    {
         $this->database = new Database();
     }
-    
-    public function register($username, $email, $password, $password2, $house) {
+
+    public function register($username, $email, $password, $password2, $house)
+    {
         if (empty($username) || empty($email) || empty($password) || empty($password2)) {
             return ['status' => 'error', 'message' => "Tous les champs sont obligatoires."];
         }
@@ -54,15 +57,14 @@ class AuthController {
         if ($stmt->rowCount() > 0) {
             return ['status' => 'error', 'message' => "Cet username est déjà utilisé."];
         }
-    
+
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        //avant de creer un nouvel user, demander une confirmation par mail
         $token = bin2hex(random_bytes(50));
 
         $userModel = new User($con);
         $isRegistered = $userModel->createUser($username, $email, $hashedPassword, $house, $token);
         error_log($isRegistered);
-    
+
         if ($isRegistered) {
             // Envoyer l'email de confirmation
             $confirmLink = "http://localhost:8080/confirm_email.php?token=$token";
@@ -80,14 +82,16 @@ class AuthController {
         }
     }
 
-    public function giveinfoConcernThisUser($user_id) {
+    public function giveinfoConcernThisUser($user_id)
+    {
         $userModel = new User($this->database->getConnection());
         $this_user = $userModel->userExist($user_id);
         return $this_user;
     }
 
 
-    public function confirmEmail($token) {
+    public function confirmEmail($token)
+    {
         $con = $this->database->getConnection();
         $query = "UPDATE users SET is_confirmed = 1 WHERE confirmation_token = :token";
         $stmt = $con->prepare($query);
@@ -101,42 +105,42 @@ class AuthController {
         }
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->database->getConnection();
     }
 
     public function resend_pass($email)
-{
-    if (empty($email)) {
-        return ['status' => 'error', 'message' => "L'email est requis."];
-    }
+    {
+        if (empty($email)) {
+            return ['status' => 'error', 'message' => "L'email est requis."];
+        }
 
-    $con = $this->database->getConnection();
-    // Vérifier si l'email existe
-    $query = "SELECT * FROM users WHERE email = :email";
-    $stmt = $con->prepare($query);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $con = $this->database->getConnection();
+        // Vérifier si l'email existe
+        $query = "SELECT * FROM users WHERE email = :email";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$user) {
-        return ['status' => 'error', 'message' => "Cet email n'existe pas."];
-    }
+        if (!$user) {
+            return ['status' => 'error', 'message' => "Cet email n'existe pas."];
+        }
 
-    // Générer un token sécurisé
-    $token = bin2hex(random_bytes(50));
-    // Mettre à jour la base de données avec le token
-    $query = "UPDATE users SET confirmation_token = :token WHERE email = :email";
-    $stmt = $con->prepare($query);
-    $stmt->bindParam(':token', $token);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
+        $token = bin2hex(random_bytes(50));
+        // Mettre à jour la base de données avec le token
+        $query = "UPDATE users SET confirmation_token = :token WHERE email = :email";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':token', $token);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
 
-    if ($stmt->rowCount() > 0) {
-        // Envoyer l'email de confirmation
-        $resetLink = "http://localhost:8080/reset_password.php?token=$token";
-        $subject = "Vérification de la réinitialisation de votre mot de passe";
-        $message = "
+        if ($stmt->rowCount() > 0) {
+            // Envoyer l'email de confirmation
+            $resetLink = "http://localhost:8080/reset_password.php?token=$token";
+            $subject = "Vérification de la réinitialisation de votre mot de passe";
+            $message = "
             <html>
             <head>
                 <title>Réinitialisation de votre mot de passe</title>
@@ -150,21 +154,22 @@ class AuthController {
             </body>
             </html>
         ";
-        $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-Type: text/html; charset=UTF-8" . "\r\n";
-        $headers .= "From: no-reply@votre-site.com" . "\r\n";
+            $headers = "MIME-Version: 1.0" . "\r\n";
+            $headers .= "Content-Type: text/html; charset=UTF-8" . "\r\n";
+            $headers .= "From: no-reply@votre-site.com" . "\r\n";
 
-        if (mail($email, $subject, $message, $headers)) {
-            return ['status' => 'success', 'message' => "Un email de confirmation a été envoyé. Vérifiez votre boîte de réception."];
+            if (mail($email, $subject, $message, $headers)) {
+                return ['status' => 'success', 'message' => "Un email de confirmation a été envoyé. Vérifiez votre boîte de réception."];
+            } else {
+                return ['status' => 'error', 'message' => "Erreur lors de l'envoi de l'email."];
+            }
         } else {
-            return ['status' => 'error', 'message' => "Erreur lors de l'envoi de l'email."];
+            return ['status' => 'error', 'message' => "Une erreur s'est produite. Veuillez réessayer."];
         }
-    } else {
-        return ['status' => 'error', 'message' => "Une erreur s'est produite. Veuillez réessayer."];
     }
-}
 
-    public function reset_password($password, $token) {
+    public function reset_password($password, $token)
+    {
         if (empty($password)) {
             return ['status' => 'error', 'message' => "Le mot de passe est requis."];
         }
@@ -180,7 +185,7 @@ class AuthController {
         $query = "UPDATE users SET password = :password WHERE confirmation_token = :token";
         $stmt = $con->prepare($query);
         $stmt->bindParam(':password', $hashedPassword);
-        $stmt->bindParam(':token', $token); 
+        $stmt->bindParam(':token', $token);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
             return ['status' => 'success', 'message' => "Mot de passe mis à jour !"];
@@ -189,14 +194,13 @@ class AuthController {
         }
     }
 
-    
 
-    public function resend_mail($email) {
-        // Validation basique
+
+    public function resend_mail($email)
+    {
         if (empty($email)) {
             return ['status' => 'error', 'message' => "Tous les champs sont obligatoires."];
         }
-
         // Vérifie si l'email existe
         $con = $this->database->getConnection();
         $query = "SELECT * FROM users WHERE email = :email";
@@ -209,9 +213,7 @@ class AuthController {
         }
         if ($user['is_confirmed'] == 1) {
             return ['status' => 'error', 'message' => "Votre compte est déjà activé."];
-        }
-        else
-        {
+        } else {
             $token = bin2hex(random_bytes(50));
             $query = "UPDATE users SET confirmation_token = :token WHERE email = :email";
             $stmt = $con->prepare($query);
@@ -236,7 +238,8 @@ class AuthController {
         }
     }
 
-    public function login($emailorUsername, $password) {
+    public function login($emailorUsername, $password)
+    {
         // Validation basique
         if (empty($emailorUsername) || empty($password)) {
             return ['status' => 'error', 'message' => "Tous les champs sont obligatoires."];
@@ -262,9 +265,8 @@ class AuthController {
             }
             if ($user['is_confirmed'] == 0) {
                 return ['status' => 'error', 'message' => "Veuillez confirmer votre email avant de vous connecter."];
-            }    
-        }
-        else if ($username !== null) {
+            }
+        } else if ($username !== null) {
             // Vérifie si l'username existe
             $con = $this->database->getConnection();
             $query = "SELECT * FROM users WHERE username = :username";
@@ -277,41 +279,44 @@ class AuthController {
             }
             if ($user['is_confirmed'] == 0) {
                 return ['status' => 'error', 'message' => "Veuillez confirmer votre email avant de vous connecter."];
-            }    
+            }
         }
         // Vérifie si le mot de passe est correct
         if (password_verify($password, $user['password'])) {
             return [
                 'status' => 'success',
                 'message' => "Connexion réussie !",
-                'username' => $user['username'], // Récupère le nom d'utilisateur
-                'user_id' => $user['id'], // Récupère l'id de l'utilisateur
-                'house' => $user['house'], // Récupère la maison de l'utilisateur
-                'email' => $user['email'] // Récupère l'email de l'utilisateur
+                'username' => $user['username'],
+                'user_id' => $user['id'],
+                'house' => $user['house'],
+                'email' => $user['email']
             ];
         } else {
             return ['status' => 'error', 'message' => "Mot de passe incorrect."];
         }
     }
-    public function getEmail($user_id) {
+    public function getEmail($user_id)
+    {
         $con = $this->database->getConnection();
         $query = "SELECT email FROM users WHERE id = :id";
         $stmt = $con->prepare($query);
         $stmt->bindParam(':id', $user_id);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC); 
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getUsername($user_id) {
+    public function getUsername($user_id)
+    {
         $con = $this->database->getConnection();
         $query = "SELECT username FROM users WHERE id = :id";
         $stmt = $con->prepare($query);
         $stmt->bindParam(':id', $user_id);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC); 
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function wantEmailNotif($user_id) {
+    public function wantEmailNotif($user_id)
+    {
         $con = $this->database->getConnection();
         $query = "SELECT notifications FROM users WHERE id = :id";
         $stmt = $con->prepare($query);

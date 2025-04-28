@@ -71,31 +71,44 @@ body {
 .gryffondor {
   background-color: #7f0909;
   color: #d3a625;
+  border-radius: var(--border-radius);
+  width: 80%;
 }
 
 .poufsouffle {
   background-color: #ffdb58;
   color: #372e29;
+  border-radius: var(--border-radius);
+  width: 80%;
+
 }
 
 .serdaigle {
   background-color: #0e1a40;
   color: #946b2d;
+  border-radius: var(--border-radius);
+  width: 80%;
 }
 
 .serpentard {
   background-color: #1a472a;
   color: #aaaaaa;
+  border-radius: var(--border-radius);
+  width: 80%;
 }
 
 .moldu {
   background-color: #3d3d3d;
   color: #ff6600;
+  border-radius: var(--border-radius);
+  width: 80%;
 }
 
 .crakmol {
   background-color: #4b0082;
   color: #c0c0c0;
+  border-radius: var(--border-radius);
+  width: 80%;
 }
 
 /* === Container générique === */

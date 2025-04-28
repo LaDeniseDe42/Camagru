@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../models/User.php'; // Charger ton modèle utilisateur
-require_once __DIR__ . '/../config/database.php'; // Configuration de la base de données
+require_once __DIR__ . '/../config/setup.php'; // Configuration de la base de données
 require_once __DIR__ . '/../config/session.php'; // Configuration de la session
 
 class ChangeInfo
@@ -98,8 +98,8 @@ class ChangeInfo
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':house', $house);
         $stmt->bindParam(':id', $_SESSION['user_id']);
-        
-        
+
+
         if ($stmt->execute()) {
             $_SESSION['house'] = $house;
             return ['status' => 'success', 'message' => "Maison mise à jour avec succès."];
@@ -146,7 +146,8 @@ class ChangeInfo
         return !empty($variable);
     }
 
-    public function wantEmailNotif($user_id) {
+    public function wantEmailNotif($user_id)
+    {
         $query = "SELECT notifications FROM users WHERE id = :id";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':id', $user_id);
@@ -154,7 +155,8 @@ class ChangeInfo
         return $stmt->fetchColumn(); // Retourne uniquement la valeur de la colonne "notifications"
     }
 
-    public function updateNotif($want_email_notif) {
+    public function updateNotif($want_email_notif)
+    {
         $query = "UPDATE users SET notifications = :notifications WHERE id = :id";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(':notifications', $want_email_notif);

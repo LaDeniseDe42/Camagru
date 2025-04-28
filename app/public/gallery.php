@@ -1,19 +1,15 @@
 <?php
-require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../config/setup.php";
 require_once __DIR__ . "/../config/session.php";
 require_once __DIR__ . "/../controllers/AuthController.php";
 require_once __DIR__ . "/../controllers/PublicationController.php";
 $message = "";
 
-if (!isLoggedIn()) {
-    header("Location: login.php");
-    exit();
-}
+requireLogin();
 
 // Pour savoir si on est sur son propre profil ou celui d'un autre utilisateur
-$dbConnection = new Database();
-$con = $dbConnection->getConnection();
 $UserController = new AuthController();
+$con = $UserController->getConnection();
 $my_profile = true;
 if (isset($_GET['user']) && !empty($_GET['user']) && $_GET['user'] != $_SESSION['user_id']) {
     $my_profile = false;
@@ -36,7 +32,7 @@ if (isset($_GET['user']) && !empty($_GET['user']) && $_GET['user'] != $_SESSION[
     $this_email = $_SESSION['email'];
     $this_user = $_SESSION['user'];
 }
-// fin des informations concernant la gallerie de l'utilisateur
+
 
 // pour la publication
 $publicationController = new PublicationController($con);
@@ -101,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['publication_id']) && 
     }
     exit;
 }
-// fin de pour les likes et dislikes
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deletePublication'])) {
     $publication_id = $_POST['deletePublication'];

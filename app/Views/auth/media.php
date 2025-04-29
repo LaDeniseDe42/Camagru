@@ -1,11 +1,11 @@
-<!-- <div class="container"> -->
+
 <div class="<?= htmlspecialchars($this_sub_house) ?>">
     <?php if (strpos($filePath, '.webm') !== false): ?>
-        <video style="width:70%" controls>
+        <video style="width=50% ; height:50%;" controls>
             <source src="<?= htmlspecialchars($filePath) ?>" type="video/webm">
         </video>
     <?php else: ?>
-        <img src="<?= htmlspecialchars($filePath) ?>" alt="Média" style="width:70%">
+        <img src="<?= htmlspecialchars($filePath) ?>" alt="Média" style="width=50% ; height:50%;">
     <?php endif; ?>
 
     <div class="comments">
@@ -39,7 +39,4 @@
             value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
         <button id="newComment">Poster</button>
     </div>
-</div>
-<!-- </div> -->
-<div id="errorContainer" class="error-container" style="background-color: red; display: none; border-radius: 10%;">
 </div>

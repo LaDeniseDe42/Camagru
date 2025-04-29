@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment']) && $_POST['
 
   //envoyer un mail au proprietaire de la publication
   $user_id_to_send = $publicationController->getUserIdByPublicationId($publicationId);
-  if ($user_id_to_send != $this_user_id) {
+  if ($user_id_to_send != $this_user_id && $result['success']) {
     if ($UserController->wantEmailNotif($user_id_to_send) == 1) {
 
       $user_email = $UserController->getEmail($user_id_to_send);

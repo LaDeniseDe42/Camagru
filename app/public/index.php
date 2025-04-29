@@ -21,30 +21,38 @@ $username = $_SESSION['username'] ?? null;
     <link rel="stylesheet" href="/../assets/css/navbar.css">
 </head>
 
-<body>
-    <?php include(__DIR__ . '/../Views/auth/navbar.php'); ?>
-    <div class="background-slider"></div>
-    <header>
-        <h1>Bienvenue sur Camagru</h1>
-    </header>
+<?php if ($is_logged_in): ?>
 
+    <body style="background-image: url('/../assets/img/PixelHarry2.png'); background-repeat: repeat; background-position: center; background-size: cover;">
+    <?php else: ?>
 
-
-    <main>
-        <?php if ($is_logged_in): ?>
-            <p>Bonjour, <?php echo htmlspecialchars($username); ?> !</p>
-            <p><a href="logout.php">Se déconnecter</a></p>
-        <?php else: ?>
-            <p>Vous n'êtes pas connecté.</p>
-            <p><a href="login.php">Se connecter</a> ou <a href="register.php">S'inscrire</a></p>
+        <body style="background-image: url('/../assets/img/PixelHarry.png'); background-repeat: repeat; background-position: center; background-size: cover;">
         <?php endif; ?>
-    </main>
+        <?php include(__DIR__ . '/../Views/auth/navbar.php'); ?>
+        <header>
+            <h1>Bienvenue sur Camagru</h1>
+        </header>
 
-    <footer>
-        <p>&copy; 2025 Camagru. Tous droits réservés par MOI.</p>
-    </footer>
-    <script src="/../assets/js/slider.js"></script>
-    <script src="/../assets/js/navScript.js"></script>
-</body>
+
+
+        <main>
+            <?php if ($is_logged_in): ?>
+                <div style="background-color: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px;">
+                    <p style="color: white;"><strong>Bonjour, <?php echo htmlspecialchars($username); ?> !</strong></p>
+                    <p><a href="logout.php">Se déconnecter</a></p>
+                </div>
+            <?php else: ?>
+                <div style="background-color: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px;">
+                    <p style="color: white;"><strong>Vous n'êtes pas connecté.</strong></p>
+                    <p style="color: white;"><a href="login.php">Se connecter</a><strong> ou </strong><a href="register.php">S'inscrire</a></p>
+                </div>
+            <?php endif; ?>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Camagru. Tous droits réservés par MOI.</p>
+        </footer>
+        <script src="/../assets/js/navScript.js"></script>
+        </body>
 
 </html>

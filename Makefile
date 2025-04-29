@@ -6,7 +6,7 @@ start:
 stop:
 	@docker-compose stop
 
-restart:
+re:
 	@docker-compose down
 	@docker-compose up -d --build
 
@@ -15,3 +15,6 @@ logs:
 
 down:
 	@docker-compose down
+
+volclean:
+	@docker-compose down --volumes

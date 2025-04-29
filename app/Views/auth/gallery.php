@@ -29,12 +29,14 @@
                             alt="<?= htmlspecialchars($publication['filename']) ?>" style="width:100%">
                     </a>
                 <?php elseif ($publication['type'] === 'video'): ?>
-                    <a href="media.php?user=<?= $publication['user_id'] ?>&file=<?= urlencode($publication['filepath']) ?>">
-                        <video width="100%" controls>
-                            <source src="<?= htmlspecialchars($publication['filepath']) ?>" type="video/webm">
-                        </video>
-                    </a>
+                    <video width="100%" controls>
+                        <source src="<?= htmlspecialchars($publication['filepath']) ?>" type="video/webm">
+                    </video>
                 <?php endif; ?>
+                <a
+                    href="media.php?user=<?= urlencode($this_user_id ?? '') ?>&file=<?= urlencode($publication['filepath']) ?>">
+                    <button> Voir plus </button>
+                </a>
 
                 <?php if ($my_profile): ?>
                     <form action="gallery.php" method="POST">

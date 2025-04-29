@@ -20,7 +20,6 @@ body {
   background-size: cover;
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
   align-items: center;
   overflow-y: auto;
   min-height: 100vh;
@@ -73,6 +72,8 @@ body {
   color: #d3a625;
   border-radius: var(--border-radius);
   width: 80%;
+  overflow: auto;
+  margin-top: 5vh;
 }
 
 .poufsouffle {
@@ -80,7 +81,8 @@ body {
   color: #372e29;
   border-radius: var(--border-radius);
   width: 80%;
-
+  overflow: auto;
+  margin-top: 5vh;
 }
 
 .serdaigle {
@@ -88,6 +90,8 @@ body {
   color: #946b2d;
   border-radius: var(--border-radius);
   width: 80%;
+  overflow: auto;
+  margin-top: 5vh;
 }
 
 .serpentard {
@@ -95,6 +99,8 @@ body {
   color: #aaaaaa;
   border-radius: var(--border-radius);
   width: 80%;
+  overflow: auto;
+  margin-top: 5vh;
 }
 
 .moldu {
@@ -102,6 +108,8 @@ body {
   color: #ff6600;
   border-radius: var(--border-radius);
   width: 80%;
+  overflow: auto;
+  margin-top: 5vh;
 }
 
 .crakmol {
@@ -109,6 +117,8 @@ body {
   color: #c0c0c0;
   border-radius: var(--border-radius);
   width: 80%;
+  overflow: auto;
+  margin-top: 5vh;
 }
 
 /* === Container générique === */
@@ -248,7 +258,6 @@ button:hover {
 
 /* === Responsive === */
 @media screen and (max-width: 1024px) {
-
   .house-card,
   .container,
   .addPhoto {
@@ -262,7 +271,6 @@ button:hover {
 }
 
 @media screen and (max-width: 600px) {
-
   .house-card,
   .container,
   .addPhoto {

@@ -8,18 +8,12 @@
         <?php foreach ($allPublications as $publication): ?>
             <div class="publication" data-id="<?= $publication['id'] ?>">
                 <?php if ($publication['type'] === 'photo'): ?>
-                    <a
-                        href="media.php?user=<?= urlencode($publication["user_id"]) ?>&file=<?= urlencode($publication['filepath']) ?>">
                         <img src="<?= htmlspecialchars($publication['filepath']) ?>"
                             alt="<?= htmlspecialchars($publication['filename']) ?>" style="width:50% ; height:50%;">
-                    </a>
                 <?php else: ?>
-                    <a href="media.php?user=<?= $publication['user_id'] ?>&file=<?= urlencode($publication['filepath']) ?>">
-                        <video width="50% ; height:50%;" controls>
-                            <source src="<?= htmlspecialchars($publication['filepath']) ?>" type="video/webm">
-                        </video>
-                    </a>
-                </div>
+                    <video width="50% ; height:50%;" controls>
+                        <source src="<?= htmlspecialchars($publication['filepath']) ?>" type="video/webm">
+                    </video>
             <?php endif ?>
             <?php if ($isLog): ?>
                 <div class="reaction-buttons" data-id="<?= $publication['id'] ?>">
@@ -28,6 +22,10 @@
                     <button class="dislike-button <?= ($userReaction === 'dislike') ? 'active' : '' ?>">👎
                         <?= $publication['nb_dislikes'] ?></button>
                 </div>
+                <a 
+                    href="media.php?user=<?= urlencode($publication['user_id']) ?>&file=<?= urlencode($publication['filepath']) ?>">
+                <button> Voir plus </button>
+                </a>
                 <a href="gallery.php?user=<?= $publication['user_id'] ?>">
                     <p>Posté par : <?php echo htmlspecialchars($publication['username']); ?></p>
                 </a>

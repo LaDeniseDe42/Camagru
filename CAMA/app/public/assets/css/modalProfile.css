@@ -1,0 +1,81 @@
+:root {
+  --modal-bg-color: white;
+  --modal-overlay-color: rgba(0, 0, 0, 0.5);
+  --modal-close-bg: red;
+  --modal-close-text: white;
+
+  --modal-padding: 20px;
+  --modal-radius: 8px;
+  --modal-max-width: 400px;
+  --modal-animation-duration: 0.3s;
+}
+
+/* === Modal Container === */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background-color: var(--modal-overlay-color);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* === Modal Content === */
+.modal-content {
+  background-color: var(--modal-bg-color);
+  padding: var(--modal-padding);
+  border-radius: var(--modal-radius);
+  width: 90%;
+  max-width: var(--modal-max-width);
+  text-align: center;
+  animation: fadeIn var(--modal-animation-duration) ease-in-out;
+}
+
+/* === Footer === */
+.modal-footer {
+  margin-top: 10px;
+}
+
+/* === Close Button === */
+.modal-close {
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--modal-close-bg);
+  color: var(--modal-close-text);
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.modal-close:hover {
+  background-color: darkred;
+}
+
+/* === Animation === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* === Responsive Enhancements === */
+@media screen and (max-width: 480px) {
+  .modal-content {
+    padding: 15px;
+    font-size: 14px;
+  }
+
+  .modal-close {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}

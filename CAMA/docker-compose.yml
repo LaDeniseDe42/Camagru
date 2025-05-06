@@ -1,0 +1,74 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_server
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/var/www/html # Monte le dossier contenant le code PHP
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf # Configuration Nginx
+      - gallery:/gallery
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - app_network
+
+  php:
+    build: ./php
+    container_name: php_server
+    volumes:
+      - ./app:/var/www/html
+      - gallery:/gallery
+    env_file:
+      - .env
+    networks:
+      - app_network
+
+  mysql:
+    image: mysql:8
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Europe/Paris
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - app_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8081:80" # Accès à phpMyAdmin via http://localhost:8081
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - mysql
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  gallery:
+# docker-compose up -d --build pour lancer le tout
+# docker compose down pour tout stop
+# docker exec -it mysql_db mysql -uuser -p pour se connecter à MySQL
+# docker volume inspect mysql_data pour voir les données de MySQL
+
+# MySQL démarre et initialise la base de données.
+# phpMyAdmin permet d’interagir avec MySQL via http://localhost:8081.
+# PHP est lancé pour exécuter le code backend.
+# Nginx sert de serveur web et envoie les requêtes PHP à php_server.
+# L’application est accessible sur http://localhost:8080.

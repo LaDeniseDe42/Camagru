@@ -1,0 +1,95 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-image: url("/assets/img/404.png");
+  background-size: contain;
+  color: #fff;
+  overflow: hidden;
+}
+
+.background {
+  position: relative;
+  text-align: center;
+  padding-top: 15%;
+}
+
+h1 {
+  font-size: 8rem;
+  margin: 0;
+  text-shadow: 0 0 15px #fff;
+}
+
+p {
+  font-size: 1.5rem;
+  margin: 20px 0;
+  text-shadow: 0 0 10px #ccc;
+  margin-top: 40vh;
+}
+
+.button {
+  padding: 12px 30px;
+  background: #4c2882;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #4c2882;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background: #6c3edc;
+  box-shadow: 0 0 20px #6c3edc;
+}
+
+.fog {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: url("/assets/img/FOG.png") repeat;
+  opacity: 0.2;
+  animation: fogmove 120s linear infinite;
+}
+
+@keyframes fogmove {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.owl {
+  position: absolute;
+  top: 30%;
+  left: -100px;
+  width: 80px;
+  animation: fly 20s linear infinite;
+  z-index: 1;
+}
+
+@keyframes fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(110vw, -10vh) scale(1.2);
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(150vw, -15vh) scale(1.3);
+    opacity: 0;
+  }
+}

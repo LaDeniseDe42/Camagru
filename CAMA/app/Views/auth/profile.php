@@ -1,25 +1,25 @@
-<div class="<?= htmlspecialchars($sub_house) ?>">
-    <h2>Mon Profil</h2>
+<div class="<?= htmlspecialchars($sub_house) ?>" style="background-image: url('/../assets/img/acceuil.png'); background-repeat: repeat; background-position: center; background-size: cover; border: 5px solid black; opacity: 0.9">
+    <h2 style="color: white">Mon Profil</h2>
     <br>
-    <h3>Informations personnelles</h3>
+    <h3 style="color: white">Informations personnelles</h3>
     <br><br>
-    <p>Nom d'utilisateur: <strong id="username"><?= htmlspecialchars($username); ?></strong>
+    <p style="color: white">Nom d'utilisateur: <strong id="username"><?= htmlspecialchars($username); ?></strong>
         <button onclick="openModal('userModal')">Modifier</button>
     </p>
     <br>
-    <p>Email: <strong id="email"><?= htmlspecialchars($user_mail); ?></strong>
+    <p style="color: white">Email: <strong id="email"><?= htmlspecialchars($user_mail); ?></strong>
         <button onclick="openModal('emailModal')">Modifier</button>
     </p>
     <br>
-    <p>Maison: <strong><?= htmlspecialchars($house); ?></strong>
+    <p style="color: white">Maison: <strong><?= htmlspecialchars($house); ?></strong>
         <button onclick="openModal('houseModal')">Modifier</button>
     </p>
     <br>
-    <p>Email notifications: <strong id="notif"><?= htmlspecialchars($want_email_notif); ?></strong>
+    <p style="color: white">Email notifications: <strong id="notif"><?= htmlspecialchars($want_email_notif); ?></strong>
         <button id="notif" onclick="openModal('emailNotifM')">Modifier</button>
     </p>
     <br>
-    <p>Mot de passe: <strong id="password">********</strong>
+    <p style="color: white">Mot de passe: <strong id="password">********</strong>
         <button onclick="openModal('mdpModal')">Modifier</button>
     </p>
     <br>

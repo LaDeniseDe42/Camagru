@@ -78,7 +78,8 @@
             <img src="../assets/img/filters/hiboux.png" class="sticker" style="max-width:10%; max-height: 10%" />
             <img src="../assets/img/filters/bag.png" class="sticker" style="max-width:10%; max-height: 10%" />
             <img src="../assets/img/filters/FOG.png" class="sticker" style="max-width:10%; max-height: 10%" />
-            <img src="../assets/img/filters/dob.png" class="sticker" style="max-width:10%; max-height: 10%" />
+            <img src="../assets/img/filters/murky.png" class="sticker" style="max-width:10%; max-height: 10%" />
+            <img src="../assets/img/filters/qdenizar.png" class="sticker" style="max-width:10%; max-height: 10%" />
         </div>
 
         <canvas id="uploadCanvas" style="border:1px solid #ccc;"></canvas><br>
@@ -124,6 +125,8 @@
                 <option value="hiboux">Hiboux</option>
                 <option value="chat">Chat</option>
                 <option value="bag">Baguette</option>
+                <option value="murky">Murloc</option>
+                <option value="qdenizar">qdenizar</option>
             </select><br><br>
 
             <div id="videoHide" style="position: relative; width: 640px; height: 480px;">

@@ -52,144 +52,150 @@ if (imageFilterSelect) {
 }
 
 // Application des stickers
-stickerSelect.addEventListener("change", () => {
-  const value = stickerSelect.value;
-  if (value === "none") {
-    filterStickImage.style.display = "none";
-    filterStickImage.src = "";
-  } else {
-    filterStickImage.src = `../assets/img/filters/${value}.png`;
-    filterStickImage.style.display = "block";
-  }
-});
+if (stickerSelect) {
+  stickerSelect.addEventListener("change", () => {
+    const value = stickerSelect.value;
+    if (value === "none") {
+      filterStickImage.style.display = "none";
+      filterStickImage.src = "";
+    } else {
+      filterStickImage.src = `../assets/img/filters/${value}.png`;
+      filterStickImage.style.display = "block";
+    }
+  });
+}
 
 //Gestion du déplacement des stickers
-filterStickImage.addEventListener("mousedown", (e) => {
-  isDragging = true;
-  const rect = filterStickImage.getBoundingClientRect();
-  offset.x = e.clientX - rect.left;
-  offset.y = e.clientY - rect.top;
-  const container = document.getElementById("videoHide");
+if (filterStickImage) {
+  filterStickImage.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    const rect = filterStickImage.getBoundingClientRect();
+    offset.x = e.clientX - rect.left;
+    offset.y = e.clientY - rect.top;
+    const container = document.getElementById("videoHide");
 
-  const onMouseMove = (e) => {
-    if (!isDragging) return;
-    const containerRect = container.getBoundingClientRect();
-    const stickerWidth = filterStickImage.offsetWidth;
-    const stickerHeight = filterStickImage.offsetHeight;
+    const onMouseMove = (e) => {
+      if (!isDragging) return;
+      const containerRect = container.getBoundingClientRect();
+      const stickerWidth = filterStickImage.offsetWidth;
+      const stickerHeight = filterStickImage.offsetHeight;
 
-    let left = e.clientX - containerRect.left - offset.x;
-    let top = e.clientY - containerRect.top - offset.y;
+      let left = e.clientX - containerRect.left - offset.x;
+      let top = e.clientY - containerRect.top - offset.y;
 
-    const minVisible = 30;
-    left = Math.max(
-      -stickerWidth + minVisible,
-      Math.min(left, container.clientWidth - minVisible)
-    );
-    top = Math.max(
-      -stickerHeight + minVisible,
-      Math.min(top, container.clientHeight - minVisible)
-    );
+      const minVisible = 30;
+      left = Math.max(
+        -stickerWidth + minVisible,
+        Math.min(left, container.clientWidth - minVisible)
+      );
+      top = Math.max(
+        -stickerHeight + minVisible,
+        Math.min(top, container.clientHeight - minVisible)
+      );
 
-    filterStickImage.style.left = left + "px";
-    filterStickImage.style.top = top + "px";
-  };
+      filterStickImage.style.left = left + "px";
+      filterStickImage.style.top = top + "px";
+    };
 
-  const onMouseUp = () => {
-    isDragging = false;
-    document.removeEventListener("mousemove", onMouseMove);
-    document.removeEventListener("mouseup", onMouseUp);
-  };
+    const onMouseUp = () => {
+      isDragging = false;
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    };
 
-  document.addEventListener("mousemove", onMouseMove);
-  document.addEventListener("mouseup", onMouseUp);
-});
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  });
+}
 
-snapButton.addEventListener("click", () => {
-  let canvas = document.getElementById("canvas");
-  if (!canvas) {
-    canvas = document.createElement("canvas");
-    canvas.id = "canvas";
-    canvas.width = 640;
-    canvas.height = 480;
-    canvas.style.position = "absolute";
-    canvas.style.top = "0";
-    canvas.style.left = "0";
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    canvas.style.display = "none";
-    document.getElementById("cameraContainer").appendChild(canvas);
-  }
+if (snapButton) {
+  snapButton.addEventListener("click", () => {
+    let canvas = document.getElementById("canvas");
+    if (!canvas) {
+      canvas = document.createElement("canvas");
+      canvas.id = "canvas";
+      canvas.width = 640;
+      canvas.height = 480;
+      canvas.style.position = "absolute";
+      canvas.style.top = "0";
+      canvas.style.left = "0";
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvas.style.display = "none";
+      document.getElementById("cameraContainer").appendChild(canvas);
+    }
 
-  const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d");
 
-  //Appliquer le filtre CSS
-  context.filter = cssFilterSelect.value || "none";
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    //Appliquer le filtre CSS
+    context.filter = cssFilterSelect.value || "none";
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-  //Ajouter le filtre image
-  context.filter = "none";
-  const filterImageValue = imageFilterSelect.value;
-  const stickerValue = filterStickersSelect.value;
+    //Ajouter le filtre image
+    context.filter = "none";
+    const filterImageValue = imageFilterSelect.value;
+    const stickerValue = filterStickersSelect.value;
 
-  let imagesToLoad = [];
+    let imagesToLoad = [];
 
-  if (filterImageValue !== "none") {
-    const filterImg = new Image();
-    filterImg.src = `../assets/img/filters/${filterImageValue}.png`;
-    imagesToLoad.push(filterImg);
-  }
+    if (filterImageValue !== "none") {
+      const filterImg = new Image();
+      filterImg.src = `../assets/img/filters/${filterImageValue}.png`;
+      imagesToLoad.push(filterImg);
+    }
 
-  const drawStickerImage = () => {
-    return new Promise((resolve) => {
-      if (filterStickImage.src && filterStickImage.style.display !== "none") {
-        const stickerImg = new Image();
-        stickerImg.src = filterStickImage.src;
+    const drawStickerImage = () => {
+      return new Promise((resolve) => {
+        if (filterStickImage.src && filterStickImage.style.display !== "none") {
+          const stickerImg = new Image();
+          stickerImg.src = filterStickImage.src;
 
-        const videoRect = video.getBoundingClientRect();
-        const stickerRect = filterStickImage.getBoundingClientRect();
+          const videoRect = video.getBoundingClientRect();
+          const stickerRect = filterStickImage.getBoundingClientRect();
 
-        // Calculer la position relative au canvas (mêmes dimensions que la vidéo)
-        const relativeX = stickerRect.left - videoRect.left;
-        const relativeY = stickerRect.top - videoRect.top;
+          // Calculer la position relative au canvas (mêmes dimensions que la vidéo)
+          const relativeX = stickerRect.left - videoRect.left;
+          const relativeY = stickerRect.top - videoRect.top;
 
-        stickerImg.onload = () => {
-          context.drawImage(
-            stickerImg,
-            relativeX,
-            relativeY,
-            filterStickImage.width,
-            filterStickImage.height
-          );
+          stickerImg.onload = () => {
+            context.drawImage(
+              stickerImg,
+              relativeX,
+              relativeY,
+              filterStickImage.width,
+              filterStickImage.height
+            );
+            resolve();
+          };
+        } else {
           resolve();
-        };
-      } else {
-        resolve();
-      }
-    });
-  };
-  let loadedCount = 0;
-  if (imagesToLoad.length > 0) {
-    imagesToLoad.forEach((img) => {
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === imagesToLoad.length) {
-          imagesToLoad.forEach((img) => {
-            context.drawImage(img, 0, 0, canvas.width, canvas.height);
-          });
-
-          drawStickerImage().then(() => {
-            finalizeImage(canvas);
-          });
         }
-      };
-    });
-  } else {
-    // Aucun filtre image ni sticker, on passe directement à la finalisation
-    drawStickerImage().then(() => {
-      finalizeImage(canvas);
-    });
-  }
-});
+      });
+    };
+    let loadedCount = 0;
+    if (imagesToLoad.length > 0) {
+      imagesToLoad.forEach((img) => {
+        img.onload = () => {
+          loadedCount++;
+          if (loadedCount === imagesToLoad.length) {
+            imagesToLoad.forEach((img) => {
+              context.drawImage(img, 0, 0, canvas.width, canvas.height);
+            });
+
+            drawStickerImage().then(() => {
+              finalizeImage(canvas);
+            });
+          }
+        };
+      });
+    } else {
+      // Aucun filtre image ni sticker, on passe directement à la finalisation
+      drawStickerImage().then(() => {
+        finalizeImage(canvas);
+      });
+    }
+  });
+}
 
 //Démarrer la caméra
 if (startCamButton) {
@@ -206,7 +212,10 @@ if (startCamButton) {
         video.srcObject = mediaStream;
       })
       .catch((err) => {
-        console.error("Erreur d'accès à la webcam ou au microphone : ", err);
+        cameraContainer.style.display = "none";
+        startCamButton.style.display = "block";
+        alert("Pad de webcam ou de microphone détecté !", err);
+        // console.error("Erreur d'accès à la webcam ou au microphone : ", err);
       });
   });
 }
@@ -267,32 +276,36 @@ if (cToiButton) {
 }
 
 // Fermer la caméra
-closeCamButton.addEventListener("click", () => {
-  cameraContainer.style.display = "none";
-  startCamButton.style.display = "block";
-  video.srcObject.getTracks().forEach((track) => track.stop());
-});
+if (closeCamButton) {
+  closeCamButton.addEventListener("click", () => {
+    cameraContainer.style.display = "none";
+    startCamButton.style.display = "block";
+    video.srcObject.getTracks().forEach((track) => track.stop());
+  });
+}
 
-publishButton.addEventListener("click", () => {
-  const blob = document.getElementById("previewVideo").blobToUpload;
+if (publishButton) {
+  publishButton.addEventListener("click", () => {
+    const blob = document.getElementById("previewVideo").blobToUpload;
 
-  const formData = new FormData();
-  formData.append("file", blob, "video_" + Date.now() + ".webm");
-  formData.append("uploadVideo", "1");
-  formData.append("type", "video");
+    const formData = new FormData();
+    formData.append("file", blob, "video_" + Date.now() + ".webm");
+    formData.append("uploadVideo", "1");
+    formData.append("type", "video");
 
-  fetch("gallery.php", {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.text())
-    .then((data) => {
-      location.reload();
+    fetch("gallery.php", {
+      method: "POST",
+      body: formData,
     })
-    .catch((error) => {
-      console.error("Erreur envoi vidéo :", error);
-    });
-});
+      .then((response) => response.text())
+      .then((data) => {
+        location.reload();
+      })
+      .catch((error) => {
+        console.error("Erreur envoi vidéo :", error);
+      });
+  });
+}
 
 // Démarrer l'enregistrement vidéo
 if (startRecordingButton) {
@@ -305,6 +318,9 @@ if (startRecordingButton) {
     video.style.filter = "none";
     filterSelect.style.display = "none";
     imageFilterSelect.style.display = "none";
+
+    filterStickersSelect.style.display = "none";
+    filterStickImage.style.display = "none";
 
     recordedChunks = [];
     mediaRecorder = new MediaRecorder(mediaStream, { mimeType: "video/webm" });
@@ -344,6 +360,7 @@ if (startRecordingButton) {
 if (stopRecordingButton) {
   stopRecordingButton.addEventListener("click", () => {
     mediaRecorder.stop();
+    clearTimeout(stopRecordingTimeoutId);
     startRecordingButton.disabled = false;
     stopRecordingButton.disabled = true;
   });
@@ -361,4 +378,10 @@ cancelButton.addEventListener("click", () => {
   previewControls.classList.remove("show");
   recordedChunks = [];
   mediaRecorder = null;
+  filterImage.style.display = "block";
+  video.style.filter = cssFilterSelect.value;
+  filterSelect.style.display = "block";
+  imageFilterSelect.style.display = "block";
+  filterStickersSelect.style.display = "block";
+  filterStickImage.style.display = "block";
 });

@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . "/../config/database.php";
 require_once __DIR__ . "/../config/session.php";
 require_once __DIR__ . "/../controllers/AuthController.php";
@@ -45,7 +46,7 @@ if (isset($_GET['user']) && !empty($_GET['user']) && $_GET['user'] != $_SESSION[
 }
 $csrf_token = $_SESSION['csrf_token'];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment']) && $_POST['token'] == $csrf_token && !isset($_POST['editComment'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment']) && $_POST['token'] == $csrf_token && isset($_POST['commentPost']) && !isset($_POST['editComment'])) {
   $content = $_POST['comment'];
   $result = $publicationController->addComment($this_user_id, $publicationId, $content);
 
@@ -85,12 +86,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment']) && $_POST['
       "comment_id" => $result['comment_id'],
       "username" => $_SESSION['username'],
       "created_at" => date("Y-m-d H:i:s")
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
   } else {
     echo json_encode([
       "success" => false,
       "message" => "Erreur lors de l'ajout du commentaire : " . $result['message']
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
   }
   exit;
 }
@@ -128,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editComment']) && $_PO
   } else {
     echo json_encode([
       "success" => false,
-      "message" => "Erreur lors de la modification du commentaire."
+      "message" => "Max 800 caractères."
     ]);
   }
   exit;

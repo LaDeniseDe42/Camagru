@@ -29,7 +29,7 @@ $username = $_SESSION['username'] ?? null;
         <body style="background-image: url('/../assets/img/PixelHarry.png'); background-repeat: repeat; background-position: center; background-size: cover;">
         <?php endif; ?>
         <?php include(__DIR__ . '/../Views/auth/navbar.php'); ?>
-        <header>
+        <header style="background-image: url('/../assets/img/acceuil.png'); background-repeat: repeat; background-size: auto 100%; background-position: center; opacity: 0.85; height: 100px; border: 0.5px solid black;">
             <h1>Bienvenue sur Camagru</h1>
         </header>
 

@@ -73,5 +73,3 @@ volumes:
 # Nginx sert de serveur web et envoie les requêtes PHP à php_server.
 # L’application est accessible sur http://localhost:8080.
 
-# Proteger l'ouverture de la camera quand ya pas de camera
-# Proteger contre les emoticones UTF-16

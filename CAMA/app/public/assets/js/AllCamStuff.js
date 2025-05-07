@@ -215,7 +215,6 @@ if (startCamButton) {
         cameraContainer.style.display = "none";
         startCamButton.style.display = "block";
         alert("Pad de webcam ou de microphone détecté !", err);
-        // console.error("Erreur d'accès à la webcam ou au microphone : ", err);
       });
   });
 }
@@ -306,6 +305,8 @@ if (publishButton) {
       });
   });
 }
+
+//////////////////////VIDEO///////////////////////
 
 // Démarrer l'enregistrement vidéo
 if (startRecordingButton) {

@@ -1,4 +1,4 @@
-<div class="<?= htmlspecialchars($sub_house) ?>" style="background-image: url('/../assets/img/acceuil.png'); background-repeat: repeat; background-position: center; background-size: cover; border: 5px solid black; opacity: 0.9">
+<div class="<?= htmlspecialchars($sub_house) ?>" style="background-image: url('/../assets/img/test.png'); background-repeat: repeat; background-position: center; background-size: cover; border: 5px solid black; opacity: 1;">
     <h2 style="color: white">Mon Profil</h2>
     <br>
     <h3 style="color: white">Informations personnelles</h3>

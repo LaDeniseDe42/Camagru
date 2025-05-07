@@ -132,6 +132,11 @@ uploadCanvas.addEventListener("mousedown", (e) => {
       document.addEventListener("mousemove", dragSticker);
       document.addEventListener("mouseup", stopDraggingSticker);
       document.addEventListener("wheel", resizeSticker); // Ajout de l'écouteur de la molette
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowUp") {
+          turnSticker(event);
+        }
+      });
       return;
     }
   }
@@ -178,12 +183,28 @@ function resizeSticker(e) {
   redrawCanvas();
 }
 
+// Fonction pour faire pivoter le sticker avec un upArrow
+function turnSticker(e) {
+  if (draggedStickerIndex === null) return;
+
+  e.preventDefault();
+
+  const sticker = placedStickers[draggedStickerIndex];
+  sticker.rotation = (sticker.rotation || 0) + 30;
+  if (sticker.rotation >= 360) {
+    sticker.rotation = 0;
+  }
+
+  redrawCanvas();
+}
+
 // Fin du drag
 function stopDraggingSticker() {
   draggedStickerIndex = null;
   document.removeEventListener("mousemove", dragSticker);
   document.removeEventListener("mouseup", stopDraggingSticker);
   document.removeEventListener("wheel", resizeSticker); // Retirer l'écouteur de la molette
+  document.removeEventListener("rightclick", turnSticker);
 }
 
 // Redessine tout le canvas : image + tous les stickers
@@ -216,11 +237,15 @@ function redrawCanvas() {
 // Dessine un sticker
 function drawSticker(sticker) {
   // Dessine simplement l’image du sticker
+  ctx.save();
+  ctx.translate(sticker.x + sticker.width / 2, sticker.y + sticker.height / 2);
+  ctx.rotate((sticker.rotation || 0) * (Math.PI / 180));
   ctx.drawImage(
     sticker.image,
-    sticker.x,
-    sticker.y,
+    -sticker.width / 2,
+    -sticker.height / 2,
     sticker.width,
     sticker.height
   );
+  ctx.restore();
 }

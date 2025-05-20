@@ -11,8 +11,9 @@
                 <li><a href="/index.php">Accueil</a></li>
                 <li><a href="/profile.php">Mon Profil</a></li>
                 <li><a href="/gallery.php">Galerie</a></li>
-                <li><a href="/logout.php">Se déconnecter</a></li>
                 <li><a href="/publicWall.php">Mur public</a></li>
+                <li><a href="/game.php">Mini-Jeu</a></li>
+                <li><a href="/logout.php">Se déconnecter</a></li>
             <?php else: ?>
                 <li><a href="/index.php">Accueil</a></li>
                 <li><a href="/login.php">Se connecter</a></li>

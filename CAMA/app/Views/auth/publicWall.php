@@ -39,5 +39,6 @@
         <button id="loadMoreBtn">Voir plus</button>
     <?php else: ?>
         <p>Connectez-vous pour voir plus de publications !</p>
+        <a style="color: black; font-weight: bold;" href="/login.php">Se connecter</a>
     <?php endif; ?>
 </div>

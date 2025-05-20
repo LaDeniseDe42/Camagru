@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
     confirmation_token VARCHAR(255) NOT NULL,
     is_confirmed TINYINT(1) DEFAULT 0,
     house ENUM('Gryffondor', 'Poufsouffle', 'Serdaigle', 'Serpentard', 'Moldu', 'Crakmol') DEFAULT 'Moldu',
+    best_score INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     notifications BOOLEAN DEFAULT TRUE
 ) DEFAULT CHARSET = utf8mb4

@@ -324,4 +324,23 @@ class AuthController
         $stmt->execute();
         return $stmt->fetchColumn(); // Retourne uniquement la valeur de la colonne "notifications"
     }
+
+    public function getBestScore($user_id)
+    {
+        $con = $this->database->getConnection();
+        $query = "SELECT best_score FROM users WHERE id = :id";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':id', $user_id);
+        $stmt->execute();
+        return $stmt->fetchColumn(); // Retourne uniquement la valeur de la colonne "best_score"
+    }
+    public function updateBestScore($user_id, $score)
+    {
+        $con = $this->database->getConnection();
+        $query = "UPDATE users SET best_score = :score WHERE id = :id";
+        $stmt = $con->prepare($query);
+        $stmt->bindParam(':score', $score);
+        $stmt->bindParam(':id', $user_id);
+        return $stmt->execute();
+    }
 }

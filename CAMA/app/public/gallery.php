@@ -23,6 +23,10 @@ if (isset($_GET['user']) && !empty($_GET['user']) && $_GET['user'] != $_SESSION[
     $this_email = $this_user['email'];
     $this_house = $this_user['house'];
     $this_sub_house = strtolower($this_house);
+    $bestScore = $UserController->getBestScoreOfThisUser($this_user_id);
+    if ($bestScore === null) {
+        $bestScore = 0;
+    }
 } else {
     $this_user_id = $_SESSION['user_id'];
     $this_username = $_SESSION['username'];
@@ -30,6 +34,10 @@ if (isset($_GET['user']) && !empty($_GET['user']) && $_GET['user'] != $_SESSION[
     $this_sub_house = strtolower($this_house);
     $this_email = $_SESSION['email'];
     $this_user = $_SESSION['user'];
+    $bestScore = $UserController->getBestScore($_SESSION['user_id']);
+    if ($bestScore === null) {
+        $bestScore = 0;
+    }
 }
 
 

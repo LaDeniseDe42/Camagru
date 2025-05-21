@@ -24,6 +24,7 @@ $message = "";
 <body>
   <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
   <canvas id="gameCanvas"></canvas>
+  <div id="manaEffect" class="mana-effect hidden"></div>
   <div id="restartModal" class="modal hidden">
     <div class="modal-content">
       <p id="currentScore"></p>
@@ -35,7 +36,7 @@ $message = "";
 
   </div>
 
-  <script src="assets/js/game.js"></script>
+  <script type="module" src="assets/js/game.js"></script>
 </body>
 <script src="/../assets/js/navScript.js"></script>
 

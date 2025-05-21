@@ -8,6 +8,18 @@
 
 <div class="<?= htmlspecialchars($this_sub_house) ?>">
     <h2>Galerie de <?= htmlspecialchars($this_username) ?></h2>
+    <?php if ($bestScore === 0): ?>
+        <h3>Meilleur score en cours de vol : Tu n'as jamais vole sur un balai 🧹? </h3>
+    <?php endif; ?>
+    <?php if ($bestScore >= 100 && $bestScore <= 199): ?>
+        <h3>Meilleur score en cours de vol : <?= htmlspecialchars($bestScore) ?> pas mal pour un débutant !</h3>
+    <?php endif; ?>
+    <?php if ($bestScore >= 200 && $bestScore <= 299): ?>
+        <h3>Meilleur score en cours de vol : <?= htmlspecialchars($bestScore) ?> un score impressionnant !</h3>
+    <?php endif; ?>
+    <?php if ($bestScore > 299): ?>
+        <h3>Meilleur score en cours de vol : <?= htmlspecialchars($bestScore) ?> GOD OF BROOMSTICKS</h3>
+    <?php endif; ?>
     <?php if (!isset($this_user_id)): ?>
         <?php $this_user_id = $_SESSION['user_id'] ?? null; ?>
     <?php endif; ?>

@@ -1,17 +1,17 @@
-.PHONY: start stop restart logs down
+.PHONY: start restart logs down volclean
 
 start:
 	@docker-compose up -d --build
 
-stop:
-	@docker-compose stop
+restart:
+	@docker-compose restart
 
 re:
 	@docker-compose down
 	@docker-compose up -d --build
 
 logs:
-	@docker-compose logs -f
+	@docker-compose logs
 
 down:
 	@docker-compose down

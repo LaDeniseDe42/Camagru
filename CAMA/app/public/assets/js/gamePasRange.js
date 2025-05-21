@@ -1,82 +1,70 @@
-// === INITIALISATION DU CANVAS ===
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+let score = 0;
+let animationId;
+let gameOver = false;
+let eSpeed = 4;
+let lastSpeedUpdateScore = 0;
+let backgroundSpeed = 2;
+let spawnInterval = 120;
+let enemies = [];
+let frameCount = 0;
+let enemySpawnTimer = 120;
+//BOULE DE FEU
+let fireballs = [];
+let fireballCharges = 3;
+const maxFireballCharges = 3;
+let lastFireballScore = 0;
+
+const fireballImg = new Image();
+fireballImg.src = "assets/img/game/FB.png";
+// Fin Boule de feu
+
+//explosion
+let explosions = [];
+
+const explosionImg = new Image();
+explosionImg.src = "assets/img/game/explo.png";
+// Fin explosion
+//armor
+let armorImg = new Image();
+armorImg.src = "assets/img/game/armor.png";
+let pArmorImg = new Image();
+pArmorImg.src = "assets/img/game/pArmor.png";
+let pArmorImg2 = new Image();
+pArmorImg2.src = "assets/img/game/AFB.png";
+let armor = null; // L'objet armure
+let armorProtection = 0; // Protection restante
+let lastArmorScore = 0;
+
+// Fin armor
+
 let width = window.innerWidth;
 let height = window.innerHeight;
+
 canvas.width = width;
 canvas.height = height;
 
-// === VARIABLES DE JEU ===
-let score = 15;
-let animationId;
-let gameOver = false;
-let frameCount = 0;
-
-// === PARAMÈTRES DE DIFFICULTÉ ===
-let eSpeed = 4;
-let backgroundSpeed = 2;
-let spawnInterval = 120;
-let enemySpawnTimer = 120;
-let lastSpeedUpdateScore = 0;
-
-// === ENTITÉS DU JEU ===
-let enemies = [];
-let fireballs = [];
-let explosions = [];
-let armor = null;
-let potion = null;
-
-// === ARMURE ===
-let armorProtection = 0;
-let lastArmorScore = 0;
-
-// === MANA ===
-let fullMana = false;
-let lastFullManaScore = 0;
-
-// === BOULES DE FEU ===
-let fireballCharges = 3;
-const maxFireballCharges = 5;
-let lastFireballScore = 0;
-
-// === IMAGES ===
-const manaImg = new Image();
-manaImg.src = "assets/img/game/MANA.png";
-
-const backgroundImg = new Image();
-backgroundImg.src = "assets/img/quidditch.png";
-
+// Chargement des images
 const playerImg = new Image();
 playerImg.src = "assets/img/filters/jeuB.png";
 const playerImg2 = new Image();
 playerImg2.src = "assets/img/game/pBoule.png";
 
-const pArmorImg = new Image();
-pArmorImg.src = "assets/img/game/pArmor.png";
-const pArmorImg2 = new Image();
-pArmorImg2.src = "assets/img/game/AFB.png";
-
-const armorImg = new Image();
-armorImg.src = "assets/img/game/armor.png";
-
-const fireballImg = new Image();
-fireballImg.src = "assets/img/game/FB.png";
-
-const explosionImg = new Image();
-explosionImg.src = "assets/img/game/explo.png";
-
 const enemyImgs = [
   "assets/img/filters/FOG(1).png",
   "assets/img/filters/hibouxG.png",
   "assets/img/filters/jeuM.png",
-  "assets/img/game/E2.png",
 ].map((src) => {
   const img = new Image();
   img.src = src;
   return img;
 });
 
-// === JOUEUR ===
+const backgroundImg = new Image();
+backgroundImg.src = "assets/img/quidditch.png";
+
+// Joueur
 const player = {
   x: 50,
   y: height / 2 - 50,
@@ -85,36 +73,26 @@ const player = {
   speed: 5,
 };
 
-// === GESTION DES TOUCHES ===
+// Gestion des touches
 let keys = {};
 window.addEventListener("keydown", (e) => (keys[e.key] = true));
 window.addEventListener("keyup", (e) => (keys[e.key] = false));
 
-// === BOUCLE DE JEU PRINCIPALE ===
+// Animation principale
 function gameLoop() {
-  // Nettoyage du canvas
   ctx.clearRect(0, 0, width, height);
-
-  // Fond qui défile
   ctx.drawImage(backgroundImg, -(frameCount % width), 0, width, height);
   ctx.drawImage(backgroundImg, width - (frameCount % width), 0, width, height);
   frameCount += backgroundSpeed;
 
-  // Affichage texte
+  // Affichage du score
   ctx.fillStyle = "white";
   ctx.font = "30px Arial";
   ctx.textAlign = "center";
   ctx.fillText("Score : " + score, width / 2, 40);
   ctx.fillText("Boules de feu : " + fireballCharges, width / 2, 80);
-  if (armorProtection > 0) {
-    ctx.fillText(
-      "Armure : " + (armorProtection > 0 ? armorProtection : "Aucune"),
-      width / 2,
-      120
-    );
-  }
 
-  // Mouvement joueur
+  // Mouvement du joueur
   if ((keys["ArrowUp"] || keys["w"]) && player.y > 0) player.y -= player.speed;
   if ((keys["ArrowDown"] || keys["s"]) && player.y + player.height < height)
     player.y += player.speed;
@@ -122,40 +100,31 @@ function gameLoop() {
     player.x -= player.speed;
   if ((keys["ArrowRight"] || keys["d"]) && player.x + player.width < width)
     player.x += player.speed;
-
-  // Lancer de boules de feu
+  //fireball
+  // Ajout d'un verrou pour éviter le tir continu
   if (
     (keys[" "] || keys["Space"]) &&
-    (fireballCharges > 0 || fullMana) &&
+    fireballCharges > 0 &&
     !keys["_fireballPressed"]
   ) {
     fireballs.push({
       x: player.x + player.width,
       y: player.y + player.height / 2 - 10,
-      width: 50,
+      width: 30,
       height: 50,
       speed: player.speed + 5,
     });
-    if (!fullMana) fireballCharges--;
-    // fireballCharges--;
+    fireballCharges--;
     keys["_fireballPressed"] = true;
   }
-  if (!(keys[" "] || keys["Space"])) keys["_fireballPressed"] = false;
-
-  // Affichage joueur avec effet armure / boule de feu
-  let currentPlayerImg = playerImg;
-  if (armorProtection > 0)
+  if (!(keys[" "] || keys["Space"])) {
+    keys["_fireballPressed"] = false;
+  }
+  let currentPlayerImg;
+  if (armorProtection > 0) {
     currentPlayerImg = fireballs.length > 0 ? pArmorImg2 : pArmorImg;
-  else currentPlayerImg = fireballs.length > 0 ? playerImg2 : playerImg;
-
-  // Affichage de l'effet de mana
-  if (fullMana) {
-    const manaEffect = document.getElementById("manaEffect");
-    manaEffect.classList.remove("hidden");
-    manaEffect.style.left = `${player.x + player.width / 2 - 30}px`;
-    manaEffect.style.top = `${player.y + player.height / 2 - 30}px`;
   } else {
-    document.getElementById("manaEffect").classList.add("hidden");
+    currentPlayerImg = fireballs.length > 0 ? playerImg2 : playerImg;
   }
 
   ctx.drawImage(
@@ -166,7 +135,7 @@ function gameLoop() {
     player.height
   );
 
-  // Boules de feu
+  // Mise à jour des boules de feu
   fireballs.forEach((fireball, fIndex) => {
     fireball.x += fireball.speed;
     ctx.drawImage(
@@ -177,6 +146,7 @@ function gameLoop() {
       fireball.height
     );
 
+    // Collision avec les ennemis
     enemies.forEach((enemy, eIndex) => {
       if (
         fireball.x < enemy.x + enemy.width &&
@@ -184,12 +154,13 @@ function gameLoop() {
         fireball.y < enemy.y + enemy.height &&
         fireball.y + fireball.height > enemy.y
       ) {
+        // Supprimer l’ennemi et la boule
         explosions.push({
           x: enemy.x + enemy.width / 2 - 40,
           y: enemy.y + enemy.height / 2 - 40,
           width: 80,
           height: 80,
-          timer: 15,
+          timer: 15, // durée de vie en frames (~250ms si 60fps)
         });
         enemies.splice(eIndex, 1);
         fireballs.splice(fIndex, 1);
@@ -197,10 +168,11 @@ function gameLoop() {
       }
     });
 
-    if (fireball.x > width) fireballs.splice(fIndex, 1);
+    // Supprimer si hors écran
+    if (fireball.x > width) {
+      fireballs.splice(fIndex, 1);
+    }
   });
-
-  // Explosions
   explosions.forEach((explosion, index) => {
     ctx.drawImage(
       explosionImg,
@@ -210,11 +182,12 @@ function gameLoop() {
       explosion.height
     );
     explosion.timer--;
-    if (explosion.timer <= 0) explosions.splice(index, 1);
+    if (explosion.timer <= 0) {
+      explosions.splice(index, 1);
+    }
   });
 
-  // Apparition des ennemis
-  enemySpawnTimer++;
+  enemySpawnTimer += 1;
   if (enemySpawnTimer >= Math.max(spawnInterval, 15)) {
     enemies.push({
       x: width,
@@ -227,21 +200,23 @@ function gameLoop() {
     enemySpawnTimer = 0;
   }
 
-  // Mouvements des ennemis + collisions
+  // Déplacement et dessin des ennemis
   enemies.forEach((enemy, index) => {
-    enemy.x -= eSpeed;
+    enemy.speed = eSpeed;
+    enemy.x -= enemy.speed;
     ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
 
-    const collide =
+    // Collision
+    if (
       enemy.x < player.x + player.width &&
       enemy.x + enemy.width > player.x &&
       enemy.y < player.y + player.height &&
-      enemy.y + enemy.height > player.y;
-
-    if (collide && !gameOver) {
+      enemy.y + enemy.height > player.y &&
+      !gameOver
+    ) {
       if (armorProtection > 0) {
         armorProtection--;
-        enemies.splice(index, 1);
+        enemies.splice(index, 1); // détruire l’ennemi
         explosions.push({
           x: enemy.x + enemy.width / 2 - 40,
           y: enemy.y + enemy.height / 2 - 40,
@@ -251,38 +226,41 @@ function gameLoop() {
         });
       } else {
         gameOver = true;
-        cancelAnimationFrame(animationId);
-        showRestartDialog(score).then((restart) => {
+        cancelAnimationFrame(animationId); // stoppe la boucle
+        const finalScore = score;
+
+        showRestartDialog(finalScore).then((restart) => {
           if (restart) resetGame();
           else window.location.href = "/index.php";
         });
       }
     }
+
     // Supprimer les ennemis sortis de l'écran
     if (enemy.x + enemy.width < 0) {
       enemies.splice(index, 1);
       score++;
     }
   });
-
-  // Apparition armure
+  updateSpeedBasedOnScore();
+  // Apparition aléatoire d'armure tous les 20 points
   if (score > 0 && score % 20 === 0 && score !== lastArmorScore && !armor) {
     if (Math.random() < 0.5) {
-      const randomX = width * (Math.random() * 0.5 + 0.25); // entre 0.25 et 0.75
+      // 50% de chance
       armor = {
-        x: randomX,
+        x: width * 0.75,
         y: -80,
         width: 60,
         height: 60,
-        speed: Math.random() * 7 + 3,
+        speed: 3,
       };
       lastArmorScore = score;
     }
   }
-
-  // Déplacement / ramassage armure
   if (armor) {
     armor.y += armor.speed;
+
+    // Collision avec le joueur
     const collidesWithPlayer =
       armor.x < player.x + player.width &&
       armor.x + armor.width > player.x &&
@@ -295,61 +273,15 @@ function gameLoop() {
     } else if (armor.y > height) {
       armor = null;
     } else {
+      // On dessine uniquement si l’armure n’a pas été ramassée ou sortie
       ctx.drawImage(armorImg, armor.x, armor.y, armor.width, armor.height);
     }
   }
 
-  // Apparition potion de mana
-  if (score > 0 && score % 15 === 0 && !potion && score !== lastFullManaScore) {
-    if (Math.random() < 0.5) {
-      const randomX = width * (Math.random() * 0.5 + 0.25);
-      potion = {
-        x: randomX,
-        y: -80,
-        width: 60,
-        height: 60,
-        speed: Math.random() * 7 + 3,
-      };
-      lastFullManaScore = score;
-    }
-  }
-
-  // Déplacement / ramassage potion de mana
-  if (potion) {
-    potion.y += potion.speed;
-    const collidesWithPlayer =
-      potion.x < player.x + player.width &&
-      potion.x + potion.width > player.x &&
-      potion.y < player.y + player.height &&
-      potion.y + potion.height > player.y;
-
-    if (collidesWithPlayer) {
-      fireballCharges = 5;
-      fullMana = true;
-      // tant que fullMana est vrai, je veux une animation css effet de flamme derriere le joueur
-      const playerElement = document.getElementById("gameCanvas");
-      playerElement.classList.add("full-mana");
-      setTimeout(() => {
-        playerElement.classList.remove("full-mana");
-      }, 10000);
-      // réinitialiser fullMana après 10 secondes
-      setTimeout(() => {
-        fullMana = false;
-      }, 10000);
-      potion = null;
-    } else if (potion.y > height) {
-      potion = null;
-    } else {
-      ctx.drawImage(manaImg, potion.x, potion.y, potion.width, potion.height);
-    }
-  }
-
-  // Mise à jour de la difficulté et relance de la boucle
-  updateSpeedBasedOnScore();
   animationId = requestAnimationFrame(gameLoop);
 }
 
-// === ÉVÈNEMENTS ===
+// Redimensionnement du canvas
 window.addEventListener("resize", () => {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -357,62 +289,36 @@ window.addEventListener("resize", () => {
   canvas.height = height;
 });
 
-// === LANCEMENT DU JEU ===
+// Démarrer une fois que le fond est chargé
 backgroundImg.onload = () => gameLoop();
 
-// === UTILITAIRES ===
+// Fonction pour choisir une image d’ennemi aléatoire
 function getRandomEnemy() {
-  return enemyImgs[Math.floor(Math.random() * enemyImgs.length)];
+  const randomIndex = Math.floor(Math.random() * enemyImgs.length);
+  return enemyImgs[randomIndex];
 }
 
+// Fonction pour réinitialiser le jeu
 function resetGame() {
   enemies = [];
-  fireballs = [];
-  explosions = [];
-  armor = null;
-  potion = null;
-  armorProtection = 0;
   player.x = 50;
   player.y = height / 2 - 50;
   player.speed = 5;
-  score = 15;
-  gameOver = false;
-  frameCount = 0;
-  lastSpeedUpdateScore = 0;
-  lastFullManaScore = 0;
-  lastArmorScore = 0;
-  lastFireballScore = 0;
-  enemySpawnTimer = 120;
-  fireballCharges = maxFireballCharges;
+  player.width = 100;
+  player.height = 100;
   backgroundSpeed = 2;
-  eSpeed = 4;
+  frameCount = 0;
+  score = 0;
+  gameOver = false;
+  animationId = null;
+  lastSpeedUpdateScore = 0;
   spawnInterval = 120;
-  fullMana = false;
-  gameLoop();
-}
-
-function updateSpeedBasedOnScore() {
-  if (score > 0 && score % 10 === 0 && score !== lastFireballScore) {
-    if (fireballCharges < maxFireballCharges) {
-      fireballCharges++;
-      lastFireballScore = score;
-    }
-  }
-
-  if (score <= 90 && score >= 10 && score >= lastSpeedUpdateScore + 10) {
-    lastSpeedUpdateScore = score;
-    player.speed = 5 + Math.floor(score / 10);
-    backgroundSpeed = 2 + Math.floor(score / 10);
-    eSpeed = backgroundSpeed + 3;
-    spawnInterval = Math.max(20, 120 - Math.floor(score * 1.5));
-  }
-
-  if (score > 190) {
-    player.speed = 18;
-    backgroundSpeed = 16;
-    eSpeed = 20;
-    spawnInterval = 15;
-  }
+  eSpeed = 4;
+  enemySpawnTimer = 120;
+  fireballCharges = 3;
+  armor = null;
+  armorProtection = 0;
+  lastArmorScore = 0;
 }
 
 function showRestartDialog(finalScore) {
@@ -424,10 +330,13 @@ function showRestartDialog(finalScore) {
       document.getElementById("currentScore").innerHTML =
         "Tu es tombé de ton balai avec un score de <b>" + finalScore + "</b>";
 
-      document.getElementById("bestScore").innerHTML = data.new_best
-        ? "Bravo ! Tu as battu ton meilleur score !"
-        : "Ton meilleur score est de <b>" + data.best_score + "</b>";
-
+      if (data.new_best === true) {
+        document.getElementById("bestScore").textContent =
+          "Bravo ! Tu as battu ton meilleur score !";
+      } else {
+        document.getElementById("bestScore").innerHTML =
+          "Ton meilleur score est de <b>" + data.best_score + "</b>";
+      }
       document.getElementById("yesBtn").onclick = () => {
         modal.classList.add("hidden");
         resolve(true);
@@ -449,5 +358,35 @@ function sendScoreToPHP(score) {
     body: "score=" + encodeURIComponent(score),
   })
     .then((response) => response.json())
-    .catch((error) => console.error("Erreur lors de l'envoi du score:", error));
+    .catch((error) => {
+      console.error("Erreur lors de l'envoi du score:", error);
+    });
+}
+
+function updateSpeedBasedOnScore() {
+  // const speedLevel = Math.floor(score / 10);
+  if (score > 0 && score % 10 === 0 && score !== lastFireballScore) {
+    if (fireballCharges < maxFireballCharges) {
+      fireballCharges++;
+      lastFireballScore = score;
+    }
+  }
+
+  if (score <= 90) {
+    if (score >= 10 && score >= lastSpeedUpdateScore + 10) {
+      lastSpeedUpdateScore = score;
+      // Augmente les vitesses
+      player.speed = 5 + Math.floor(score / 10);
+      backgroundSpeed = 2 + Math.floor(score / 10);
+      eSpeed = backgroundSpeed + 3;
+      // Ajuste le spawnInterval (progressif)
+      spawnInterval = Math.max(20, 120 - Math.floor(score * 1.5));
+    }
+  }
+  if (score > 190) {
+    player.speed = 18;
+    backgroundSpeed = 18;
+    eSpeed = 18;
+    spawnInterval = 15;
+  }
 }

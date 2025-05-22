@@ -36,7 +36,7 @@ $message = "";
 
   </div>
 
-  <script type="module" src="assets/js/game.js"></script>
+  <script type="module" src="assets/js/game/game.js"></script>
 </body>
 <script src="/../assets/js/navScript.js"></script>
 

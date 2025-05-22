@@ -7,7 +7,11 @@
 </div>
 
 <div class="<?= htmlspecialchars($this_sub_house) ?>">
-    <h2>Galerie de <?= htmlspecialchars($this_username) ?></h2>
+    <?php if ($bestScore >= 151): ?>
+        <h2>Galerie de <?= htmlspecialchars($this_username) ?> Pourfendeur de dragon</h2>
+    <?php else: ?>
+        <h2>Galerie de <?= htmlspecialchars($this_username) ?></h2>
+    <?php endif; ?>
     <?php if ($bestScore === 0): ?>
         <h3>Meilleur score en cours de vol : Tu n'as jamais vole sur un balai 🧹? </h3>
     <?php endif; ?>

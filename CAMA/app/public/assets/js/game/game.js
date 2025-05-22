@@ -1,3 +1,10 @@
+import {
+  drawBossProjectiles,
+  isColliding,
+  showRestartDialog,
+  sendScoreToPHP,
+  showBossMessage,
+} from "./utils.js";
 // === INITIALISATION DU CANVAS ===
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -7,7 +14,7 @@ canvas.width = width;
 canvas.height = height;
 
 // === VARIABLES DE JEU ===
-let score = 15;
+let score = 149;
 let animationId;
 let gameOver = false;
 let frameCount = 0;
@@ -39,6 +46,11 @@ let fireballCharges = 3;
 const maxFireballCharges = 5;
 let lastFireballScore = 0;
 
+// === BOSS ===
+let bossActive = false;
+let bossAttackCount = 0;
+let bossProjectiles = [];
+
 // === IMAGES ===
 const manaImg = new Image();
 manaImg.src = "assets/img/game/MANA.png";
@@ -65,6 +77,11 @@ fireballImg.src = "assets/img/game/FB.png";
 const explosionImg = new Image();
 explosionImg.src = "assets/img/game/explo.png";
 
+const bossImage = new Image();
+bossImage.src = "assets/img/game/boss.png";
+const bossImg2 = new Image();
+bossImg2.src = "assets/img/game/bossAttack.png";
+
 const enemyImgs = [
   "assets/img/filters/FOG(1).png",
   "assets/img/filters/hibouxG.png",
@@ -77,12 +94,21 @@ const enemyImgs = [
 });
 
 // === JOUEUR ===
-const player = {
+let player = {
   x: 50,
   y: height / 2 - 50,
   width: 100,
   height: 100,
   speed: 5,
+};
+
+// === boss ===
+const boss = {
+  x: width - 150,
+  y: height / 2 - 75,
+  width: 300,
+  height: 300,
+  speed: 8,
 };
 
 // === GESTION DES TOUCHES ===
@@ -93,6 +119,9 @@ window.addEventListener("keyup", (e) => (keys[e.key] = false));
 // === BOUCLE DE JEU PRINCIPALE ===
 function gameLoop() {
   // Nettoyage du canvas
+  if (gameOver) {
+    return;
+  }
   ctx.clearRect(0, 0, width, height);
 
   // Fond qui défile
@@ -141,13 +170,7 @@ function gameLoop() {
     keys["_fireballPressed"] = true;
   }
   if (!(keys[" "] || keys["Space"])) keys["_fireballPressed"] = false;
-
-  // Affichage joueur avec effet armure / boule de feu
-  let currentPlayerImg = playerImg;
-  if (armorProtection > 0)
-    currentPlayerImg = fireballs.length > 0 ? pArmorImg2 : pArmorImg;
-  else currentPlayerImg = fireballs.length > 0 ? playerImg2 : playerImg;
-
+  drawPlayer();
   // Affichage de l'effet de mana
   if (fullMana) {
     const manaEffect = document.getElementById("manaEffect");
@@ -157,15 +180,6 @@ function gameLoop() {
   } else {
     document.getElementById("manaEffect").classList.add("hidden");
   }
-
-  ctx.drawImage(
-    currentPlayerImg,
-    player.x,
-    player.y,
-    player.width,
-    player.height
-  );
-
   // Boules de feu
   fireballs.forEach((fireball, fIndex) => {
     fireball.x += fireball.speed;
@@ -250,12 +264,8 @@ function gameLoop() {
           timer: 15,
         });
       } else {
-        gameOver = true;
-        cancelAnimationFrame(animationId);
-        showRestartDialog(score).then((restart) => {
-          if (restart) resetGame();
-          else window.location.href = "/index.php";
-        });
+        itsGameOver(animationId);
+        return;
       }
     }
     // Supprimer les ennemis sortis de l'écran
@@ -343,9 +353,17 @@ function gameLoop() {
       ctx.drawImage(manaImg, potion.x, potion.y, potion.width, potion.height);
     }
   }
-
   // Mise à jour de la difficulté et relance de la boucle
   updateSpeedBasedOnScore();
+
+  // Affichage du boss
+  if (!bossActive && score === 150) {
+    bossActive = true;
+    pauseGame();
+    setTimeout(startBossPhase, 4200); // Petit délai pour le style
+    showBossMessage(ctx, width, height);
+    return; // Stop la boucle ici pour la phase boss
+  }
   animationId = requestAnimationFrame(gameLoop);
 }
 
@@ -372,10 +390,14 @@ function resetGame() {
   armor = null;
   potion = null;
   armorProtection = 0;
-  player.x = 50;
-  player.y = height / 2 - 50;
-  player.speed = 5;
-  score = 15;
+  player = {
+    x: 50,
+    y: height / 2 - 50,
+    width: 100,
+    height: 100,
+    speed: 5,
+  };
+  score = 0;
   gameOver = false;
   frameCount = 0;
   lastSpeedUpdateScore = 0;
@@ -388,6 +410,10 @@ function resetGame() {
   eSpeed = 4;
   spawnInterval = 120;
   fullMana = false;
+
+  bossActive = false;
+  bossAttackCount = 0;
+  bossProjectiles = [];
   gameLoop();
 }
 
@@ -415,39 +441,125 @@ function updateSpeedBasedOnScore() {
   }
 }
 
-function showRestartDialog(finalScore) {
-  const modal = document.getElementById("restartModal");
-  modal.classList.remove("hidden");
-
-  return new Promise((resolve) => {
-    sendScoreToPHP(finalScore).then((data) => {
-      document.getElementById("currentScore").innerHTML =
-        "Tu es tombé de ton balai avec un score de <b>" + finalScore + "</b>";
-
-      document.getElementById("bestScore").innerHTML = data.new_best
-        ? "Bravo ! Tu as battu ton meilleur score !"
-        : "Ton meilleur score est de <b>" + data.best_score + "</b>";
-
-      document.getElementById("yesBtn").onclick = () => {
-        modal.classList.add("hidden");
-        resolve(true);
-      };
-      document.getElementById("noBtn").onclick = () => {
-        modal.classList.add("hidden");
-        resolve(false);
-      };
-    });
-  });
+// === BOSS PHASE ===
+function pauseGame() {
+  enemies = [];
+  fireballs = [];
+  explosions = [];
 }
 
-function sendScoreToPHP(score) {
-  return fetch("/get_score.php", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: "score=" + encodeURIComponent(score),
-  })
-    .then((response) => response.json())
-    .catch((error) => console.error("Erreur lors de l'envoi du score:", error));
+function startBossPhase() {
+  bossAttackCount = 0;
+  bossProjectiles = [];
+  requestAnimationFrame(bossLoop);
+}
+
+function bossLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Fond statique
+  ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+  if ((keys["ArrowUp"] || keys["w"]) && player.y > 0) player.y -= player.speed;
+  if ((keys["ArrowDown"] || keys["s"]) && player.y + player.height < height)
+    player.y += player.speed;
+  if ((keys["ArrowLeft"] || keys["a"]) && player.x > 0)
+    player.x -= player.speed;
+  if ((keys["ArrowRight"] || keys["d"]) && player.x + player.width < width)
+    player.x += player.speed;
+
+  // Affiche joueur et boss
+  drawPlayer();
+  drawAndMoveBoss();
+  // Gère les projectiles du boss
+  updateBossProjectiles();
+
+  // Collision joueur <-> tir du boss
+  for (let i = 0; i < bossProjectiles.length; i++) {
+    if (isColliding(bossProjectiles[i], player)) {
+      itsGameOver(animationId);
+      return;
+    }
+  }
+  // Collision joueur <-> boss
+  if (isColliding(boss, player)) {
+    itsGameOver(animationId);
+    return;
+  }
+
+  if (bossAttackCount >= 300) {
+    score += 1; // Bonus de score à la fin de la phase boss
+    bossActive = false;
+    cancelAnimationFrame(animationId);
+    requestAnimationFrame(gameLoop); // Reprise du jeu normal
+    return;
+  }
+
+  requestAnimationFrame(bossLoop);
+}
+
+function drawAndMoveBoss() {
+  if (bossActive) {
+    // Mouvement horizontal du boss
+    if (boss.x > canvas.width - boss.width) {
+      boss.x -= boss.speed;
+    } else {
+      boss.x = canvas.width - boss.width;
+    }
+    const verticalOffset = 45; // Décalage en pixels vers le haut
+    // Mouvement vertical du boss avec un peu d'aléatoire
+    const randomOffset = Math.random() * 30 - 15; // entre -15 et +15
+    const targetY = player.y - verticalOffset + randomOffset;
+
+    if (boss.y < targetY) {
+      boss.y += boss.speed * (0.8 + Math.random() * 0.4);
+    } else if (boss.y > targetY) {
+      boss.y -= boss.speed * (0.8 + Math.random() * 0.4);
+    }
+    // Alterne l'image du boss toutes les secondes
+    const bossImgToDraw =
+      Math.floor(Date.now() / 1000) % 2 === 0 ? bossImage : bossImg2;
+    ctx.drawImage(bossImgToDraw, boss.x, boss.y, boss.width, boss.height);
+  }
+}
+
+function drawPlayer() {
+  let currentPlayerImg = playerImg;
+  if (armorProtection > 0)
+    currentPlayerImg = fireballs.length > 0 ? pArmorImg2 : pArmorImg;
+  else currentPlayerImg = fireballs.length > 0 ? playerImg2 : playerImg;
+
+  ctx.drawImage(
+    currentPlayerImg,
+    player.x,
+    player.y,
+    player.width,
+    player.height
+  );
+}
+
+function updateBossProjectiles() {
+  if (bossAttackCount <= 300) {
+    if (Math.random() < 0.06) {
+      bossProjectiles.push({
+        x: boss.x,
+        y: boss.y + boss.height / 2 - 10,
+        width: 20,
+        height: 20,
+        speed: -8,
+      });
+      bossAttackCount++;
+    }
+  }
+
+  for (let i = 0; i < bossProjectiles.length; i++) {
+    drawBossProjectiles(i, bossProjectiles, ctx);
+  }
+}
+
+function itsGameOver(IdToStop) {
+  gameOver = true;
+  cancelAnimationFrame(IdToStop);
+  showRestartDialog(score).then((restart) => {
+    if (restart) resetGame();
+    else window.location.href = "/index.php";
+  });
 }

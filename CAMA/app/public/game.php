@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . "/../controllers/AuthController.php";
+require_once __DIR__ . "/../controllers/PublicationController.php";
 
 if (!isset($_SESSION['user'])) {
   header("Location: index.php");
@@ -25,6 +26,15 @@ $message = "";
   <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
   <canvas id="gameCanvas"></canvas>
   <div id="manaEffect" class="mana-effect hidden"></div>
+  <div id="photoConfirmModal" class="modal hidden">
+    <div class="modal-content">
+      <p>Souhaites-tu publier cette image dans la galerie ?</p>
+      <button id="confirmYesBtn">Oui</button>
+      <button id="confirmNoBtn">Non</button>
+    </div>
+  </div>
+
+
   <div id="restartModal" class="modal hidden">
     <div class="modal-content">
       <p id="currentScore"></p>

@@ -558,8 +558,52 @@ function updateBossProjectiles() {
 function itsGameOver(IdToStop) {
   gameOver = true;
   cancelAnimationFrame(IdToStop);
-  showRestartDialog(score).then((restart) => {
-    if (restart) resetGame();
-    else window.location.href = "/index.php";
-  });
+  captureFinishPhotoOfCanvas();
+}
+
+function captureFinishPhotoOfCanvas() {
+  canvas.toBlob((blob) => {
+    if (!blob) {
+      return showRestartDialog(score).then((restart) => {
+        if (restart) resetGame();
+        else window.location.href = "/index.php";
+      });
+    }
+
+    const modal = document.getElementById("photoConfirmModal");
+    const yesBtn = document.getElementById("confirmYesBtn");
+    const noBtn = document.getElementById("confirmNoBtn");
+
+    modal.classList.remove("hidden");
+
+    const cleanupAndRestart = () => {
+      modal.classList.add("hidden");
+      showRestartDialog(score).then((restart) => {
+        if (restart) resetGame();
+        else window.location.href = "/index.php";
+      });
+    };
+
+    yesBtn.onclick = () => {
+      modal.classList.add("hidden");
+
+      const formData = new FormData();
+      const photoName = "capture_" + Date.now() + ".png";
+      formData.append("file", blob, photoName);
+      formData.append("type", "photo");
+
+      fetch("/uploadPhotoFromGame.php", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then(() => cleanupAndRestart())
+        .catch((err) => {
+          console.error("Erreur d'envoi :", err);
+          cleanupAndRestart();
+        });
+    };
+
+    noBtn.onclick = () => cleanupAndRestart();
+  }, "image/png");
 }

@@ -14,7 +14,7 @@ canvas.width = width;
 canvas.height = height;
 
 // === VARIABLES DE JEU ===
-let score = 149;
+let score = 0;
 let animationId;
 let gameOver = false;
 let frameCount = 0;

@@ -26,6 +26,7 @@ $message = "";
   <?php include __DIR__ . '/../Views/auth/navbar.php'; ?>
   <canvas id="gameCanvas"></canvas>
   <div id="manaEffect" class="mana-effect hidden"></div>
+
   <div id="photoConfirmModal" class="modal hidden">
     <div class="modal-content">
       <p>Souhaites-tu publier cette image dans la galerie ?</p>

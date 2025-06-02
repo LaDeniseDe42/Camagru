@@ -166,7 +166,6 @@ function gameLoop() {
       speed: player.speed + 5,
     });
     if (!fullMana) fireballCharges--;
-    // fireballCharges--;
     keys["_fireballPressed"] = true;
   }
   if (!(keys[" "] || keys["Space"])) keys["_fireballPressed"] = false;
@@ -336,13 +335,12 @@ function gameLoop() {
     if (collidesWithPlayer) {
       fireballCharges = 5;
       fullMana = true;
-      // tant que fullMana est vrai, je veux une animation css effet de flamme derriere le joueur
+      // tant que fullMana, animation css effet de flamme derriere le joueur
       const playerElement = document.getElementById("gameCanvas");
       playerElement.classList.add("full-mana");
       setTimeout(() => {
         playerElement.classList.remove("full-mana");
       }, 10000);
-      // réinitialiser fullMana après 10 secondes
       setTimeout(() => {
         fullMana = false;
       }, 10000);
@@ -353,7 +351,6 @@ function gameLoop() {
       ctx.drawImage(manaImg, potion.x, potion.y, potion.width, potion.height);
     }
   }
-  // Mise à jour de la difficulté et relance de la boucle
   updateSpeedBasedOnScore();
 
   // Affichage du boss
@@ -367,7 +364,7 @@ function gameLoop() {
   animationId = requestAnimationFrame(gameLoop);
 }
 
-// === ÉVÈNEMENTS ===
+// === EVENEMENTS ===
 window.addEventListener("resize", () => {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -378,7 +375,6 @@ window.addEventListener("resize", () => {
 // === LANCEMENT DU JEU ===
 backgroundImg.onload = () => gameLoop();
 
-// === UTILITAIRES ===
 function getRandomEnemy() {
   return enemyImgs[Math.floor(Math.random() * enemyImgs.length)];
 }

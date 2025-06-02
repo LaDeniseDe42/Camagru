@@ -1,7 +1,5 @@
 <?php
-// Démarre la session pour vérifier si l'utilisateur est connecté
 session_start();
-
 // Vérifie si l'tilisateur est connecté
 $is_logged_in = isset($_SESSION['user']);
 $user_mail = $_SESSION['user_mail'] ?? null;

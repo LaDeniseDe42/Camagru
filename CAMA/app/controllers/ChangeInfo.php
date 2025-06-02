@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../models/User.php'; // Charger ton modèle utilisateur
-require_once __DIR__ . '/../config/database.php'; // Configuration de la base de données
-require_once __DIR__ . '/../config/session.php'; // Configuration de la session
+require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/session.php';
 
 class ChangeInfo
 {

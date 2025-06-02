@@ -1,16 +1,14 @@
 <?php
-session_start(); // Démarre la session pour pouvoir utiliser $_SESSION
+session_start();
 require_once __DIR__ . "/../controllers/AuthController.php";
 
 // Vérifie si l'utilisateur est déjà connecté
 if (isset($_SESSION['user'])) {
-    header("Location: index.php"); // Redirige vers la page d'accueil s'il est déjà connecté
+    header("Location: index.php");
     exit();
 }
-// Créer une instance de AuthController
-$authController = new AuthController();
 
-// Message d'erreur ou de succès
+$authController = new AuthController();
 $message = "";
 require_once __DIR__ . "/../models/User.php";
 

@@ -9,8 +9,6 @@ if (isset($_SESSION['user'])) {
 }
 // Créer une instance de AuthController
 $authController = new AuthController();
-
-// Message d'erreur ou de succès
 $message = "";
 
 // Vérifie si le formulaire a été soumis
@@ -21,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $authController->resend_mail($email);
     if ($result['status'] === 'success') {
         $successMessage = "Un email de confirmation a été envoyé. Veuillez vérifier votre boîte de réception pour confirmer votre compte.";
-        // Rediriger vers login.php avec le message passé en paramètre dans l'URL
         header("Location: login.php?message=" . urlencode($successMessage));
         exit();
     } else {

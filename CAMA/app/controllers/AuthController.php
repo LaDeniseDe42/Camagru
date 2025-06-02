@@ -240,7 +240,6 @@ class AuthController
 
     public function login($emailorUsername, $password)
     {
-        // Validation basique
         if (empty($emailorUsername) || empty($password)) {
             return ['status' => 'error', 'message' => "Tous les champs sont obligatoires."];
         }
@@ -332,7 +331,7 @@ class AuthController
         $stmt = $con->prepare($query);
         $stmt->bindParam(':id', $user_id);
         $stmt->execute();
-        return $stmt->fetchColumn(); // Retourne uniquement la valeur de la colonne "best_score"
+        return $stmt->fetchColumn();
     }
 
     public function getBestScoreOfThisUser($user_id)
@@ -342,7 +341,7 @@ class AuthController
         $stmt = $con->prepare($query);
         $stmt->bindParam(':id', $user_id);
         $stmt->execute();
-        return $stmt->fetchColumn(); // Retourne uniquement la valeur de la colonne "best_score"
+        return $stmt->fetchColumn();
     }
 
     public function updateBestScore($user_id, $score)

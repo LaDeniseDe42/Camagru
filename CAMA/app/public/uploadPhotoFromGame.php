@@ -20,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_FILES['file'])) {
   exit;
 }
 
-// Type par défaut : 'photo' (tu peux le changer depuis JS si besoin)
 $type = $_POST['type'] ?? 'photo';
 
 try {

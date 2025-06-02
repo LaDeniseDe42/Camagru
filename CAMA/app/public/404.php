@@ -10,7 +10,6 @@
 <body>
   <div class="fog"></div>
   <div class="background">
-    <!-- <h1>404</h1> -->
     <p>Oops... Vous vous êtes égaré dans la Forêt Interdite.</p>
     <a href="/index.php" class="button">Retour à Poudlard</a>
     <img src="/assets/img/hedwig.png" alt="Hedwige" class="owl" />

@@ -1,5 +1,10 @@
 ![Aperçu du projet](./1.png)
 
+# Le projet
+
+Camagru est un projet de l'ecole 42, il s'agit de creer un site permettant de publier des photos/videos modifiables dans la gallerie de l'utilisateurs. Toutes les publications seront alors visible sur un mur public ou tout les utilisateurs pourront voir/reagir/commenter les publications.
+Un mini jeu est egalement present pour le plaisir !
+
 # ⚙️ Configuration du projet
 
 Avant de commencer, ajoutez un fichier `.env` à la racine du projet (au même niveau que le `Makefile`).  

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../config/setup.php";
 require_once __DIR__ . "/../controllers/AuthController.php";
 
 if (!isset($_GET['token'])) {

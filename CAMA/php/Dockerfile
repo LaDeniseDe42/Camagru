@@ -1,31 +1,37 @@
 FROM php:8.2-fpm
 
-# Installer sendmail, msmtp, etc.
-RUN apt-get update && apt-get install -y sendmail msmtp
+# Installer dépendances nécessaires (gettext pour envsubst, unzip, git, curl)
+RUN apt-get update && apt-get install -y unzip git curl
 
-# Installer extensions PHP nécessaires
+# Installer les extensions PHP pour MySQL
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 
-# Créer le dossier /gallery avec permissions correctes
+# Créer le dossier gallery et donner les permissions
 RUN mkdir -p /gallery && \
     chown -R www-data:www-data /gallery && \
     chmod -R 775 /gallery
 
-# Configuration PHP personnalisée (php.ini)
-COPY php.ini /usr/local/etc/php/conf.d/custom.ini
+# Permissions pour /tmp
+RUN chmod 1777 /tmp
 
+# Configuration des limites de taille d'upload PHP
+RUN echo "upload_max_filesize=70M" > /usr/local/etc/php/conf.d/uploads.ini \
+ && echo "post_max_size=70M" >> /usr/local/etc/php/conf.d/uploads.ini \
+ && echo "memory_limit=128M" >> /usr/local/etc/php/conf.d/uploads.ini
 
-# Script poyr msmtprc
-COPY --chown=www-data:www-data entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-# Log mail
-RUN touch /var/log/mail.log && \
-    chmod 666 /var/log/mail.log && \
-    chown www-data:www-data /var/log/mail.log
-
-# Utiliser le script d’entrée
-ENTRYPOINT ["/entrypoint.sh"]
+# Installer Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+ && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+ && php -r "unlink('composer-setup.php');"
 
 # Définir le répertoire de travail
 WORKDIR /var/www/html
+
+# Copier l'application
+COPY app /var/www/html
+
+# Installer PHPMailer via Composer
+RUN composer require phpmailer/phpmailer
+
+# Lancer PHP-FPM
+CMD ["php-fpm"]

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../config/setup.php";
 require_once __DIR__ . "/../config/session.php";
 require_once __DIR__ . "/../controllers/AuthController.php";
 require_once __DIR__ . "/../controllers/PublicationController.php";

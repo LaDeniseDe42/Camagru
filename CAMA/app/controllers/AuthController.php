@@ -1,7 +1,12 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require_once __DIR__ . '/../vendor/autoload.php'; // Composer autoload
+
 require_once __DIR__ . '/../models/User.php';
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/setup.php';
 
 class AuthController
 {
@@ -11,6 +16,36 @@ class AuthController
     {
         $this->database = new Database();
     }
+
+    private function sendEmail($to, $subject, $body)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Paramètres SMTP
+            $mail->isSMTP();
+            $mail->Host = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = $_ENV['SMTP_USER'] ?? 'tonemail@gmail.com';
+            $mail->Password = $_ENV['SMTP_PASS'] ?? 'tonmotdepasse';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+
+            $mail->setFrom($_ENV['SMTP_FROM'] ?? 'tonemail@gmail.com', 'Camagru');
+            $mail->addAddress($to);
+
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = $body;
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            error_log("Mailer Error: " . $mail->ErrorInfo);
+            return false;
+        }
+    }
+
 
     public function register($username, $email, $password, $password2, $house)
     {
@@ -66,13 +101,11 @@ class AuthController
         error_log($isRegistered);
 
         if ($isRegistered) {
-            // Envoyer l'email de confirmation
             $confirmLink = "http://localhost:8080/confirm_email.php?token=$token";
             $subject = "Confirmez votre inscription sur Camagru";
             $message = "Cliquez sur ce lien pour confirmer votre email : <a href='$confirmLink'>$confirmLink</a>";
-            $headers = "Content-Type: text/html; charset=UTF-8";
 
-            if (mail($email, $subject, $message, $headers)) {
+            if ($this->sendEmail($email, $subject, $message)) {
                 return ['status' => 'success', 'message' => "Inscription réussie ! Vérifiez votre email pour activer votre compte."];
             } else {
                 return ['status' => 'error', 'message' => "Erreur lors de l'envoi du mail de confirmation."];
@@ -154,11 +187,7 @@ class AuthController
             </body>
             </html>
         ";
-            $headers = "MIME-Version: 1.0" . "\r\n";
-            $headers .= "Content-Type: text/html; charset=UTF-8" . "\r\n";
-            $headers .= "From: no-reply@votre-site.com" . "\r\n";
-
-            if (mail($email, $subject, $message, $headers)) {
+            if ($this->sendEmail($email, $subject, $message)) {
                 return ['status' => 'success', 'message' => "Un email de confirmation a été envoyé. Vérifiez votre boîte de réception."];
             } else {
                 return ['status' => 'error', 'message' => "Erreur lors de l'envoi de l'email."];
@@ -226,8 +255,8 @@ class AuthController
                 $confirmLink = "http://localhost:8080/confirm_email.php?token=$token";
                 $subject = "Confirmez votre inscription sur Camagru";
                 $message = "Cliquez sur ce lien pour confirmer votre email : <a href='$confirmLink'>$confirmLink</a>";
-                $headers = "Content-Type: text/html; charset=UTF-8";
-                if (mail($email, $subject, $message, $headers)) {
+                // $headers = "Content-Type: text/html; charset=UTF-8";
+                if ($this->sendEmail($email, $subject, $message)) {
                     return ['status' => 'success', 'message' => "Email de confirmation renvoyé ! Vérifiez votre boîte de réception."];
                 } else {
                     return ['status' => 'error', 'message' => "Erreur lors de l'envoi du mail de confirmation."];
@@ -240,6 +269,7 @@ class AuthController
 
     public function login($emailorUsername, $password)
     {
+        // Validation basique
         if (empty($emailorUsername) || empty($password)) {
             return ['status' => 'error', 'message' => "Tous les champs sont obligatoires."];
         }
@@ -323,7 +353,6 @@ class AuthController
         $stmt->execute();
         return $stmt->fetchColumn(); // Retourne uniquement la valeur de la colonne "notifications"
     }
-
     public function getBestScore($user_id)
     {
         $con = $this->database->getConnection();

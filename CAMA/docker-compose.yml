@@ -15,11 +15,14 @@ services:
       - app_network
 
   php:
-    build: ./php
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile
     container_name: php_server
     volumes:
       - ./app:/var/www/html
       - gallery:/gallery
+      - phpmailer_vendor:/var/www/html/vendor # <-- volume séparé pour composer
     env_file:
       - .env
     networks:
@@ -62,6 +65,7 @@ networks:
 volumes:
   mysql_data:
   gallery:
+  phpmailer_vendor:
 # docker-compose up -d --build pour lancer le tout
 # docker compose down pour tout stop
 # docker exec -it mysql_db mysql -uuser -p pour se connecter à MySQL
@@ -72,4 +76,3 @@ volumes:
 # PHP est lancé pour exécuter le code backend.
 # Nginx sert de serveur web et envoie les requêtes PHP à php_server.
 # L’application est accessible sur http://localhost:8080.
-

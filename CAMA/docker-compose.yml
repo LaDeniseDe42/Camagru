@@ -73,6 +73,6 @@ volumes:
 
 # MySQL démarre et initialise la base de données.
 # phpMyAdmin permet d’interagir avec MySQL via http://localhost:8081.
-# PHP est lancé pour exécuter le code backend.
+# PHP est lancé pour exécuter le code backend.cihnntjzemhytbzx
 # Nginx sert de serveur web et envoie les requêtes PHP à php_server.
 # L’application est accessible sur http://localhost:8080.
